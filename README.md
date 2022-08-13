@@ -60,9 +60,10 @@ use combine1.sh combin2-p1.sh combine2-p2.sh combine2-p2-III-IV.sh written by my
 ```bash
 bash combine1.sh L2-IV-mRNA-input1.bam L2-III-mRNA-IP.bam L2-peaks-end.bed 
 ```
-### Processing to obtain more tidy data and save as unfiltered sites inside and outside the IP peaks
+### Processing to obtain more tidy data and save as unfiltered sites inside and outside the IP peaks for both III and III+IV files
 ```bash
-bbash combine2-p1-v14.sh ./K1/K1-III-mRNA-IP-R2.bam ./K1/K1-inside.out ./K1/K1-outside.out ./K1/K1-III-inside-unfiltered.bed ./K1/K1-III-outside-unfiltered.bed
+bash combine2-p1-v14.sh ./K1/K1-III-mRNA-IP-R2.bam ./K1/K1-inside.out ./K1/K1-outside.out ./K1/K1-III-inside-unfiltered.bed ./K1/K1-III-outside-unfiltered.bed ./K1/K1-III-unfiltered.bed
+bash combine2-p1-v14-III-IV.sh ./K1/K1-III-IV-mRNA-IP.bam ./K1/K1-III-IV-inside.out ./K1/K1-III-IV-outside.out ./K1/K1-III-IV-inside-unfiltered.bed ./K1/K1-III-IV-outside-unfiltered.bed ./K1/K1-III-IV-unfiltered.bed
 ```
 
 ### filter stutter effect (based on -1 site and +1 site)
@@ -71,22 +72,20 @@ python3 K_stop_v14.py ./K1/K1-III-inside-unfiltered.bed > ./K1/K1-III-inside-fil
 python3 K_stop_v14.py ./K1/K1-III-outside-unfiltered.bed > ./K1/K1-III-outside-filter1.bed
 cat ./K1/K1-III-inside-filter1.bed | tr ' ' '\t' > ./K1/K1-III-inside-filter1-1.bed
 cat ./K1/K1-III-outside-filter1.bed | tr ' ' '\t' > ./K1/K1-III-outside-filter1-1.bed
-awk '!visited[$0]++' ./K1/K1-III-inside-filter1-1.bed > ./K1/K1-III-inside-filter2.bed
-awk '!visited[$0]++' ./K1/K1-III-outside-filter1-1.bed > ./K1/K1-III-outside-filter2.bed
 ```
 ### Filter sites due to peak tails (sites within 30 nt has > 5 fold coverage than this site)
 ```bash
-python3 K_stop_filter_v3.py ./K1/K1-III-inside-filter2.bed > ./K1/K1-III-inside-filter3.bed
-python3 K_stop_filter_v3.py ./K1/K1-III-outside-filter2.bed > ./K1/K1-III-outside-filter3.bed
-awk '!visited[$0]++' ./K1/K1-III-inside-filter3.bed > ./K1/K1-III-inside-filter4.bed
-awk '!visited[$0]++' ./K1/K1-III-outside-filter3.bed > ./K1/K1-III-outside-filter4.bed
-cat ./K1/K1-III-inside-filter4.bed | tr ' ' '\t' > low.bed
-cat ./K1/K1-III-outside-filter4.bed | tr ' ' '\t' > low-1.bed
-bedtools subtract -a ./K1/K1-III-inside-filter2.bed -b low.bed > ./K1/K1-III-inside-filter5.bed
-bedtools subtract -a ./K1/K1-III-outside-filter2.bed -b low-1.bed > ./K1/K1-III-outside-filter5.bed
+python3 K_stop_filter_v3.py ./K1/K1-III-inside-filter1-1.bed > ./K1/K1-III-inside-low.bed
+python3 K_stop_filter_v3.py ./K1/K1-III-outside-filter1-1.bed > ./K1/K1-III-outside-low.bed
+awk '!visited[$0]++' ./K1/K1-III-inside-low.bed > ./K1/K1-III-inside-low-1.bed
+awk '!visited[$0]++' ./K1/K1-III-outside-low.bed > ./K1/K1-III-outside-low-1.bed
+cat ./K1/K1-III-inside-filter4.bed | tr ' ' '\t' > inside-low.bed
+cat ./K1/K1-III-outside-low-1.bed | tr ' ' '\t' > outside-low.bed
+bedtools subtract -a ./K1/K1-III-inside-filter1-1.bed -b inside-low.bed > ./K1/K1-III-inside-filter2.bed
+bedtools subtract -a ./K1/K1-III-outside-filter1-1.bed -b outside-low.bed > ./K1/K1-III-outside-filter2.bed
 ```
 
-### filter sites based on stop ratio and coverage; using different criteria for inside and outside, between III and III+IV
+### filter sites based on stop ratio and coverage; using different criteria for inside and outside, III and III+IV, combine inside and outside sites as unique sites
 ```bash
 bash combine2-p2-v14.sh ./K1/K1-III-mRNA-IP-R2.bam ./K1/K1-III-inside-filter5.bed ./K1/K1-III-outside-filter5.bed ./K1/K1-III-unique.bed
 bash combine2-p2-v14-III-IV.sh ./K1/K1-III-IV-mRNA-IP.bam ./K1/K1-III-IV-inside-filter5.bed ./K1/K1-III-IV-outside-filter5.bed ./K1/K1-III-IV-unique.bed
@@ -94,7 +93,7 @@ bash combine2-p2-v14-III-IV.sh ./K1/K1-III-IV-mRNA-IP.bam ./K1/K1-III-IV-inside-
 ### merge all sites identified from III and III+IV
 
 ```bash
-bedtools subtract -a ./K3/K3-III-IV-unique.bed -b ./K3/K3-III-unique.bed > new.bed
+bedtools subtract -a ./K1/K1-III-IV-unique.bed -b ./K1/K1-III-unique.bed > new.bed
 cat ./K1/K1-III-unique.bed new.bed > ./K1/K1-combined.bed
 sort -k1,1 ./K1/K1-combined.bed > ./K1/K1-combined-1.bed
 ```
@@ -103,24 +102,27 @@ sort -k1,1 ./K1/K1-combined.bed > ./K1/K1-combined-1.bed
 need to maually change the unfiltered file and combined-1 file in order to select for the same base as well. save as unfiltered-mn.bed and combined-1-1.bed respectively.
 ```bash
 bedtools intersect -wa -wb -a ./K1/K1-III-IV-unfiltered-mn.bed -b ./K1/K1-combined-1-1.bed > ./K1/K1-combined-2.bed
-awk '!visited[$0]++' ./K1/K1-combined-2.bed > ./K1/K1-combined-3.bed
-awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$26,$27,$28}' ./K1/K1-combined-3.bed > ./K1/K1-combined-4.bed
-awk -v OFS="\t" '$1=$1' ./K1/K1-combined-4.bed > ./K1/K1-combined-5.bed
-```
 
-#### Intersect K1 and K3
+```
+then manually split the chr and base to the orignal columns
+
 ```bash
-bedtools intersect -wa -wb -a ./K1/K1-combined-5.bed -b ./K3/K3-combined-5.bed > K1-K3-v13.bed
+awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$26,$27,$28}' ./K1/K1-combined-2.bed > ./K1/K1-combined-3.bed
+awk -v OFS="\t" '$1=$1' ./K1/K1-combined-3.bed > ./K1/K1-combined-4.bed
+```
+need to do another stutter filter here
+
+#### Intersect two replicates
+```bash
+bedtools intersect -wa -wb -a ./K1/K1-combined-4.bed -b ./K3/K3-combined-4.bed > K1-K3-v13.bed
 awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$9,$10,$19,$17,$18,$22,$20,$21}' K1-K3-v13.bed > K1-K3-v13-1.bed
 awk -v OFS="\t" '$1=$1' K1-K3-v13-1.bed > K1-K3-v13-2.bed
 sort -k1,1 -k2,2n L2-L3-v13-2.bed > L2-L3-v13-3.bed
-awk '!visited[$0]++' ./K1/K1-combined-2.bed > ./K1/K1-combined-3.bed
 cat HeLa.csv | tr ' ' '\t' > HeLa.bed
 ```
 #### filter again the stutter sites
 ```bash
-python3 stop_v14_second_filter.py K1-K3-v13-2.bed > HEK-v14.bed
-awk '!visited[$0]++' ./K1/K1-combined-2.bed > ./K1/K1-combined-3.bed
+python3 stop_v14_second_filter.py K1-K3-v13-2.bed > HEK-v14.csv
 cat HeLa.csv | tr ' ' '\t' > HeLa.bed
 awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/3.289),($8/3.55),$9,$10,$11,$12,($13/3.133),($14/3.87),$15,$16,$17}' OFS="\t" HEK-v14.bed > HEK-v14-RPM.bed
 ```
