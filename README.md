@@ -58,7 +58,7 @@ macs2 callpeak -t L2-III-mRNA-IP.bam -c L2-IV-mRNA-input1.bam -n test_t2 -f BAM 
 use combine1.sh combin2-p1.sh combine2-p2.sh combine2-p2-III-IV.sh written by myself
 ### Call all stop sites inside and outside of IP peaks
 ```bash
-bash combine1.sh L2-IV-mRNA-input1.bam L2-III-mRNA-IP.bam L2-peaks-end.bed 
+bash combine1.sh L2-IV-mRNA-input1.bam L2-III-mRNA-IP.bam L2-peaks-end.bed ./L2/L2-III-inside.out ./L2/L2-III-outside.out
 ```
 ### Processing to obtain more tidy data and save as unfiltered sites inside and outside the IP peaks for both III and III+IV files
 ```bash
