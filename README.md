@@ -63,7 +63,7 @@ bash combine1.sh L2-IV-mRNA-input1.bam L2-III-mRNA-IP.bam L2-peaks-end.bed ./L2/
 ### Processing to obtain more tidy data and save as unfiltered sites inside and outside the IP peaks for both III and III+IV files
 ```bash
 bash combine2-p1-v14.sh ./K1/K1-III-mRNA-IP-R2.bam ./K1/K1-inside.out ./K1/K1-outside.out ./K1/K1-III-inside-unfiltered.bed ./K1/K1-III-outside-unfiltered.bed ./K1/K1-III-unfiltered.bed
-bash combine2-p1-v14-III-IV.sh ./K1/K1-III-IV-mRNA-IP.bam ./K1/K1-III-IV-inside.out ./K1/K1-III-IV-outside.out ./K1/K1-III-IV-inside-unfiltered.bed ./K1/K1-III-IV-outside-unfiltered.bed ./K1/K1-III-IV-unfiltered.bed
+bash combine2-p1-v14.sh ./K1/K1-III-IV-mRNA-IP.bam ./K1/K1-III-IV-inside.out ./K1/K1-III-IV-outside.out ./K1/K1-III-IV-inside-unfiltered.bed ./K1/K1-III-IV-outside-unfiltered.bed ./K1/K1-III-IV-unfiltered.bed
 ```
 
 ### filter stutter effect (based on -1 site and +1 site)
