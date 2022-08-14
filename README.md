@@ -88,7 +88,7 @@ bedtools subtract -a ./K1/K1-III-outside-filter1-1.bed -b outside-low.bed > ./K1
 ### filter sites based on stop ratio and coverage; using different criteria for inside and outside, III and III+IV, combine inside and outside sites as unique sites
 ```bash
 bash combine2-p2-v14.sh ./K1/K1-III-mRNA-IP-R2.bam ./K1/K1-III-inside-filter5.bed ./K1/K1-III-outside-filter5.bed ./K1/K1-III-unique.bed
-bash combine2-p2-v14-III-IV.sh ./K1/K1-III-IV-mRNA-IP.bam ./K1/K1-III-IV-inside-filter5.bed ./K1/K1-III-IV-outside-filter5.bed ./K1/K1-III-IV-unique.bed
+bash combine2-p2-v14.sh ./K1/K1-III-IV-mRNA-IP.bam ./K1/K1-III-IV-inside-filter5.bed ./K1/K1-III-IV-outside-filter5.bed ./K1/K1-III-IV-unique.bed
 ```
 ### merge all sites identified from III and III+IV
 
