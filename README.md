@@ -1,4 +1,72 @@
-# ELAP-seq-v4
+# ELAP-seq-rRNA-workflow
+
+Each replicate should contain an input sample and an IP sample. The input library and the IP library are built with superscript III.
+
+## 1. processing of Fastq reads
+
+Only R2 is used. After trimming UMI, the begnning of R2 will be the RT stop site. Can otherwise redesign the ligation adapters to have R1 from single end sequencing is sufficient for analysis.
+
+### 1) trim adapter
+
+```bash
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-III-rep1-cutadapt.fastq.gz HeLa-IP-III-rep1_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-III-rep1-cutadapt.fastq.gz HeLa-input-III-rep1_R2.fq.gz >> adaptorTrim.log
+```
+
+### 2) remove duplicates
+
+```bash
+~/Tools/bbmap/clumpify.sh in=HeLa-IP-III-rep1-cutadapt.fastq.gz out=HeLa-IP-III-rep1-dedupe.fastq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-input-III-rep1-cutadapt.fastq.gz out=HeLa-input-III-rep1-dedupe.fastq.gz dedupe >> duplicates_removal_1.log
+```
+
+### 3) trim UMI
+
+```bash
+conda activate cutadaptenv
+```
+
+```bash
+cutadapt -u 6 -o tmp.trimmed.fastq HeLa-IP-III-rep1-dedupe.fastq.gz
+cutadapt -u -5 -q 10,10 -m 19 -o HeLa-IP-III-rep1-trim.fastq.gz tmp.trimmed.fastq
+```
+
+```bash
+cutadapt -u 6 -o tmp.trimmed.fastq HeLa-input-III-rep1-dedupe.fastq.gz
+cutadapt -u -5 -q 10,10 -m 19 -o HeLa-input-III-rep1-trim.fastq.gz tmp.trimmed.fastq
+```
+
+## 2. map reads to the genome
+
+```bash
+hisat2 -x /home/Wang_yuru/rRNA_genome/Human_rRNA_1 -k 1 --no-softclip --mp 1000,999 --summary-file align_summary -p 4 HeLa-IP-III-rep1-trim.fastq.gz |samtools view -bS |samtools sort -o HeLa-IP-III-rRNA-rep1.bam
+hisat2 -x /home/Wang_yuru/rRNA_genome/Human_rRNA_1 -k 1 --no-softclip --mp 1000,999 --summary-file align_summary -p 4 HeLa-input-III-rep1-trim.fastq.gz |samtools view -bS |samtools sort -o HeLa-input-III-rRNA-rep1.bam
+```
+
+## 3. call RT-arrest ratio for all sites 
+
+```bash
+java -jar /home/Wang_yuru/Pseudouridine/4-21-22-HeLa-HEK-mRNA/cutadapt/dedupe/trim/sam_files/JACUSA_v2.0.1.jar rt-arrest -m 0 -p 2 -c 1 -P FR_SECONDSTRAND -R /home/Wang_yuru/rRNA_genome/Human_rRNA_1.fa -b rRNA.bed -r rRNA-rep1.out HeLa-input-III-rRNA-rep1.bam HeLa-IP-III-rRNA-rep1.bam
+```
+
+## 4. filter sites
+
+```bash
+bash rRNA_filter_p1.sh rRNA-rep1.out rRNA-rep1.bed
+```
+
+```bash
+python3 Stutter_removal_rRNA.py rRNA-rep1.bed > rRNA-rep1-stutter.bed
+```
+```bash
+bash rRNA_filter_p2.sh rRNA-rep1-stutter.bed rRNA-rep1-filter.bed
+```
+```bash
+bedtools intersect -wa -wb -a rRNA-rep1-filter.bed rRNA-rep2-filter.bed > rRNA-out.bed
+```
+
+
+# ELAP-seq-poly-A-RNA-workflow
 
 Each replicate should contain one input library and one IP library. The libraries are built with superscript IV or III.
 
@@ -89,10 +157,10 @@ Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
 ### 2) Call all stop sites inside and outside of IP peaks
-This step uses the script Arrest.sh
+This step uses the script arrest.sh
 ```bash
-bash Arrest.sh HeLa-input-III-rep1.bam HeLa-IP-III-rep1.bam HeLa-peaks.bed HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out
-bash Arrest.sh HeLa-input-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bam HeLa-peaks.bed HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out
+bash arrest.sh HeLa-input-III-rep1.bam HeLa-IP-III-rep1.bam HeLa-peaks.bed HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out
+bash arrest.sh HeLa-input-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bam HeLa-peaks.bed HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out
 ```
 ### 3) Calculate arrest rate of each site and assign the originality of the site (whether it is from the sample built with superscript III or combined samples built with superscript III and IV, whether it is inside of the IP peak or outside of the IP peak)
 This step uses scripts calculate1.sh and calculate2.sh
@@ -110,7 +178,7 @@ python3 R1.py HeLa-III-rep1-outside-unfiltered.bed > HeLa-III-rep1-outside-unfil
 cat HeLa-III-rep1-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-1.bed
 cat HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-1.bed
 ```
-### 2) remove sites that are covered by reads that all share the same start and end mapping position
+### 2) remove regions that are covered by reads that all share the same start and end mapping position
 ```bash
 python3 R2.py HeLa-III-rep1-inside-unfiltered-1.bed > HeLa-III-rep1-inside-block.bed
 python3 R2.py HeLa-III-rep1-outside-unfiltered-1.bed > HeLa-III-rep1-outside-block.bed
@@ -120,7 +188,7 @@ bedtools subtract -a HeLa-III-rep1-inside-unfiltered-1.bed -b HeLa-III-rep1-insi
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-1.bed -b HeLa-III-rep1-outside-block-1.bed > HeLa-III-rep1-outside-unfiltered-2.bed
 ```
 
-### 3) Filter sites due to peak tails (sites within 30 nt has > 5 fold coverage than this site)
+### 3) Filter minor sites inside a peak ( within 30 nt there are > 5 fold coverage than this site)
 ```bash
 python3 R3.py HeLa-III-rep1-inside-unfiltered-2.bed > HeLa-III-rep1-inside-unfiltered-low.bed
 python3 R3.py HeLa-III-rep1-outside-unfiltered-2.bed > HeLa-III-rep1-outside-unfiltered-low.bed
@@ -133,7 +201,7 @@ bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-out
 ```
 
 ## 5. filter sites based on stop ratio and coverage
-
+use script filter1.sh for libraries from superscript III and filter2.sh for combined libraries from superscript III and IV
 ```bash
 bash filter1.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unique.bed
 bash filter2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside-unfiltered-3.bed HeLa-III-IV-rep1-outside-unfiltered-3.bed HeLa-III-IV-rep1-unique.bed
@@ -154,18 +222,20 @@ bedtools subtract -a HeLa-III-rep1-stutter-filter-1.bed -b HeLa-III-rep1-remove-
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-1.bed -b HeLa-III-IV-rep1-remove-1.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
 ```
 ## 7. merge all sites identified from III and III+IV and replicate 1 and replicate 2.
-### 1) 
+### 1) merge sites identified from III and III+IV
 ```bash
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-2.bed -b HeLa-III-rep1-stutter-filter-2.bed > new.bed
 cat HeLa-III-rep1-stutter-filter-2.bed new.bed > HeLa-rep1-combined.bed
 sort -k1,1 HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
 ```
 
-### 2) overlap with the III-IV-unfiltered.bed to obtain reads in the input file and IP files of III+IV which are used for quantification later
-need to maually change the unfiltered file and combined-1 file in order to select for the same base as well. save as unfiltered-mn.bed and combined-1-1.bed respectively.
+### 2) for quantification purpose, uses input reads and IP reads of III+IV.
+```bash
+cat HeLa-III-IV-rep1-outside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
+```
 ```bash
 #intersect with input file
-bedtools intersect -wa -wb -a ../../$s-III-IV-unfiltered-ab.bed -b HeLa-rep1-combined-1.bed > HeLa-rep1-combined-2.bed
+bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-combined-1.bed > HeLa-rep1-combined-2.bed
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$28,$29,$30,$31,$32,$33}' HeLa-rep1-combined-2.bed > HeLa-rep1-combined-3.bed
 awk -v OFS="\t" '$1=$1' HeLa-rep1-combined-3.bed > HeLa-rep1-combined-4.bed
 ```
@@ -183,14 +253,22 @@ awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
 ```
 
 ## 8. Final filter
-### 1) remove stutter site again
+select sites fulfiling cutoffs for average stop ratios
 ```bash
 python3 stutter-final.py HeLa-IP-avg.bed > HeLa-stop-filter.bed
 ```
-### 2) select sites fulfiling cutoffs for average stop ratios
 
 ## 9. post-processing
+### 1) calculate RPM
+```bash
+awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,($13/11.3053),($14/5.67979),$15,$16,$17}' OFS="\t" HeLa-stop-filter.bed > HeLa-stop-filter-RPM.bed
+```
+### 2) combine with sequence context preference
 
+
+
+
+## 10. Notes
 then manually split the chr and base to the orignal columns
 
 ```bash
