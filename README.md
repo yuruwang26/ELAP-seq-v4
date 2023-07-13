@@ -83,14 +83,16 @@ macs2 callpeak -t HeLa-IP-III-IV-rep1.bam -c HeLa-input-III-IV-rep1.bam -n test_
 
 ## 3. Call arrested sites inside and outside of the IP peaks. 
 This process includes three steps:
-### 1) determine regions covered by sequencing reads in the IP samples
-
+### 1) obtain regions covered by IP peaks 
+Extend the IP peaks by -5 and +5 of the start and end positions respectively.
+Remove unknown chromosomes or random chromosomes manually
+Save the resulting .bed file as HeLa-peaks.bed
 
 ### 2) Call all stop sites inside and outside of IP peaks
 This step uses the script Arrest.sh
 ```bash
-bash Arrest.sh HeLa-input-III-rep1.bam HeLa-IP-III-rep1.bam HeLa-peaks-end.bed HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out
-bash Arrest.sh HeLa-input-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bam HeLa-peaks-end.bed HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out
+bash Arrest.sh HeLa-input-III-rep1.bam HeLa-IP-III-rep1.bam HeLa-peaks.bed HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out
+bash Arrest.sh HeLa-input-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bam HeLa-peaks.bed HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out
 ```
 ### 3) Calculate arrest rate of each site and assign the originality of the site (whether it is from the sample built with superscript III or combined samples built with superscript III and IV, whether it is inside of the IP peak or outside of the IP peak)
 This step uses scripts calculate1.sh and calculate2.sh
