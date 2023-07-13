@@ -66,10 +66,12 @@ samtools index HeLa-IP-IV-rep1.bam HeLa-IP-IV-rep1.bai
 ```
 
 ### 5) combine .bam files from III and IV
+```bash
 samtools merge HeLa-input-III-IV-rep1.bam HeLa-input-III-rep1.bam HeLa-input-IV-rep1.bam
 samtools merge HeLa-IP-III-IV-rep1.bam HeLa-IP-III-rep1.bam HeLa-IP-IV-rep1.bam
 samtools index HeLa-input-III-IV-rep1.bam HeLa-input-III-IV-rep1.bai
 samtools index HeLa-IP-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bai
+```
 
 ## 2. Call IP peaks
 This step uses the script call.sh
@@ -131,48 +133,29 @@ bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-out
 ## 5. filter sites based on stop ratio and coverage
 
 ```bash
-bash filter1.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unfiltered-3.bed
-bash filter2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside-unfiltered-3.bed HeLa-III-IV-rep1-outside-unfiltered-3.bed HeLa-III-IV-rep1-unfiltered-3.bed
+bash filter1.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unique.bed
+bash filter2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside-unfiltered-3.bed HeLa-III-IV-rep1-outside-unfiltered-3.bed HeLa-III-IV-rep1-unique.bed
+sort -k1,1 -k2,2n HeLa-III-rep1-unique.bed > HeLa-III-rep1-unique-1.bed 
+sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
 ```
 ## 6. remove stutter sites
 ```bash
-sort -k1,1 -k2,2n $s-unique-v2-III.bed > $s-unique-v2-III-1.bed 
-sort -k1,1 -k2,2n $s-unique-v2-III-IV.bed > $s-unique-v2-III-IV-1.bed
-
-
-python3 ../Stutter_removal_v2_III.py $s-unique-v2-III-1.bed > $s-stutter-filter-v2-III.bed
-python3 ../Stutter_removal_v2_III-IV.py $s-unique-v2-III-IV-1.bed > $s-stutter-filter-v2-III-IV.bed
-
-
-
-cat $s-stutter-filter-v2-III.bed | tr ' ' '\t' > $s-stutter-filter-v2-III-1.bed
-
-cat $s-stutter-filter-v2-III-IV.bed | tr ' ' '\t' > $s-stutter-filter-v2-III-IV-1.bed
-
-
-python3 ../Stutter_removal_distal_v2_III.py $s-stutter-filter-v2-III-1.bed > $s-distal-stutter-remove-v2-III.bed
-
-cat $s-distal-stutter-remove-v2-III.bed | tr ' ' '\t' > $s-distal-stutter-remove-v2-III-1.bed
-
-bedtools subtract -a $s-stutter-filter-v2-III-1.bed -b $s-distal-stutter-remove-v2-III-1.bed > $s-III-distal.bed
-
-rm $s-distal-stutter-remove-v2-III-1.bed
-
-python3 ../Stutter_removal_distal_v2_III-IV.py $s-stutter-filter-v2-III-IV-1.bed > $s-distal-stutter-remove-v2-III-IV.bed
-
-cat $s-distal-stutter-remove-v2-III-IV.bed | tr ' ' '\t' > $s-distal-stutter-remove-v2-III-IV-1.bed
-
-bedtools subtract -a $s-stutter-filter-v2-III-IV-1.bed -b $s-distal-stutter-remove-v2-III-IV-1.bed > $s-III-IV-distal.bed
-
-rm $s-distal-stutter-remove-v2-III-IV-1.bed
-python3 stutter1.py
-python3 stutter2.py
+python3 stutter1_III.py HeLa-III-rep1-unique-1.bed > HeLa-III-rep1-stutter-filter.bed
+python3 stutter1_III_IV.py HeLa-III-IV-rep1-unique-1.bed > HeLa-III-IV-rep1-stutter-filter.bed
+cat HeLa-III-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-rep1-stutter-filter-1.bed
+cat HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-IV-rep1-stutter-filter-1.bed
+python3 stutter2_III.py HeLa-III-rep1-stutter-filter-1.bed > HeLa-III-rep1-remove.bed
+python3 stutter2_III_IV.py HeLa-III-IV-rep1-stutter-filter-1.bed > HeLa-III-IV-rep1-remove.bed
+cat HeLa-III-rep1-remove.bed | tr ' ' '\t' > HeLa-III-rep1-remove-1.bed
+cat HeLa-III-IV-rep1-remove.bed | tr ' ' '\t' > HeLa-III-IV-rep1-remove-1.bed
+bedtools subtract -a HeLa-III-rep1-stutter-filter-1.bed -b HeLa-III-rep1-remove-1.bed > HeLa-III-rep1-stutter-filter-2.bed
+bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-1.bed -b HeLa-III-IV-rep1-remove-1.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
 ```
 ## 7. merge all sites identified from III and III+IV and replicate 1 and replicate 2.
 ### 1) 
 ```bash
-bedtools subtract -a HeLa-III-IV-rep1-unfiltered-3.bed -b HeLa-III-rep1-unfiltered-3.bed > new.bed
-cat HeLa-III-rep1-unfiltered-3.bed new.bed > HeLa-rep1-combined.bed
+bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-2.bed -b HeLa-III-rep1-stutter-filter-2.bed > new.bed
+cat HeLa-III-rep1-stutter-filter-2.bed new.bed > HeLa-rep1-combined.bed
 sort -k1,1 HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
 ```
 
