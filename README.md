@@ -162,28 +162,29 @@ sort -k1,1 HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
 ### 2) overlap with the III-IV-unfiltered.bed to obtain reads in the input file and IP files of III+IV which are used for quantification later
 need to maually change the unfiltered file and combined-1 file in order to select for the same base as well. save as unfiltered-mn.bed and combined-1-1.bed respectively.
 ```bash
-bedtools intersect -wa -wb -a ./K1/K1-III-IV-unfiltered-mn.bed -b ./K1/K1-combined-1-1.bed > ./K1/K1-combined-2.bed
+#intersect with input file
+bedtools intersect -wa -wb -a ../../$s-III-IV-unfiltered-ab.bed -b HeLa-rep1-combined-1.bed > HeLa-rep1-combined-2.bed
+awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$28,$29,$30,$31,$32,$33}' HeLa-rep1-combined-2.bed > HeLa-rep1-combined-3.bed
+awk -v OFS="\t" '$1=$1' HeLa-rep1-combined-3.bed > HeLa-rep1-combined-4.bed
 ```
 
 ### 3) Intersect two replicates
 ```bash
-bedtools intersect -wa -wb -a $s-1-combined-4.bed -b $s-2-combined-4.bed > $s-6-15-23.bed
-
-awk '!visited[$0]++' $s-6-15-23.bed > $s-6-15-23-1.bed
-
-awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' $s-6-15-23-1.bed > $s-6-15-23-2.bed
-
-awk -v OFS="\t" '$1=$1' $s-6-15-23-2.bed > $s-6-15-23-3.bed
-
-cat $s-6-15-23-3.bed | tr ' ' '\t' > $s-6-15-23-4.bed
-sort -k1,1 -k2,2n $s-6-15-23-4.bed > $s-6-15-23-sort.bed
-awk '{print $0"\t"($9+$18)/2}' $s-6-15-23-sort.bed > $s-6-15-23-average-1.bed
-awk '{print $0"\t"($10+$19)/2}' $s-6-15-23-average-1.bed > $s-6-15-23-average-2.bed
+bedtools intersect -wa -wb -a HeLa-rep1-combined-4.bed -b HeLa-rep2-combined-4.bed > HeLa.bed
+awk '!visited[$0]++' HeLa.bed > HeLa-1.bed
+awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' HeLa-1.bed > HeLa-2.bed
+awk -v OFS="\t" '$1=$1' HeLa-2.bed > HeLa-3.bed
+cat HeLa-3.bed | tr ' ' '\t' > HeLa-4.bed
+sort -k1,1 -k2,2n HeLa-4.bed > HeLa-sort.bed
+awk '{print $0"\t"($9+$18)/2}' HeLa-sort.bed > HeLa-input-avg.bed
+awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
 ```
 
 ## 8. Final filter
 ### 1) remove stutter site again
-
+```bash
+python3 stutter-final.py HeLa-IP-avg.bed > HeLa-stop-filter.bed
+```
 ### 2) select sites fulfiling cutoffs for average stop ratios
 
 ## 9. post-processing
