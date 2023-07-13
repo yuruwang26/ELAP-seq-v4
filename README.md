@@ -1,6 +1,6 @@
 # ELAP-seq-v4
 
-Each replicate should contain an input library and an IP library. The libraries are built with superscript IV or III.
+Each replicate should contain one input library and one IP library. The libraries are built with superscript IV or III.
 
 ## 1. processing of Fastq reads
 
@@ -135,9 +135,39 @@ bash filter1.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-
 bash filter2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside-unfiltered-3.bed HeLa-III-IV-rep1-outside-unfiltered-3.bed HeLa-III-IV-rep1-unfiltered-3.bed
 ```
 ## 6. remove stutter sites
-bash stutter1.sh
-bash stutter2.sh
+```bash
+sort -k1,1 -k2,2n $s-unique-v2-III.bed > $s-unique-v2-III-1.bed 
+sort -k1,1 -k2,2n $s-unique-v2-III-IV.bed > $s-unique-v2-III-IV-1.bed
 
+
+python3 ../Stutter_removal_v2_III.py $s-unique-v2-III-1.bed > $s-stutter-filter-v2-III.bed
+python3 ../Stutter_removal_v2_III-IV.py $s-unique-v2-III-IV-1.bed > $s-stutter-filter-v2-III-IV.bed
+
+
+
+cat $s-stutter-filter-v2-III.bed | tr ' ' '\t' > $s-stutter-filter-v2-III-1.bed
+
+cat $s-stutter-filter-v2-III-IV.bed | tr ' ' '\t' > $s-stutter-filter-v2-III-IV-1.bed
+
+
+python3 ../Stutter_removal_distal_v2_III.py $s-stutter-filter-v2-III-1.bed > $s-distal-stutter-remove-v2-III.bed
+
+cat $s-distal-stutter-remove-v2-III.bed | tr ' ' '\t' > $s-distal-stutter-remove-v2-III-1.bed
+
+bedtools subtract -a $s-stutter-filter-v2-III-1.bed -b $s-distal-stutter-remove-v2-III-1.bed > $s-III-distal.bed
+
+rm $s-distal-stutter-remove-v2-III-1.bed
+
+python3 ../Stutter_removal_distal_v2_III-IV.py $s-stutter-filter-v2-III-IV-1.bed > $s-distal-stutter-remove-v2-III-IV.bed
+
+cat $s-distal-stutter-remove-v2-III-IV.bed | tr ' ' '\t' > $s-distal-stutter-remove-v2-III-IV-1.bed
+
+bedtools subtract -a $s-stutter-filter-v2-III-IV-1.bed -b $s-distal-stutter-remove-v2-III-IV-1.bed > $s-III-IV-distal.bed
+
+rm $s-distal-stutter-remove-v2-III-IV-1.bed
+python3 stutter1.py
+python3 stutter2.py
+```
 ## 7. merge all sites identified from III and III+IV and replicate 1 and replicate 2.
 ### 1) 
 ```bash
@@ -154,11 +184,23 @@ bedtools intersect -wa -wb -a ./K1/K1-III-IV-unfiltered-mn.bed -b ./K1/K1-combin
 
 ### 3) Intersect two replicates
 ```bash
+bedtools intersect -wa -wb -a $s-1-combined-4.bed -b $s-2-combined-4.bed > $s-6-15-23.bed
 
+awk '!visited[$0]++' $s-6-15-23.bed > $s-6-15-23-1.bed
+
+awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' $s-6-15-23-1.bed > $s-6-15-23-2.bed
+
+awk -v OFS="\t" '$1=$1' $s-6-15-23-2.bed > $s-6-15-23-3.bed
+
+cat $s-6-15-23-3.bed | tr ' ' '\t' > $s-6-15-23-4.bed
+sort -k1,1 -k2,2n $s-6-15-23-4.bed > $s-6-15-23-sort.bed
+awk '{print $0"\t"($9+$18)/2}' $s-6-15-23-sort.bed > $s-6-15-23-average-1.bed
+awk '{print $0"\t"($10+$19)/2}' $s-6-15-23-average-1.bed > $s-6-15-23-average-2.bed
 ```
 
 ## 8. Final filter
 ### 1) remove stutter site again
+
 ### 2) select sites fulfiling cutoffs for average stop ratios
 
 ## 9. post-processing
