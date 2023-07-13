@@ -261,11 +261,25 @@ python3 stutter-final.py HeLa-IP-avg.bed > HeLa-stop-filter.bed
 ## 9. post-processing
 ### 1) calculate RPM
 ```bash
-awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,($13/11.3053),($14/5.67979),$15,$16,$17}' OFS="\t" HeLa-stop-filter.bed > HeLa-stop-filter-RPM.bed
+awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,($13/11.3053),($14/5.67979),$15,$16,$17}' OFS="\t" HeLa-stop-filter.bed > HeLa-RPM.bed
 ```
-### 2) combine with sequence context preference
-
-
+### 2) combine with sequence context preference determined by synthetic oligos
+```bash
+awk '{ if($5 == "T") print $0;}' HeLa-RPM.bed > HeLa-RPM-T.bed
+awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17}' OFS="\t" HeLa-RPM-T.bed > HeLa-extend.bed
+cat HeLa-extend.bed | tr ' ' '\t' > HeLa-extend-1.bed
+bedtools getfasta -fi /home/Wang_yuru/Database/genome/hg38/hg38_UCSC.fa -bed HeLa-extend-1.bed -s -tab > HeLa-seq.bed
+```
+combine HeLa-seq.bed and HeLa-RPM-1.bed manually to make HeLa-seq-full.bed and sort
+```bash
+sort -k1,1 HeLa-seq-full.bed > HeLa-sort.bed
+sort -k1,1 oligo.bed > oligo-sort.bed
+```
+change sequence to upper case and merge with synthetic oligo data
+```bash
+sed 's/^[a-z]*/\U&/' HeLa-sort.bed > HeLa-upper.bed
+awk 'NR==FNR {h[$1] = $2; next} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,h[$1]}' oligo-sort.bed HeLa-upper.bed > HeLa-oligo-combine.bed
+```
 
 
 ## 10. Notes
