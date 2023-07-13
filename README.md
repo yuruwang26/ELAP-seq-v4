@@ -101,13 +101,19 @@ bash calculate2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside.out HeLa-III-
 This process removes background originated from multiple mapping and stutter effect 
 ### 1) select the most abundant nucleoside
 ```bash
-python3 R1.py HeLa-III-rep1-inside-unfiltered.bed > HeLa-III-rep1-inside-unfiltered-1.bed
-
-
+python3 R1.py HeLa-III-rep1-inside-unfiltered.bed > HeLa-III-rep1-inside-unfiltered-ab.bed
+python3 R1.py HeLa-III-rep1-outside-unfiltered.bed > HeLa-III-rep1-outside-unfiltered-ab.bed
+cat HeLa-III-rep1-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-1.bed
+cat HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-1.bed
 ```
 ### 2) remove sites that are covered by reads that all share the same start and end mapping position
 ```bash
-python3 R2.py HeLa-III-rep1-inside-unfiltered-1.bed > HeLa-III-rep1-inside-unfiltered-2.bed
+python3 R2.py HeLa-III-rep1-inside-unfiltered-1.bed > HeLa-III-rep1-inside-block.bed
+python3 R2.py HeLa-III-rep1-outside-unfiltered-1.bed > HeLa-III-rep1-outside-block.bed
+cat HeLa-III-rep1-inside-block.bed | tr ' ' '\t' > HeLa-III-rep1-inside-block-1.bed
+cat HeLa-III-rep1-outside-block.bed | tr ' ' '\t' > HeLa-III-rep1-outside-block-1.bed
+bedtools subtract -a HeLa-III-rep1-inside-unfiltered-1.bed -b HeLa-III-rep1-inside-block-1.bed > HeLa-III-rep1-inside-unfiltered-2.bed
+bedtools subtract -a HeLa-III-rep1-outside-unfiltered-1.bed -b HeLa-III-rep1-outside-block-1.bed > HeLa-III-rep1-outside-unfiltered-2.bed
 ```
 
 ### 3) Filter sites due to peak tails (sites within 30 nt has > 5 fold coverage than this site)
@@ -122,25 +128,41 @@ bedtools subtract -a HeLa-III-rep1-inside-unfiltered-2.bed -b HeLa-III-rep1-insi
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-outside-unfiltered-low-2.bed > HeLa-III-rep1-outside-unfiltered-3.bed
 ```
 
-### filter sites based on stop ratio and coverage; using different criteria for inside and outside, III and III+IV, combine inside and outside sites as unique sites
-```bash
-bash combine2-p2-v14.sh ./K1/K1-III-mRNA-IP-R2.bam ./K1/K1-III-inside-filter5.bed ./K1/K1-III-outside-filter5.bed ./K1/K1-III-unique.bed
-bash combine2-p2-v14.sh ./K1/K1-III-IV-mRNA-IP.bam ./K1/K1-III-IV-inside-filter5.bed ./K1/K1-III-IV-outside-filter5.bed ./K1/K1-III-IV-unique.bed
-```
-### merge all sites identified from III and III+IV
+## 5. filter sites based on stop ratio and coverage
 
 ```bash
-bedtools subtract -a ./K1/K1-III-IV-unique.bed -b ./K1/K1-III-unique.bed > new.bed
-cat ./K1/K1-III-unique.bed new.bed > ./K1/K1-combined.bed
-sort -k1,1 ./K1/K1-combined.bed > ./K1/K1-combined-1.bed
+bash filter1.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unfiltered-3.bed
+bash filter2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside-unfiltered-3.bed HeLa-III-IV-rep1-outside-unfiltered-3.bed HeLa-III-IV-rep1-unfiltered-3.bed
+```
+## 6. remove stutter sites
+bash stutter1.sh
+bash stutter2.sh
+
+## 7. merge all sites identified from III and III+IV and replicate 1 and replicate 2.
+### 1) 
+```bash
+bedtools subtract -a HeLa-III-IV-rep1-unfiltered-3.bed -b HeLa-III-rep1-unfiltered-3.bed > new.bed
+cat HeLa-III-rep1-unfiltered-3.bed new.bed > HeLa-rep1-combined.bed
+sort -k1,1 HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
 ```
 
-### overlap with the III-IV-unfiltered.bed to obtain reads in the input file and IP files of III+IV which are used for quantification later
+### 2) overlap with the III-IV-unfiltered.bed to obtain reads in the input file and IP files of III+IV which are used for quantification later
 need to maually change the unfiltered file and combined-1 file in order to select for the same base as well. save as unfiltered-mn.bed and combined-1-1.bed respectively.
 ```bash
 bedtools intersect -wa -wb -a ./K1/K1-III-IV-unfiltered-mn.bed -b ./K1/K1-combined-1-1.bed > ./K1/K1-combined-2.bed
+```
+
+### 3) Intersect two replicates
+```bash
 
 ```
+
+## 8. Final filter
+### 1) remove stutter site again
+### 2) select sites fulfiling cutoffs for average stop ratios
+
+## 9. post-processing
+
 then manually split the chr and base to the orignal columns
 
 ```bash
