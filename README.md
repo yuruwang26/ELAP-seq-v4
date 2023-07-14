@@ -209,7 +209,7 @@ sort -k1,1 -k2,2n HeLa-III-rep1-unique.bed > HeLa-III-rep1-unique-1.bed
 sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
 ```
 ## 6. remove stutter sites
-remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are less than 15% of the current site.
+remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site.
 ```bash
 python3 stutter1_III.py HeLa-III-rep1-unique-1.bed > HeLa-III-rep1-stutter-filter.bed
 python3 stutter1_III_IV.py HeLa-III-IV-rep1-unique-1.bed > HeLa-III-IV-rep1-stutter-filter.bed
