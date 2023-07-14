@@ -73,7 +73,7 @@ Each replicate should contain two input libraries and an two IP libraries. The l
 ## 1. processing of Fastq reads
 
 Only reads R2 is used. After trimming UMI, the begnning of R2 is the RT stop site. Can otherwise design the library construction workflow in a way that single end sequencing is sufficient.
-This process includes five steps and script pre-processing.sh is used.
+This process includes five steps:
 
 ### 1) trim adapter
 
