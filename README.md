@@ -1,6 +1,6 @@
 # ELAP-seq-rRNA-workflow
 
-Each replicate should contain an input sample and an IP sample. The input library and the IP library are built with superscript III.
+Each replicate should contain an input library and an IP library. The input library and the IP library are built with superscript III.
 
 ## 1. processing of Fastq reads
 
@@ -68,12 +68,12 @@ bedtools intersect -wa -wb -a rRNA-rep1-filter.bed rRNA-rep2-filter.bed > rRNA-o
 
 # ELAP-seq-poly-A-RNA-workflow
 
-Each replicate should contain one input library and one IP library. The libraries are built with superscript IV or III.
+Each replicate should contain two input libraries and an two IP libraries. The libraries are built with superscript IV or III.
 
 ## 1. processing of Fastq reads
 
-Only reads R2 is used. After trimming UMI, the begnning of R2 will be the RT stop site. Can otherwise design the library construction workflow in a way so that R1 from single end sequencing is sufficient for analysis.
-pre-processing.sh is used. This includes five steps:
+Only reads R2 is used. After trimming UMI, the begnning of R2 is the RT stop site. Can otherwise design the library construction workflow in a way that single end sequencing is sufficient.
+The script pre-processing.sh is used, which includes five steps:
 
 ### 1) trim adapter
 
@@ -162,15 +162,15 @@ This step uses the script arrest.sh
 bash arrest.sh HeLa-input-III-rep1.bam HeLa-IP-III-rep1.bam HeLa-peaks.bed HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out
 bash arrest.sh HeLa-input-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bam HeLa-peaks.bed HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out
 ```
-### 3) Calculate arrest rate of each site and assign the originality of the site (whether it is from the sample built with superscript III or combined samples built with superscript III and IV, whether it is inside of the IP peak or outside of the IP peak)
-This step uses scripts calculate1.sh and calculate2.sh
+### 3) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is from the library built with superscript III or combined libraries built with superscript III and IV, and whether it is inside or outside of the IP peak)
+This step uses scripts calculate1.sh for the III librairy and calculate2.sh for the III+IV library
 ```bash
 bash calculate1.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out HeLa-III-rep1-inside-unfiltered.bed HeLa-III-rep1-outside-unfiltered.bed HeLa-III-rep1-unfiltered.bed
 bash calculate2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out HeLa-III-IV-rep1-inside-unfiltered.bed HeLa-III-IV-rep1-outside-unfiltered.bed HeLa-III-rep1-unfiltered.bed
 ```
 
 ## 4. Remove backgrounds 
-This process removes background originated from multiple mapping and stutter effect 
+This process removes background originated from multiple mapping and low processivity of the RT enzyme
 ### 1) select the most abundant nucleoside
 ```bash
 python3 R1.py HeLa-III-rep1-inside-unfiltered.bed > HeLa-III-rep1-inside-unfiltered-ab.bed
@@ -188,7 +188,7 @@ bedtools subtract -a HeLa-III-rep1-inside-unfiltered-1.bed -b HeLa-III-rep1-insi
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-1.bed -b HeLa-III-rep1-outside-block-1.bed > HeLa-III-rep1-outside-unfiltered-2.bed
 ```
 
-### 3) Filter minor sites inside a peak ( within 30 nt there are > 5 fold coverage than this site)
+### 3) Filter low coverage stop sites inside a peak (coverage at the site is < 1/3.5 of any sites within 30 nt of the current site)
 ```bash
 python3 R3.py HeLa-III-rep1-inside-unfiltered-2.bed > HeLa-III-rep1-inside-unfiltered-low.bed
 python3 R3.py HeLa-III-rep1-outside-unfiltered-2.bed > HeLa-III-rep1-outside-unfiltered-low.bed
@@ -209,11 +209,16 @@ sort -k1,1 -k2,2n HeLa-III-rep1-unique.bed > HeLa-III-rep1-unique-1.bed
 sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
 ```
 ## 6. remove stutter sites
+remove stutter sites within 1 nt upstream and downstream of the current site. Sites whose arrested reads are less than 15% of the current site is determined as stutter sites.
 ```bash
 python3 stutter1_III.py HeLa-III-rep1-unique-1.bed > HeLa-III-rep1-stutter-filter.bed
 python3 stutter1_III_IV.py HeLa-III-IV-rep1-unique-1.bed > HeLa-III-IV-rep1-stutter-filter.bed
 cat HeLa-III-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-rep1-stutter-filter-1.bed
 cat HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-IV-rep1-stutter-filter-1.bed
+```
+
+remove stutter sites within 6 nt uptream and downstream fof the current site. Sites whose stop ratios are less than the current site is determined as stutter site.
+```bash
 python3 stutter2_III.py HeLa-III-rep1-stutter-filter-1.bed > HeLa-III-rep1-remove.bed
 python3 stutter2_III_IV.py HeLa-III-IV-rep1-stutter-filter-1.bed > HeLa-III-IV-rep1-remove.bed
 cat HeLa-III-rep1-remove.bed | tr ' ' '\t' > HeLa-III-rep1-remove-1.bed
@@ -229,8 +234,9 @@ cat HeLa-III-rep1-stutter-filter-2.bed new.bed > HeLa-rep1-combined.bed
 sort -k1,1 HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
 ```
 
-### 2) for quantification purpose, uses input reads and IP reads of III+IV.
+### 2) for quantification purpose, merge with input reads and IP reads of III+IV.
 ```bash
+# prepare the file containing the information of input reads and IP reads combining the III and IV data
 cat HeLa-III-IV-rep1-outside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
 ```
 ```bash
@@ -255,18 +261,18 @@ awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
 ## 8. Final filter
 select sites fulfiling cutoffs for average stop ratios
 ```bash
-python3 stutter-final.py HeLa-IP-avg.bed > HeLa-stop-filter.bed
+python3 stop.py HeLa-IP-avg.bed > HeLa-stop-filter.bed
 ```
 
 ## 9. post-processing
 ### 1) calculate RPM
 ```bash
-awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,($13/11.3053),($14/5.67979),$15,$16,$17}' OFS="\t" HeLa-stop-filter.bed > HeLa-RPM.bed
+awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$13,$14,$15,($16/11.3053),($17/5.67979),$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-stop-filter.bed > HeLa-RPM.bed
 ```
 ### 2) combine with sequence context preference determined by synthetic oligos
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-RPM.bed > HeLa-RPM-T.bed
-awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17}' OFS="\t" HeLa-RPM-T.bed > HeLa-extend.bed
+awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-RPM-T.bed > HeLa-extend.bed
 cat HeLa-extend.bed | tr ' ' '\t' > HeLa-extend-1.bed
 bedtools getfasta -fi /home/Wang_yuru/Database/genome/hg38/hg38_UCSC.fa -bed HeLa-extend-1.bed -s -tab > HeLa-seq.bed
 ```
@@ -278,7 +284,7 @@ sort -k1,1 oligo.bed > oligo-sort.bed
 change sequence to upper case and merge with synthetic oligo data
 ```bash
 sed 's/^[a-z]*/\U&/' HeLa-sort.bed > HeLa-upper.bed
-awk 'NR==FNR {h[$1] = $2; next} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,h[$1]}' oligo-sort.bed HeLa-upper.bed > HeLa-oligo-combine.bed
+awk 'NR==FNR {h[$1] = $2; next} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,h[$1]}' oligo-sort.bed HeLa-upper.bed > HeLa-oligo-combine.bed
 ```
 
 
