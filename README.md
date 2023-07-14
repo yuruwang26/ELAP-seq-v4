@@ -4,7 +4,7 @@ Each replicate should contain an input library and an IP library. The input libr
 
 ## 1. processing of Fastq reads
 
-Only R2 is used. After trimming UMI, the begnning of R2 will be the RT stop site. Can otherwise redesign the ligation adapters to have R1 from single end sequencing is sufficient for analysis.
+Only R2 is used. After trimming UMI, the begnning of R2 will be the RT stop site. Can otherwise redesign the ligation adapters to use R1 from single end sequencing.
 
 ### 1) trim adapter
 
@@ -171,7 +171,7 @@ bash calculate2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside.out HeLa-III-
 
 ## 4. Remove backgrounds 
 This process removes background originated from multiple mapping and low processivity of the RT enzyme
-### 1) select the most abundant nucleoside
+### 1) select the most abundant nucleoside for sites mapped with multiple identities
 ```bash
 python3 R1.py HeLa-III-rep1-inside-unfiltered.bed > HeLa-III-rep1-inside-unfiltered-ab.bed
 python3 R1.py HeLa-III-rep1-outside-unfiltered.bed > HeLa-III-rep1-outside-unfiltered-ab.bed
@@ -217,7 +217,7 @@ cat HeLa-III-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-rep1-stutter-filte
 cat HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-IV-rep1-stutter-filter-1.bed
 ```
 
-remove stutter sites within 6 nt uptream and downstream fof the current site. Sites whose stop ratios are less than the current site is determined as stutter site.
+remove stutter sites within 6 nt uptream and downstream of the current site. Sites whose stop ratios are less than the current site is determined as stutter site.
 ```bash
 python3 stutter2_III.py HeLa-III-rep1-stutter-filter-1.bed > HeLa-III-rep1-remove.bed
 python3 stutter2_III_IV.py HeLa-III-IV-rep1-stutter-filter-1.bed > HeLa-III-IV-rep1-remove.bed
