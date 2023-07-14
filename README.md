@@ -142,7 +142,7 @@ samtools index HeLa-IP-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bai
 ```
 
 ## 2. Call IP peaks
-This step uses the script call.sh
+MACS2 is used to call IP peaks.
 
 ```bash
 macs2 callpeak -t HeLa-IP-III-rep1.bam -c HeLa-input-III-rep1.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-peadDir
