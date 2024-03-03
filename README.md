@@ -244,21 +244,22 @@ select sites fulfiling cutoffs for average stop ratios
 ```bash
 awk '{print $0"\t"($9+$18)/2}' HeLa-sort.bed > HeLa-input-avg.bed
 awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
-python3 stop.py HeLa-IP-avg.bed > HeLa-stop-filter.bed
+python3 IP_stop.py HeLa-IP-avg.bed > HeLa-filter-1.bed
+python3 In_stop.py HeLa-IP-avg.bed > HeLa-filter-2.bed
+awk '{ if($5 == "T") print $0;}' HeLa-filter-2.bed > HeLa-filter-T.bed
 ```
 
 ### 7. determing confidence levels and modification levels
 #### 1) calculate RPM
 ```bash
-awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$13,$14,$15,($16/11.3053),($17/5.67979),$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-stop-filter.bed > HeLa-RPM.bed
+awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$13,$14,$15,($16/11.3053),($17/5.67979),$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-filter-T.bed > HeLa-RPM.bed
 ```
 #### 2) combine with sequence context preference determined by synthetic oligos
 ```bash
-awk '{ if($5 == "T") print $0;}' HeLa-RPM.bed > HeLa-RPM-T.bed
-awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-RPM-T.bed | tr ' ' '\t' > HeLa-extend.bed
+awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-RPM.bed | tr ' ' '\t' > HeLa-extend.bed
 bedtools getfasta -fi /home/Wang_yuru/Database/genome/hg38/hg38_UCSC.fa -bed HeLa-extend.bed -s -tab > HeLa-seq.bed
 ```
-combine HeLa-seq.bed and HeLa-RPM-T.bed manually to make HeLa-seq-full.bed and sort
+combine HeLa-seq.bed and HeLa-RPM.bed manually to make HeLa-seq-full.bed and sort
 ```bash
 sort -k1,1 HeLa-seq-full.bed > HeLa-sort.bed
 sort -k1,1 oligo.bed > oligo-sort.bed
