@@ -142,41 +142,43 @@ samtools index HeLa-IP-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bai
 ```
 
 ## 2. Call IP peaks
-MACS2 is used to call IP peaks.
+### 1) MACS2 is used to call IP peaks.
 
 ```bash
 macs2 callpeak -t HeLa-IP-III-rep1.bam -c HeLa-input-III-rep1.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-peadDir
 macs2 callpeak -t HeLa-IP-III-IV-rep1.bam -c HeLa-input-III-IV-rep1.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-IV-peadDir
 ```
-
-## 3. Call arrested sites inside and outside of the IP peaks. 
-This process includes three steps:
-### 1) obtain regions covered by IP peaks 
+### 2) obtain regions covered by IP peaks 
 Extend the IP peaks by -5 and +5 of the start and end positions respectively.
 Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
-### 2) Call all stop sites inside and outside of IP peaks
+## 3. the downstream analysis uses a single command : ELAP-seq.sh
+This command include the following steps:
+### 1. Call arrested sites inside and outside of the IP peaks. 
+This process includes two steps:
+
+#### 1) Call all stop sites inside and outside of IP peaks
 This step uses the script arrest.sh
 ```bash
 bash arrest.sh HeLa-input-III-rep1.bam HeLa-IP-III-rep1.bam HeLa-peaks.bed HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out
 bash arrest.sh HeLa-input-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bam HeLa-peaks.bed HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out
 ```
-### 3) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is from the library built with superscript III or combined libraries built with superscript III and IV, and whether it is inside or outside of the IP peak)
+#### 2) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is from the library built with superscript III or combined libraries built with superscript III and IV, and whether it is inside or outside of the IP peak)
 This step uses scripts calculate1.sh for the III librairy and calculate2.sh for the III+IV library
 ```bash
 bash calculate1.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out HeLa-III-rep1-inside-unfiltered.bed HeLa-III-rep1-outside-unfiltered.bed HeLa-III-in HeLa-III-out HeLa-III-rep1-unfiltered.bed
 bash calculate2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out HeLa-III-IV-rep1-inside-unfiltered.bed HeLa-III-IV-rep1-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-III-rep1-unfiltered.bed
 ```
 
-## 4. Remove backgrounds 
+### 2. Remove backgrounds 
 This process removes background originated from multiple mapping and low processivity of the RT enzyme
-### 1) determine the main nucleoside for sites mapped with multiple identities
+#### 1) determine the main nucleoside for sites mapped with multiple identities
 ```bash
 python3 R1.py HeLa-III-rep1-inside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-ab.bed
 python3 R1.py HeLa-III-rep1-outside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-ab.bed
 ```
-### 2) remove regions that are covered by reads that all share the same start and end mapping position
+#### 2) remove regions that are covered by reads that all share the same start and end mapping position
 ```bash
 python3 R2.py HeLa-III-rep1-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-inside-block.bed
 python3 R2.py HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-outside-block.bed
@@ -184,7 +186,7 @@ bedtools subtract -a HeLa-III-rep1-inside-unfiltered-ab.bed -b HeLa-III-rep1-ins
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-ab.bed -b HeLa-III-rep1-outside-block.bed > HeLa-III-rep1-outside-unfiltered-2.bed
 ```
 
-### 3) Filter away low-coverage stop sites inside a peak (coverage at the site is < 1/3.5 of any sites within 30 nt of the current site)
+#### 3) Filter away low-coverage stop sites inside a peak (coverage at the site is < 1/3.5 of any sites within 30 nt of the current site)
 ```bash
 python3 R3.py HeLa-III-rep1-inside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-low.bed
 python3 R3.py HeLa-III-rep1-outside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-low.bed
@@ -192,7 +194,7 @@ bedtools subtract -a HeLa-III-rep1-inside-unfiltered-2.bed -b HeLa-III-rep1-insi
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-outside-unfiltered-low.bed > HeLa-III-rep1-outside-unfiltered-3.bed
 ```
 
-## 5. filter sites based on stop ratio and coverage
+### 3. filter sites based on stop ratio and coverage
 use script filter1.sh for libraries from superscript III and filter2.sh for combined libraries from superscript III and IV
 ```bash
 bash filter1.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unique.bed
@@ -200,7 +202,7 @@ bash filter2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside-unfiltered-3.bed
 sort -k1,1 -k2,2n HeLa-III-rep1-unique.bed > HeLa-III-rep1-unique-1.bed 
 sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
 ```
-## 6. remove stutter sites
+### 4. remove stutter sites
 remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site.
 ```bash
 python3 Stutter1.py HeLa-III-rep1-unique-1.bed | tr ' ' '\t' >  HeLa-III-rep1-stutter-filter.bed
@@ -214,14 +216,14 @@ python3 Stutter2.py HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III
 bedtools subtract -a HeLa-III-rep1-stutter-filter.bed -b HeLa-III-rep1-remove.bed > HeLa-III-rep1-stutter-filter-2.bed
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-remove.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
 ```
-## 7. merge all sites 
-### 1) merge sites identified from III and III+IV
+### 5. merge all sites 
+#### 1) merge sites identified from III and III+IV
 ```bash
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-2.bed -b HeLa-III-rep1-stutter-filter-2.bed > new.bed
 cat HeLa-III-rep1-stutter-filter-2.bed new.bed | sort -k1,1 HeLa-rep1-combined.bed
 ```
 
-### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data.
+#### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data.
 ```bash
 # prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
 cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
@@ -231,13 +233,13 @@ cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered
 bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$28,$29,$30,$31,$32,$33}' HeLa-rep1-combined-1.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
-
-### 3) Intersect two biological replicates
+#### 3) Intersect two biological replicates
 ```bash
+bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
-## 8. Average stop ratio
+### 6. Further filtering based on stop ratios in the pull-down and input samples
 select sites fulfiling cutoffs for average stop ratios
 ```bash
 awk '{print $0"\t"($9+$18)/2}' HeLa-sort.bed > HeLa-input-avg.bed
@@ -245,12 +247,12 @@ awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
 python3 stop.py HeLa-IP-avg.bed > HeLa-stop-filter.bed
 ```
 
-## 9. post-processing
-### 1) calculate RPM
+### 7. determing confidence levels and modification levels
+#### 1) calculate RPM
 ```bash
 awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$13,$14,$15,($16/11.3053),($17/5.67979),$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-stop-filter.bed > HeLa-RPM.bed
 ```
-### 2) combine with sequence context preference determined by synthetic oligos
+#### 2) combine with sequence context preference determined by synthetic oligos
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-RPM.bed > HeLa-RPM-T.bed
 awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-RPM-T.bed | tr ' ' '\t' > HeLa-extend.bed
@@ -268,4 +270,4 @@ awk 'NR==FNR {h[$1] = $2; next} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$1
 ```
 
 
-## 10. Notes
+### 10. Notes
