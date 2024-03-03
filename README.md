@@ -231,7 +231,7 @@ cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered
 ```bash
 #intersect with the file containing sites passing all filter steps so far. 
 bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
-awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$28,$29,$30,$31,$32,$33}' HeLa-rep1-combined-1.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
+awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-1.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
 #### 3) Intersect two biological replicates
 ```bash
