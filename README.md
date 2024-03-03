@@ -221,7 +221,7 @@ bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-rem
 #### 1) merge sites identified from III and III+IV
 ```bash
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-2.bed -b HeLa-III-rep1-stutter-filter-2.bed > new.bed
-cat HeLa-III-rep1-stutter-filter-2.bed new.bed | sort -k1,1 HeLa-rep1-combined.bed
+cat HeLa-III-rep1-stutter-filter-2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
 
 #### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data.
