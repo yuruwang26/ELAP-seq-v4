@@ -207,16 +207,16 @@ sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
 ## 6. remove stutter sites
 remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site.
 ```bash
-python3 stutter1.py HeLa-III-rep1-unique-1.bed > HeLa-III-rep1-stutter-filter.bed
-python3 stutter1.py HeLa-III-IV-rep1-unique-1.bed > HeLa-III-IV-rep1-stutter-filter.bed
+python3 Stutter1.py HeLa-III-rep1-unique-1.bed > HeLa-III-rep1-stutter-filter.bed
+python3 Stutter1.py HeLa-III-IV-rep1-unique-1.bed > HeLa-III-IV-rep1-stutter-filter.bed
 cat HeLa-III-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-rep1-stutter-filter-1.bed
 cat HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-IV-rep1-stutter-filter-1.bed
 ```
 
 remove sites within 6 nt downstream of the current site whose stop ratios are lower than the current site.
 ```bash
-python3 stutter2.py HeLa-III-rep1-stutter-filter-1.bed > HeLa-III-rep1-remove.bed
-python3 stutter2.py HeLa-III-IV-rep1-stutter-filter-1.bed > HeLa-III-IV-rep1-remove.bed
+python3 Stutter2.py HeLa-III-rep1-stutter-filter-1.bed > HeLa-III-rep1-remove.bed
+python3 Stutter2.py HeLa-III-IV-rep1-stutter-filter-1.bed > HeLa-III-IV-rep1-remove.bed
 cat HeLa-III-rep1-remove.bed | tr ' ' '\t' > HeLa-III-rep1-remove-1.bed
 cat HeLa-III-IV-rep1-remove.bed | tr ' ' '\t' > HeLa-III-IV-rep1-remove-1.bed
 bedtools subtract -a HeLa-III-rep1-stutter-filter-1.bed -b HeLa-III-rep1-remove-1.bed > HeLa-III-rep1-stutter-filter-2.bed
