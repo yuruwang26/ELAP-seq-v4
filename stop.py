@@ -3,7 +3,7 @@ import csv
 import sys
 inFile = sys.argv[1]
 
-reader = pd.read_csv(inFile, delimiter="\t", names=["chr","p", "position","strand", "base","rep1_III/IV_stop", "rep1_III/IV_in_sum", "rep1_III/IV_IP_sum","rep1_In_stop","rep1_IP_stop","rep1_in_sum","rep1_IP_sum","rep1_peak","rep1_samp","rep2_III/IV_stop", "rep2_III/IV_in_sum", "rep2_III/IV_IP_sum","rep2_In_stop","rep2_IP_stop","rep2_in_sum","rep2_IP_sum","rep2_peak","rep2_samp","In_avg","IP_avg"], chunksize=1000000)
+reader = pd.read_csv(inFile, delimiter="\t", names=["chr","p", "position","strand", "base","rep1_III/IV_In_stop", "rep1_III/IV_in_sum", "rep1_III/IV_IP_sum","rep1_In_stop","rep1_IP_stop","rep1_in_sum","rep1_IP_sum","rep1_peak","rep1_samp","rep2_III/IV_In_stop", "rep2_III/IV_in_sum", "rep2_III/IV_IP_sum","rep2_In_stop","rep2_IP_stop","rep2_in_sum","rep2_IP_sum","rep2_peak","rep2_samp","In_avg","IP_avg"], chunksize=1000000)
 #reader.ncolumns = ["chr", "p","position","strand", "base", "arrest", "readthrough", "IP_stop", "IP_sum"]
 for df in reader:
     #print (r + len(df))
