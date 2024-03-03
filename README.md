@@ -249,7 +249,7 @@ python3 In_stop.py HeLa-IP-avg.bed > HeLa-filter-2.bed
 awk '{ if($5 == "T") print $0;}' HeLa-filter-2.bed > HeLa-filter-T.bed
 ```
 
-### 7. determing confidence levels and modification levels
+## 4. post-processing : ELAP-seq.sh determing confidence levels and modification levels
 #### 1) calculate RPM
 ```bash
 awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$13,$14,$15,($16/11.3053),($17/5.67979),$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-filter-T.bed > HeLa-RPM.bed
