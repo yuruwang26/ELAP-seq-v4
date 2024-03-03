@@ -154,7 +154,8 @@ Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
 ## 3. the downstream analysis uses a single command : ELAP-seq.sh
-This command include the following steps:
+This command include the following six steps:
+
 ### 1. Call arrested sites inside and outside of the IP peaks. 
 This process includes two steps:
 
