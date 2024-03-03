@@ -173,19 +173,15 @@ bash calculate2.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside.out HeLa-III-
 This process removes background originated from multiple mapping and low processivity of the RT enzyme
 ### 1) determine the main nucleoside for sites mapped with multiple identities
 ```bash
-python3 R1.py HeLa-III-rep1-inside-unfiltered.bed > HeLa-III-rep1-inside-unfiltered-ab.bed
-python3 R1.py HeLa-III-rep1-outside-unfiltered.bed > HeLa-III-rep1-outside-unfiltered-ab.bed
-cat HeLa-III-rep1-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-1.bed
-cat HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-1.bed
+python3 R1.py HeLa-III-rep1-inside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-ab.bed
+python3 R1.py HeLa-III-rep1-outside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-ab.bed
 ```
 ### 2) remove regions that are covered by reads that all share the same start and end mapping position
 ```bash
-python3 R2.py HeLa-III-rep1-inside-unfiltered-1.bed > HeLa-III-rep1-inside-block.bed
-python3 R2.py HeLa-III-rep1-outside-unfiltered-1.bed > HeLa-III-rep1-outside-block.bed
-cat HeLa-III-rep1-inside-block.bed | tr ' ' '\t' > HeLa-III-rep1-inside-block-1.bed
-cat HeLa-III-rep1-outside-block.bed | tr ' ' '\t' > HeLa-III-rep1-outside-block-1.bed
-bedtools subtract -a HeLa-III-rep1-inside-unfiltered-1.bed -b HeLa-III-rep1-inside-block-1.bed > HeLa-III-rep1-inside-unfiltered-2.bed
-bedtools subtract -a HeLa-III-rep1-outside-unfiltered-1.bed -b HeLa-III-rep1-outside-block-1.bed > HeLa-III-rep1-outside-unfiltered-2.bed
+python3 R2.py HeLa-III-rep1-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-inside-block.bed
+python3 R2.py HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-outside-block.bed
+bedtools subtract -a HeLa-III-rep1-inside-unfiltered-ab.bed -b HeLa-III-rep1-inside-block.bed > HeLa-III-rep1-inside-unfiltered-2.bed
+bedtools subtract -a HeLa-III-rep1-outside-unfiltered-ab.bed -b HeLa-III-rep1-outside-block.bed > HeLa-III-rep1-outside-unfiltered-2.bed
 ```
 
 ### 3) Filter away low-coverage stop sites inside a peak (coverage at the site is < 1/3.5 of any sites within 30 nt of the current site)
@@ -211,16 +207,16 @@ sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
 ## 6. remove stutter sites
 remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site.
 ```bash
-python3 stutter1_III.py HeLa-III-rep1-unique-1.bed > HeLa-III-rep1-stutter-filter.bed
-python3 stutter1_III_IV.py HeLa-III-IV-rep1-unique-1.bed > HeLa-III-IV-rep1-stutter-filter.bed
+python3 stutter1.py HeLa-III-rep1-unique-1.bed > HeLa-III-rep1-stutter-filter.bed
+python3 stutter1.py HeLa-III-IV-rep1-unique-1.bed > HeLa-III-IV-rep1-stutter-filter.bed
 cat HeLa-III-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-rep1-stutter-filter-1.bed
 cat HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-IV-rep1-stutter-filter-1.bed
 ```
 
 remove sites within 6 nt downstream of the current site whose stop ratios are lower than the current site.
 ```bash
-python3 stutter2_III.py HeLa-III-rep1-stutter-filter-1.bed > HeLa-III-rep1-remove.bed
-python3 stutter2_III_IV.py HeLa-III-IV-rep1-stutter-filter-1.bed > HeLa-III-IV-rep1-remove.bed
+python3 stutter2.py HeLa-III-rep1-stutter-filter-1.bed > HeLa-III-rep1-remove.bed
+python3 stutter2.py HeLa-III-IV-rep1-stutter-filter-1.bed > HeLa-III-IV-rep1-remove.bed
 cat HeLa-III-rep1-remove.bed | tr ' ' '\t' > HeLa-III-rep1-remove-1.bed
 cat HeLa-III-IV-rep1-remove.bed | tr ' ' '\t' > HeLa-III-IV-rep1-remove-1.bed
 bedtools subtract -a HeLa-III-rep1-stutter-filter-1.bed -b HeLa-III-rep1-remove-1.bed > HeLa-III-rep1-stutter-filter-2.bed
