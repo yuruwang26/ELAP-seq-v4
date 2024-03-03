@@ -186,14 +186,10 @@ bedtools subtract -a HeLa-III-rep1-outside-unfiltered-ab.bed -b HeLa-III-rep1-ou
 
 ### 3) Filter away low-coverage stop sites inside a peak (coverage at the site is < 1/3.5 of any sites within 30 nt of the current site)
 ```bash
-python3 R3.py HeLa-III-rep1-inside-unfiltered-2.bed > HeLa-III-rep1-inside-unfiltered-low.bed
-python3 R3.py HeLa-III-rep1-outside-unfiltered-2.bed > HeLa-III-rep1-outside-unfiltered-low.bed
-awk '!visited[$0]++' HeLa-III-rep1-inside-unfiltered-low.bed > HeLa-III-rep1-inside-unfiltered-low-1.bed
-awk '!visited[$0]++' HeLa-III-rep1-outside-unfiltered-low.bed > HeLa-III-rep1-outside-unfiltered-low-1.bed
-cat HeLa-III-rep1-inside-unfiltered-low-1.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-low-2.bed
-cat HeLa-III-rep1-outside-unfiltered-low-1.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-low-2.bed
-bedtools subtract -a HeLa-III-rep1-inside-unfiltered-2.bed -b HeLa-III-rep1-inside-unfiltered-low-2.bed > HeLa-III-rep1-inside-unfiltered-3.bed
-bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-outside-unfiltered-low-2.bed > HeLa-III-rep1-outside-unfiltered-3.bed
+python3 R3.py HeLa-III-rep1-inside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-low.bed
+python3 R3.py HeLa-III-rep1-outside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-low.bed
+bedtools subtract -a HeLa-III-rep1-inside-unfiltered-2.bed -b HeLa-III-rep1-inside-unfiltered-low.bed > HeLa-III-rep1-inside-unfiltered-3.bed
+bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-outside-unfiltered-low.bed > HeLa-III-rep1-outside-unfiltered-3.bed
 ```
 
 ## 5. filter sites based on stop ratio and coverage
@@ -207,27 +203,22 @@ sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
 ## 6. remove stutter sites
 remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site.
 ```bash
-python3 Stutter1.py HeLa-III-rep1-unique-1.bed > HeLa-III-rep1-stutter-filter.bed
-python3 Stutter1.py HeLa-III-IV-rep1-unique-1.bed > HeLa-III-IV-rep1-stutter-filter.bed
-cat HeLa-III-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-rep1-stutter-filter-1.bed
-cat HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-IV-rep1-stutter-filter-1.bed
+python3 Stutter1.py HeLa-III-rep1-unique-1.bed | tr ' ' '\t' >  HeLa-III-rep1-stutter-filter.bed
+python3 Stutter1.py HeLa-III-IV-rep1-unique-1.bed | tr ' ' '\t' > HeLa-III-IV-rep1-stutter-filter.bed
 ```
 
 remove sites within 6 nt downstream of the current site whose stop ratios are lower than the current site.
 ```bash
-python3 Stutter2.py HeLa-III-rep1-stutter-filter-1.bed > HeLa-III-rep1-remove.bed
-python3 Stutter2.py HeLa-III-IV-rep1-stutter-filter-1.bed > HeLa-III-IV-rep1-remove.bed
-cat HeLa-III-rep1-remove.bed | tr ' ' '\t' > HeLa-III-rep1-remove-1.bed
-cat HeLa-III-IV-rep1-remove.bed | tr ' ' '\t' > HeLa-III-IV-rep1-remove-1.bed
-bedtools subtract -a HeLa-III-rep1-stutter-filter-1.bed -b HeLa-III-rep1-remove-1.bed > HeLa-III-rep1-stutter-filter-2.bed
-bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-1.bed -b HeLa-III-IV-rep1-remove-1.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
+python3 Stutter2.py HeLa-III-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-rep1-remove.bed
+python3 Stutter2.py HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-IV-rep1-remove.bed
+bedtools subtract -a HeLa-III-rep1-stutter-filter.bed -b HeLa-III-rep1-remove.bed > HeLa-III-rep1-stutter-filter-2.bed
+bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-remove.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
 ```
 ## 7. merge all sites 
 ### 1) merge sites identified from III and III+IV
 ```bash
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-2.bed -b HeLa-III-rep1-stutter-filter-2.bed > new.bed
-cat HeLa-III-rep1-stutter-filter-2.bed new.bed > HeLa-rep1-combined.bed
-sort -k1,1 HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
+cat HeLa-III-rep1-stutter-filter-2.bed new.bed | sort -k1,1 HeLa-rep1-combined.bed
 ```
 
 ### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data.
@@ -237,19 +228,13 @@ cat HeLa-III-IV-rep1-outside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltere
 ```
 ```bash
 #intersect with the file containing sites passing all filter steps so far. 
-bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-combined-1.bed > HeLa-rep1-combined-2.bed
-awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$28,$29,$30,$31,$32,$33}' HeLa-rep1-combined-2.bed > HeLa-rep1-combined-3.bed
-awk -v OFS="\t" '$1=$1' HeLa-rep1-combined-3.bed > HeLa-rep1-combined-4.bed
+bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
+awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$28,$29,$30,$31,$32,$33}' HeLa-rep1-combined-1.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
 
 ### 3) Intersect two biological replicates
 ```bash
-bedtools intersect -wa -wb -a HeLa-rep1-combined-4.bed -b HeLa-rep2-combined-4.bed > HeLa.bed
-awk '!visited[$0]++' HeLa.bed > HeLa-1.bed
-awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' HeLa-1.bed > HeLa-2.bed
-awk -v OFS="\t" '$1=$1' HeLa-2.bed > HeLa-3.bed
-cat HeLa-3.bed | tr ' ' '\t' > HeLa-4.bed
-sort -k1,1 -k2,2n HeLa-4.bed > HeLa-sort.bed
+awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
 ## 8. Average stop ratio
@@ -268,11 +253,10 @@ awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$
 ### 2) combine with sequence context preference determined by synthetic oligos
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-RPM.bed > HeLa-RPM-T.bed
-awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-RPM-T.bed > HeLa-extend.bed
-cat HeLa-extend.bed | tr ' ' '\t' > HeLa-extend-1.bed
-bedtools getfasta -fi /home/Wang_yuru/Database/genome/hg38/hg38_UCSC.fa -bed HeLa-extend-1.bed -s -tab > HeLa-seq.bed
+awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-RPM-T.bed | tr ' ' '\t' > HeLa-extend.bed
+bedtools getfasta -fi /home/Wang_yuru/Database/genome/hg38/hg38_UCSC.fa -bed HeLa-extend.bed -s -tab > HeLa-seq.bed
 ```
-combine HeLa-seq.bed and HeLa-RPM-1.bed manually to make HeLa-seq-full.bed and sort
+combine HeLa-seq.bed and HeLa-RPM-T.bed manually to make HeLa-seq-full.bed and sort
 ```bash
 sort -k1,1 HeLa-seq-full.bed > HeLa-sort.bed
 sort -k1,1 oligo.bed > oligo-sort.bed
