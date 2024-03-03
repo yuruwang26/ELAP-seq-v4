@@ -224,7 +224,7 @@ cat HeLa-III-rep1-stutter-filter-2.bed new.bed | sort -k1,1 HeLa-rep1-combined.b
 ### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data.
 ```bash
 # prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
-cat HeLa-III-IV-rep1-outside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
+cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
 ```
 ```bash
 #intersect with the file containing sites passing all filter steps so far. 
