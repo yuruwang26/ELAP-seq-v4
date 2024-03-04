@@ -256,20 +256,29 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter-2.bed > HeLa-filter-T.bed
 awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$13,$14,$15,($16/11.3053),($17/5.67979),$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-filter-T.bed > HeLa-RPM.bed
 ```
 #### 2) combine with sequence context preference determined by synthetic oligos
+Obtain sequence context surrounding the modification site and make all upper case
 ```bash
 awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-RPM.bed | tr ' ' '\t' > HeLa-extend.bed
 bedtools getfasta -fi /home/Wang_yuru/Database/genome/hg38/hg38_UCSC.fa -bed HeLa-extend.bed -s -tab > HeLa-seq.bed
+sed 's/^[a-z]*/\U&/' HeLa-seq.bed > HeLa-upper.bed
+
 ```
-combine HeLa-seq.bed and HeLa-RPM.bed manually to make HeLa-seq-full.bed and sort
+Join HeLa-upper.bed and HeLa-RPM.bed manually to make HeLa-seq-full.bed and sort
 ```bash
 sort -k1,1 HeLa-seq-full.bed > HeLa-sort.bed
 sort -k1,1 oligo.bed > oligo-sort.bed
 ```
-change sequence to upper case and merge with synthetic oligo data
+merge with synthetic oligo data using code or using VLOOK function in excel
 ```bash
-sed 's/^[a-z]*/\U&/' HeLa-sort.bed > HeLa-upper.bed
-awk 'NR==FNR {h[$1] = $2; next} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,h[$1]}' oligo-sort.bed HeLa-upper.bed > HeLa-oligo-combine.bed
+awk 'NR==FNR {h[$1] = $2; next} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,h[$1]}' oligo-sort.bed HeLa-sort.bed > HeLa-oligo-combine.bed
 ```
-
-
+Confidence level:
+The highest-confidence sites are defined as sites having IP stop ratio > 0.3 in both replicates and identified in the third replicates.
+The higher-confidence sites are defined as sites having IP stop ratio > 0.3 in both replicate or identified the thrid replicate.
+The lower-confidence sites are defined as sites having IP stop ratio < 0.3 and identified in only two replicates.
+Modification level:
+Relative modification level = Ln(enrichment at the modification site/enrichment of the oligo with the same sequence context)
+Sites are defined as highly modified when relative modification levels are >= 2.3 for sites in ΨU context and >= 3.5 for sites in non-ΨU context.
+Sites are defined as moderately modified when relative modification levels are >= 1.6 for sites in ΨU context and >= 1.8 for sites in non-ΨU context.
+Sites are defined as lowly modified when relative modification levels are < 1.6 for sites in ΨU context and < 1.8 for sites in non-ΨU context.
 ### 10. Notes
