@@ -273,9 +273,10 @@ merge with synthetic oligo data using code or using VLOOK function in excel
 awk 'NR==FNR {h[$1] = $2; next} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,h[$1]}' oligo-sort.bed HeLa-sort.bed > HeLa-oligo-combine.bed
 ```
 Confidence level:
-The highest-confidence sites are defined as sites having IP stop ratio > 0.3 in both replicates and identified in the third replicates.
-The higher-confidence sites are defined as sites having IP stop ratio > 0.3 in both replicate or identified the thrid replicate.
+The highest-confidence sites are defined as sites having IP stop ratio > 0.3 in both replicates and also identified in the third replicates.
+The higher-confidence sites are defined as sites having IP stop ratio > 0.3 in both replicate or identified in the thrid replicate.
 The lower-confidence sites are defined as sites having IP stop ratio < 0.3 and identified in only two replicates.
+
 Modification level:
 Relative modification level = Ln(enrichment at the modification site/enrichment of the oligo with the same sequence context)
 Sites are defined as highly modified when relative modification levels are >= 2.3 for sites in ΨU context and >= 3.5 for sites in non-ΨU context.
