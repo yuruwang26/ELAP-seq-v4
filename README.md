@@ -295,27 +295,24 @@ conda install -c bioconda viennarna
 ```
 ## 2. get chromosome locations 100 nt surrounding the modification sites
 e.g. 
-chr1	953711	953911	0	0	-
-chr1	1082319	1082519	0	0	-
-chr1	1217112	1217312	0	0	-
-chr1	1254857	1255057	0	0	-
-chr1	1257184	1257384	0	0	-
+chr1	953761	953861	0	0	-
+chr1	1082369	1082469	0	0	-
+chr1	1217162	1217262	0	0	-
 
 ## 3. get RNA fasta sequence
 ```bash
 bedtools getfasta -fi hg38_UCSC.fa -bed 5’UTR.bed -fo 5’UTR-sequence.fa -s -split
 ```
 
-## 4. add “>” to the header, replace the blank with /n
-
-## 5. run viennaRNA
+## 4. run viennaRNA
 ```bash
-RNAfold -p 5’UTR-sequence.fa 5’UTR-sequence.res
+RNAfold -p 5’UTR-sequence.fa > 5’UTR-sequence.res
 ```
-## 6. extract the sequence and the most confident base-pairing prediction and save as 5'UTR-input.bed
-## 7. run python file match.py to obtain the matching status and the matching positions (if matched) for the sites in the middle of the sequence (modification site or a control site)
+## 5. open the .res file in notepad++, keep the topmost prediction and save as 5'UTR-input.bed. 
+Use the 'replace' function in notepad++, and replace "\n.*\n.*\n frequency.*\n.*\n.*" with ""
+## 6. run python file match.py to obtain the matching status and the matching positions (if matched) for the sites in the middle of the sequence (modification site or a control site)
 ```bash
-python match.py 5'UTR-input.bed > 5'UTR-output.bed
+python match.py > 5'UTR-output.bed
 ```
-## 8. on excel, use the MID function to get the base identity at the matched position. Paste the 100-nt sequence to one column, remember to add 1 to the numbering of each position, as python counts the first position as 0.
+## 7. in excel, paste the 100-nt sequences corresponding to each site. Use the MID function to get the base identity at the matched position. remember to add 1 to the numbering of each position, as python counts the first position as 0.
 
