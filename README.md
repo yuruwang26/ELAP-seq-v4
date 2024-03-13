@@ -296,8 +296,7 @@ conda install -c bioconda viennarna
 ## 2. get chromosome locations 100 nt surrounding the modification sites
 e.g. 
 chr1	953761	953861	0	0	-
-chr1	1082369	1082469	0	0	-
-chr1	1217162	1217262	0	0	-
+
 
 ## 3. get RNA fasta sequence
 ```bash
