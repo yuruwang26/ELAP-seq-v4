@@ -278,7 +278,7 @@ Relative modification level = Ln(enrichment at the modification site/enrichment 
 Sites are defined as highly modified when relative modification levels are >= 2.3 for sites in ΨU context and >= 3.5 for sites in non-ΨU context.
 Sites are defined as moderately modified when relative modification levels are >= 1.6 for sites in ΨU context and >= 1.8 for sites in non-ΨU context.
 Sites are defined as lowly modified when relative modification levels are < 1.6 for sites in ΨU context and < 1.8 for sites in non-ΨU context.
-### 10. Notes
+
 
 
 
