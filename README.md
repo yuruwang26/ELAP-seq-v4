@@ -149,7 +149,6 @@ macs2 callpeak -t HeLa-IP-III-rep1.bam -c HeLa-input-III-rep1.bam -n test_t2 -f 
 macs2 callpeak -t HeLa-IP-III-IV-rep1.bam -c HeLa-input-III-IV-rep1.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-IV-peadDir
 ```
 ### 2) obtain regions covered by IP peaks 
-Extend the IP peaks by -5 and +5 of the start and end positions respectively.
 Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
