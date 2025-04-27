@@ -237,14 +237,13 @@ bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.b
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
-### 6. Further filtering based on stop ratios in the pull-down and input samples
+### 6. Further filtering based on stop ratios in the input samples
 select sites fulfiling cutoffs for average stop ratios
 ```bash
 awk '{print $0"\t"($9+$18)/2}' HeLa-sort.bed > HeLa-input-avg.bed
 awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
-python3 IP_stop.py HeLa-IP-avg.bed > HeLa-filter-1.bed
-python3 In_stop.py HeLa-IP-avg.bed > HeLa-filter-2.bed
-awk '{ if($5 == "T") print $0;}' HeLa-filter-2.bed > HeLa-filter-T.bed
+python3 In_stop.py HeLa-IP-avg.bed > HeLa-filter.bed
+awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
 ```
 
 ## 4. post-processing : determing confidence levels and modification levels
