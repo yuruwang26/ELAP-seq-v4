@@ -233,7 +233,7 @@ bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-com
 
 #### 3) filter sites based on their coverage and number of stop reads
 ```bash
-awk '{ if($10 >3 && $13 > 10) print $0;}' HeLa-rep1-combined-1.bed > HeLa-rep1-combined-filtered.bed
+awk '{ if($10 >2 && $13 > 9) print $0;}' HeLa-rep1-combined-1.bed > HeLa-rep1-combined-filtered.bed
 ```
 
 #### 4) Clean up the table
