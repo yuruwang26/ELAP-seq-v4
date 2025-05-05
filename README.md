@@ -336,5 +336,5 @@ bash DKC1-calculate.sh siDKC1-rep2 siDKC1-rep2-calculate.out
 ## Process data in exce files
 ### 1. Calculate RPM value
 ### 2. Calculate average RPM values for input samples under each condition
-### 3. Calculate enrichment level at each site by dividing the RPM value at the site in IP sample by the average RPM value in input samples
+### 3. Calculate enrichment level at each site by dividing the RPM value at the site in each IP sample by the average RPM value in input samples
 ### 4. Calculate fold change of enrichment level between the siDKC1 and sictrl conditions and p-value using one-sided student's t-test.
