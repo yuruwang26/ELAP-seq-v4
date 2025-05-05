@@ -175,21 +175,21 @@ bash calculate_III_IV.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside.out HeL
 This process removes background originated from multiple mapping and low processivity of the RT enzyme
 #### 1) determine the main nucleoside for sites mapped with multiple identities
 ```bash
-python3 R1.py HeLa-III-rep1-inside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-ab.bed
-python3 R1.py HeLa-III-rep1-outside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-ab.bed
+python3 Rm_bg_1.py HeLa-III-rep1-inside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-ab.bed
+python3 Rm_bg_1.py HeLa-III-rep1-outside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-ab.bed
 ```
 #### 2) remove regions that are covered by reads that all share the same start and end mapping position
 ```bash
-python3 R2.py HeLa-III-rep1-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-inside-block.bed
-python3 R2.py HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-outside-block.bed
+python3 Rm_bg_2.py HeLa-III-rep1-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-inside-block.bed
+python3 Rm_bg_2.py HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-outside-block.bed
 bedtools subtract -a HeLa-III-rep1-inside-unfiltered-ab.bed -b HeLa-III-rep1-inside-block.bed > HeLa-III-rep1-inside-unfiltered-2.bed
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-ab.bed -b HeLa-III-rep1-outside-block.bed > HeLa-III-rep1-outside-unfiltered-2.bed
 ```
 
 #### 3) Filter away low-coverage stop sites within 30 nt downstream a major stop site
 ```bash
-python3 R3.py HeLa-III-rep1-inside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-low.bed
-python3 R3.py HeLa-III-rep1-outside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-low.bed
+python3 Rm_bg_3.py HeLa-III-rep1-inside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-low.bed
+python3 Rm_bg_3.py HeLa-III-rep1-outside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-low.bed
 bedtools subtract -a HeLa-III-rep1-inside-unfiltered-2.bed -b HeLa-III-rep1-inside-unfiltered-low.bed > HeLa-III-rep1-inside-unfiltered-3.bed
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-outside-unfiltered-low.bed > HeLa-III-rep1-outside-unfiltered-3.bed
 ```
