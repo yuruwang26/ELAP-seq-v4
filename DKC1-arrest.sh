@@ -6,13 +6,13 @@
 ### 
 ###  
 ### Usage:
-###   combine1.sh <input.bam> <IP.bam> <IP-peaks.bed> <inside.out> <outside.out>
+###   combine1.sh <input.bam> <IP.bam> <ELAP-HEK-all.bed> <output.out> 
 ###
 ### Options:
 ###   <input.bam>         Input bam file to read. 
 ###   <IP.bam>         IP bam file to read
-###   <IP-peaks.bed>      IP peaks corresonding to the bam
-###   <filter.out>           sites filtered
+###   <ELAP-HEK-all.bed>      known candidate sites identified in HEK293T
+###   <output.out>           output with coverage and arrest informaiton at each site
 
 ###
 ### Output:
