@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ###
-### combine.sh 
-###    - get coverage regions, run JACUSA under the regions, and filter sites
+### rRNA_filter_p1.sh 
+###    - Calculate stop ratios and coverage
 ### 
 ###  
 ### Usage:
-###   rRNA_filter.sh <input.out> <output.bed> 
+###   rRNA_filter_p1.sh <input.out> <output.bed> 
 ###
 ### Options:
 ###   <input.out>         arrested sites called by JACUSA. 
