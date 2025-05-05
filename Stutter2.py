@@ -4,7 +4,7 @@ import os
 import sys
 inFile = sys.argv[1]
 
-reader = pd.read_csv(inFile, delimiter="\t", names=["chr","p", "position", "/", "strand", "/2", "base", "in_arrest", "in_rt","IP_arrest","IP_rt","in_sum","IP_sum","IP_stop"], chunksize=1000000)
+reader = pd.read_csv(inFile, delimiter="\t", names=["chr","p", "position", "/", "strand", "/2", "base", "in_arrest", "in_rt","IP_arrest","IP_rt","in_sum","IP_sum","In_stop","IP_stop","peak","samp"], chunksize=1000000)
 #reader.ncolumns = ["chr", "p","position","strand", "base", "arrest", "readthrough", "IP_stop", "IP_sum"]
 for df in reader:
     #print (r + len(df))
@@ -18,7 +18,7 @@ for df in reader:
                 
                     if df["IP_stop"].iloc[i] < df["IP_stop"].iloc[i-t]:
                         
-                        print(df["chr"].iloc[i],df["p"].iloc[i],df["position"].iloc[i],df["/"].iloc[i],df["strand"].iloc[i],df["/2"].iloc[i],df["base"].iloc[i],df["in_arrest"].iloc[i],df["in_rt"].iloc[i],df["IP_arrest"].iloc[i],df["IP_rt"].iloc[i],df["in_sum"].iloc[i],df["IP_sum"].iloc[i],df["IP_stop"].iloc[i])
+                        print(df["chr"].iloc[i],df["p"].iloc[i],df["position"].iloc[i],df["/"].iloc[i],df["strand"].iloc[i],df["/2"].iloc[i],df["base"].iloc[i],df["in_arrest"].iloc[i],df["in_rt"].iloc[i],df["IP_arrest"].iloc[i],df["IP_rt"].iloc[i],df["in_sum"].iloc[i],df["IP_sum"].iloc[i],df["In_stop"].iloc[i],df["IP_stop"].iloc[i],df["peak"].iloc[i],df["samp"].iloc[i])
                     
         elif df["strand"].iloc[i] == "+":
             for t in range(5):
@@ -26,7 +26,7 @@ for df in reader:
                 
                     if df["IP_stop"].iloc[i] < df["IP_stop"].iloc[i+t]:
                         
-                        print(df["chr"].iloc[i],df["p"].iloc[i],df["position"].iloc[i],df["/"].iloc[i],df["strand"].iloc[i],df["/2"].iloc[i],df["base"].iloc[i],df["in_arrest"].iloc[i],df["in_rt"].iloc[i],df["IP_arrest"].iloc[i],df["IP_rt"].iloc[i],df["in_sum"].iloc[i],df["IP_sum"].iloc[i],df["IP_stop"].iloc[i])
+                        print(df["chr"].iloc[i],df["p"].iloc[i],df["position"].iloc[i],df["/"].iloc[i],df["strand"].iloc[i],df["/2"].iloc[i],df["base"].iloc[i],df["in_arrest"].iloc[i],df["in_rt"].iloc[i],df["IP_arrest"].iloc[i],df["IP_rt"].iloc[i],df["in_sum"].iloc[i],df["IP_sum"].iloc[i],df["In_stop"].iloc[i],df["IP_stop"].iloc[i],df["peak"].iloc[i],df["samp"].iloc[i])
                     
 
 
