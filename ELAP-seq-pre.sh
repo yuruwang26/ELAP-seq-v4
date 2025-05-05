@@ -28,7 +28,7 @@ bash calculate1.sh $1 ./$6/$6-III-inside.out ./$6/$6-III-outside.out ./$6/$6-III
 bash calculate2.sh $2 ./$6/$6-III-IV-inside.out ./$6/$6-III-IV-outside.out ./$6/$6-III-IV-inside-unfiltered.bed ./$6/$6-III-IV-outside-unfiltered.bed ./$6/$6-III-IV-in $6-III-IV-out ./$6/$6-III-IV-unfiltered.bed
 python3 Rm_bg_1.py ./$6/$6-III-inside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-inside-unfiltered-ab.bed
 python3 Rm_bg_1.py ./$6/$6-III-outside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-outside-unfiltered-ab.bed
-python3 Rv_bg_1.py ./$6/$6-III-IV-inside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-IV-inside-unfiltered-ab.bed
+python3 Rm_bg_1.py ./$6/$6-III-IV-inside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-IV-inside-unfiltered-ab.bed
 python3 Rm_bg_1.py ./$6/$6-III-IV-outside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-IV-outside-unfiltered-ab.bed
 
 
