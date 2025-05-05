@@ -321,7 +321,7 @@ python match.py > 5'UTR-output.bed
 
 
 # DKC1-Knockdown-analysis-workflow
-## Acquire information of read coverage for known candidate sites identified in HEK293T cells in the sictrl and siDKC1 samples
+## Acquire information of read coverage for known candidate sites identified in HEK293T cells 
 ```bash
 bash DKC1-preprocessing.sh
 bash DKC1-arrest.sh HEK-sictrl-input-IV-rep1.bam HEK-sictrl-IP-IV-rep1.bam ELAP-HEK-all.bed sictrl-rep1.out
@@ -333,8 +333,8 @@ bash DKC1-calculate.sh sictrl-rep2 sictrl-rep2-calculate.out
 bash DKC1-calculate.sh siDKC1-rep1 siDKC1-rep1-calculate.out
 bash DKC1-calculate.sh siDKC1-rep2 siDKC1-rep2-calculate.out
 ```
-## process data in exce files
-### Calculate RPM value
-### Calculate average RPM values for input samples under each condition
-### Calculate enrichment level by dividing RPM values of IP sample by the average average values in input samples under the same condition
-### Calculate enrichment level fold change and p-value using one-sided student's t-test.
+## Process data in exce files
+### 1. Calculate RPM value
+### 2. Calculate average RPM values for input samples under each condition
+### 3. Calculate enrichment level at each site by dividing the RPM value at the site in IP sample by the average RPM value in input samples
+### 4. Calculate fold change of enrichment level between the siDKC1 and sictrl conditions and p-value using one-sided student's t-test.
