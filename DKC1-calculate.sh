@@ -2,14 +2,13 @@
 
 ###
 ### calculate1.sh 
-###    - calculate sum total reads for input and IP, calculate stop ratios in input and IP, and assign the originality of the site
-### 
+###    - calculate sum total reads for input and IP, and calculate stop ratios in input and IP
 ###  
 ### Usage:
-###   calculate1.sh  <inside.out> 
+###   calculate1.sh  <output.out> <calculated.out> 
 ###
 ### Options:
-###   <filter.out>     Sites filtered
+###   <output.out>     the ourput file generated from DKC1-arrest.sh
 ###   <calculated.out>    Sites calculated
 ### Output:
 ###  chr start end p-value strand arrest_score base arrest_input readthrough_input arrest_IP readthrough_IP input_sum IP_sum arrest_ratio_input arrest_ratio_IP peak sample
@@ -17,7 +16,7 @@
 ### Contact:
 ###  Yuru Wang (yuruwang26@hotmail.com)
 ###
-awk '{ if($10 == "*") $10="0,0,0,0";}1' OFS="\t" $1.out > $1-2.out
+awk '{ if($10 == "*") $10="0,0,0,0";}1' OFS="\t" $1 > $1-2.out
 awk '{ if($9 == "*") $9="0,0,0,0";}1' OFS="\t" $1-2.out > $1-3.out
 awk '{ if($8 == "*") $8="0,0,0,0";}1' OFS="\t" $1-3.out > $1-4.out
 awk '{ if($7 == "*") $7="0,0,0,0";}1' OFS="\t" $1-4.out > $1-5.out
