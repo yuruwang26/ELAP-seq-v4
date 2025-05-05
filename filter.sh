@@ -2,7 +2,7 @@
 
 ###
 ### filter1.sh 
-###    -  filter sites from library III based on stop ratio and coverage, and select for sites covered by at least 1 uniquely mapped reads
+###    -  filter sites based on stop ratio, and select for sites covered by at least 1 uniquely mapped reads
 ### 
 ###  
 ### Usage:
