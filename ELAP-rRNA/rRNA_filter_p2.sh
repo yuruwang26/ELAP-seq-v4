@@ -2,7 +2,7 @@
 
 ###
 ### rRNA_filter_p2.sh 
-###    - remove sites whose stop ration in the IP sample is > 0.05
+###    - call sites whose stop ration in the IP sample is > 0.05
 ### 
 ###  
 ### Usage:
