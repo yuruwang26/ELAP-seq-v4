@@ -13,7 +13,7 @@
 ###   <outpust.bed>         output file with sites whose stop ratio in the IP sample is > 0.05
 ###
 ### Output:
-###  chr start end p-value strand arrest_score base arrest_input readthrough_input arrest_IP readthrough_IP input_sum IP_sum input_stop_ratio IP_stop_ratio 
+###  chr start end p-value strand arrest_score base arrest_input readthrough_input arrest_IP readthrough_IP input_sum IP_sum IP_stop_ratio input_stop_ratio 
 ###
 ### Contact:
 ###  Yuru Wang (yuruwang26@hotmail.com)
