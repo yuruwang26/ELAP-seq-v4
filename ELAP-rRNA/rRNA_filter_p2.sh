@@ -9,7 +9,7 @@
 ###   rRNA_filter_p2.sh <input.bed> <output.bed> 
 ###
 ### Options:
-###   <input.bed>         Input file after remiving stutter sites
+###   <input.bed>         Input file after removing stutter sites
 ###   <outpust.bed>         output file with sites whose stop ratio in the IP sample is > 0.05
 ###
 ### Output:
