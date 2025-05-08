@@ -14,8 +14,8 @@ for df in reader:
 		if df["rep2_III/IV_In_stop"].iloc[i] < 0.1:
 			print(df["chr"].iloc[i],df["p"].iloc[i],df["position"].iloc[i],df["strand"].iloc[i],df["base"].iloc[i],df["rep1_III/IV_In_stop"].iloc[i],df["rep1_III/IV_in_sum"].iloc[i],df["rep1_III/IV_IP_sum"].iloc[i],df["rep1_In_stop"].iloc[i],df["rep1_IP_stop"].iloc[i],df["rep1_in_sum"].iloc[i],df["rep1_IP_sum"].iloc[i],df["rep1_peak"].iloc[i],df["rep1_samp"].iloc[i],df["rep2_III/IV_In_stop"].iloc[i],df["rep2_III/IV_in_sum"].iloc[i],df["rep2_III/IV_IP_sum"].iloc[i],df["rep2_In_stop"].iloc[i],df["rep2_IP_stop"].iloc[i],df["rep2_in_sum"].iloc[i],df["rep2_IP_sum"].iloc[i],df["rep2_peak"].iloc[i],df["rep2_samp"].iloc[i],df["In_avg"].iloc[i],df["IP_avg"].iloc[i])
             
-		elif df["rep2_III/IV_In_stop"].iloc[i] > 0.1 and df["rep1_III/IV_In_stop"].iloc[i] < 0.3:
-			if df["rep2_III/IV_In_stop"].iloc[i] > 0.3 and df["rep2_III/IV_In_stop"].iloc[i] < 0.3:
+		elif df["rep1_III/IV_In_stop"].iloc[i] > 0.1 and df["rep1_III/IV_In_stop"].iloc[i] < 0.3:
+			if df["rep2_III/IV_In_stop"].iloc[i] > 0.1 and df["rep2_III/IV_In_stop"].iloc[i] < 0.3:
 				if df["rep1_III/IV_In_stop"].iloc[i] *4 < df["rep1_IP_stop"].iloc[i] and df["rep2_III/IV_In_stop"].iloc[i] *4 < df["rep2_IP_stop"].iloc[i]:
 						
 					print(df["chr"].iloc[i],df["p"].iloc[i],df["position"].iloc[i],df["strand"].iloc[i],df["base"].iloc[i],df["rep1_III/IV_In_stop"].iloc[i],df["rep1_III/IV_in_sum"].iloc[i],df["rep1_III/IV_IP_sum"].iloc[i],df["rep1_In_stop"].iloc[i],df["rep1_IP_stop"].iloc[i],df["rep1_in_sum"].iloc[i],df["rep1_IP_sum"].iloc[i],df["rep1_peak"].iloc[i],df["rep1_samp"].iloc[i],df["rep2_III/IV_In_stop"].iloc[i],df["rep2_III/IV_in_sum"].iloc[i],df["rep2_III/IV_IP_sum"].iloc[i],df["rep2_In_stop"].iloc[i],df["rep2_IP_stop"].iloc[i],df["rep2_in_sum"].iloc[i],df["rep2_IP_sum"].iloc[i],df["rep2_peak"].iloc[i],df["rep2_samp"].iloc[i],df["In_avg"].iloc[i],df["IP_avg"].iloc[i])
