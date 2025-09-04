@@ -126,7 +126,7 @@ bedtools subtract -a HeLa-III-rep1-inside-unfiltered-2.bed -b HeLa-III-rep1-insi
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-outside-unfiltered-low.bed > HeLa-III-rep1-outside-unfiltered-3.bed
 ```
 
-### 3. filter sites based on stop ratio and select for sites covered by at least 1 uniquely mapped reads
+### 3. filter sites that have stop ratio >=0.1 in the pull-down library and select for sites covered by at least 1 uniquely mapped reads
 use script filter.sh 
 ```bash
 bash filter.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unique.bed && sort -k1,1 -k2,2n HeLa-III-rep1-unique.bed > HeLa-III-rep1-unique-1.bed
@@ -146,14 +146,28 @@ python3 Stutter2.py HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III
 bedtools subtract -a HeLa-III-rep1-stutter-filter.bed -b HeLa-III-rep1-remove.bed > HeLa-III-rep1-stutter-filter-2.bed
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-remove.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
 ```
+If use superscript III data alone:
+filter based on the number of stopped reads
+remove false positives based on the stop ratio of input
+merge with input reads & cleanup table
+Intersect two biological replicates
+filter again based on average stopped reads x stop ratio in the pull-down library.
+
+If using both superscript III and superscript IV data:
 ### 5. merge all sites and filter based on the coverage
-#### 1) merge sites identified from III and III+IV
+
+#### 3) filter sites based on number of stop reads
+```bash
+awk '{ if($10 >2 && $13 > 9) print $0;}' HeLa-rep1-combined-1.bed > HeLa-rep1-combined-filtered.bed
+```
+remove sites based on their input stop ratio
+#### 1) merge sites identified from III and new sites identified from III+IV
 ```bash
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-2.bed -b HeLa-III-rep1-stutter-filter-2.bed > new.bed
 cat HeLa-III-rep1-stutter-filter-2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
 
-#### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data.
+#### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
 ```bash
 # prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
 cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
@@ -161,11 +175,6 @@ cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered
 ```bash
 #intersect with the file containing sites passing all filter steps so far. 
 bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
-```
-
-#### 3) filter sites based on their coverage and number of stop reads
-```bash
-awk '{ if($10 >2 && $13 > 9) print $0;}' HeLa-rep1-combined-1.bed > HeLa-rep1-combined-filtered.bed
 ```
 
 #### 4) Clean up the table
@@ -179,7 +188,7 @@ bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.b
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
-### 6. Further filtering based on average stop ratios in the input samples
+### 6. Further filtering based on average stop ratios x stopped reads
 select sites fulfiling cutoffs for average stop ratios
 ```bash
 awk '{print $0"\t"($9+$18)/2}' HeLa-sort.bed > HeLa-input-avg.bed
