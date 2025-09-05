@@ -149,6 +149,10 @@ bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-rem
 ### 5. If using superscript III data alone:
 
 #### 1) Filter based on the number of stopped reads
+```bash
+awk '{ if($10 >2) print $0;}' HeLa-III-rep1-stutter-filter-2.bed > HeLa-III-rep1-filter1.bed
+awk '{ if($10 >2) print $0;}' HeLa-III-rep2-stutter-filter-2.bed > HeLa-III-rep2-filter1.bed
+```
 #### 2) Remove sites whose stop ratio of input >= 0.1
 #### 3) Merge with input reads & cleanup table
 #### 4) Intersect two biological replicates
