@@ -153,21 +153,21 @@ bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-rem
 awk '{ if($10 >2) print $0;}' HeLa-III-rep1-stutter-filter-2.bed > HeLa-III-rep1-filter1.bed
 awk '{ if($10 >2) print $0;}' HeLa-III-rep2-stutter-filter-2.bed > HeLa-III-rep2-filter1.bed
 ```
-#### 2) Remove sites whose stop ratio of input >= 0.1
-#### 3) Merge with input reads & cleanup table
-#### 4) Intersect two biological replicates
-#### 5) Filter again based on average stopped reads x stop ratio in the pull-down library.
+#### 2) Remove sites whose stop ratio of input >= 0.1 
+#### 3) Intersect two biological replicates
+#### 4) Filter sites whose average stopped reads x stop ratio >=2 in the pull-down library.
 
 ### 6. If using both superscript III and superscript IV data:
 #### 1) filter sites based on number of stop reads
 ```bash
-awk '{ if($10 >2 && $13 > 9) print $0;}' HeLa-rep1-combined-1.bed > HeLa-rep1-combined-filtered.bed
+awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep1-stutter-filter-2.bed > HeLa-III-IV-rep1-filter1.bed
+awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep2-stutter-filter-2.bed > HeLa-III-IV-rep2-filter1.bed
 ```
 #### 2) remove sites based on their input stop ratio
 #### 3) combine sites identified from III and new sites identified from III+IV
 ```bash
-bedtools subtract -a HeLa-III-IV-rep1-stutter-filter-2.bed -b HeLa-III-rep1-stutter-filter-2.bed > new.bed
-cat HeLa-III-rep1-stutter-filter-2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
+bedtools subtract -a HeLa-III-IV-rep1-filter2.bed -b HeLa-III-rep1-filter2.bed > new.bed
+cat HeLa-III-rep1-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
 #### 4) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
 ```bash
@@ -190,13 +190,7 @@ awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$
 ```
 
 #### 6) Further filtering based on average stop ratios x stopped reads
-select sites fulfiling cutoffs for average stop ratios
-```bash
-awk '{print $0"\t"($9+$18)/2}' HeLa-sort.bed > HeLa-input-avg.bed
-awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
-python3 In_stop.py HeLa-IP-avg.bed > HeLa-filter.bed
-awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
-```
+
 
 ## 4. post-processing : determing confidence levels and modification levels
 #### 1) calculate RPM
