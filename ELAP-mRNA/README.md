@@ -85,7 +85,7 @@ Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
 ## 3. Downstream analysis to detect pseudouridine (ELAP-seq.sh)
-This command include the following four steps:
+This command include the following three steps:
 
 ### 1. Call arrested sites inside and outside of the IP peaks. 
 
@@ -116,7 +116,6 @@ python3 Rm_bg_2.py HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-
 bedtools subtract -a HeLa-III-rep1-inside-unfiltered-ab.bed -b HeLa-III-rep1-inside-block.bed > HeLa-III-rep1-inside-unfiltered-2.bed
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-ab.bed -b HeLa-III-rep1-outside-block.bed > HeLa-III-rep1-outside-unfiltered-2.bed
 ```
-
 #### 3) Filter away low-coverage stop sites within 30 nt downstream a major stop site
 ```bash
 python3 Rm_bg_3.py HeLa-III-rep1-inside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-low.bed
@@ -158,24 +157,24 @@ awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep2-stutter-filter-2.bed > HeLa-III-I
 #### 4). Remove sites whose stop ratios are >= 0.1 in the input and whose stop ratio (pull-down)/stop ratio (input) are < 3
 
 
-### 4 Intersect two biological replicates and further filter
+## 4 Intersect two biological replicates and further filter
 
 If using superscript III data alone:
 
-#### 1) Intersect two biological replicates
-#### 2) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
+### 1) Intersect two biological replicates
+### 2) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
 
 
 
 
 If using both superscript III and superscript IV data:
 
-#### 1) combine sites identified from III and new sites identified from III+IV
+### 1) combine sites identified from III and new sites identified from III+IV
 ```bash
 bedtools subtract -a HeLa-III-IV-rep1-filter2.bed -b HeLa-III-rep1-filter2.bed > new.bed
 cat HeLa-III-rep1-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
-#### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
+### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
 ```bash
 # prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
 cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
@@ -189,21 +188,21 @@ bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-com
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-filtered.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
 
-#### 3) Intersect two biological replicates
+### 3) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
-#### 4) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
+### 4) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
 
 
-## 4. post-processing : determing confidence levels and modification levels
-#### 1) calculate RPM
+## 5. post-processing : determing confidence levels and modification levels
+### 1) calculate RPM
 ```bash
 awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$13,$14,$15,($16/11.3053),($17/5.67979),$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-filter-T.bed > HeLa-RPM.bed
 ```
-#### 2) combine with sequence context preference determined by synthetic oligos
+### 2) combine with sequence context preference determined by synthetic oligos
 Obtain sequence context surrounding the modification site and make all upper case
 ```bash
 awk '{OFS=" "; print $1,($2-2),($3+2),$5,$6,$4,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-RPM.bed | tr ' ' '\t' > HeLa-extend.bed
