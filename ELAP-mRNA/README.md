@@ -2,7 +2,7 @@
 
 Each replicate should contain two input libraries and an two IP libraries. The libraries are built with superscript III or IV.
 
-## 1. processing of Fastq reads
+## 1. processing of Fastq data (ELAP-seq-pre.sh)
 
 Only reads R2 is used. After trimming UMI, the begnning of R2 is the RT stop site. Can otherwise design the library construction workflow in a way that single end sequencing is sufficient.
 This process includes five steps:
@@ -84,7 +84,7 @@ macs2 callpeak -t HeLa-IP-III-IV-rep1.bam -c HeLa-input-III-IV-rep1.bam -n test_
 Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
-## 3. the downstream analysis uses a single command : ELAP-seq.sh
+## 3. Downstream analysis to detect pseudouridine (ELAP-seq.sh)
 This command include the following six steps:
 
 ### 1. Call arrested sites inside and outside of the IP peaks. 
@@ -104,7 +104,7 @@ bash calculate_III_IV.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside.out HeL
 ```
 
 ### 2. Remove backgrounds 
-This process removes background originated from multiple mapping and low processivity of the RT enzyme
+This process removes background originated from multiple mapping and diminished processivity of the RT enzyme past a major modification site
 #### 1) determine the main nucleoside for sites mapped with multiple identities
 ```bash
 python3 Rm_bg_1.py HeLa-III-rep1-inside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-ab.bed
@@ -126,13 +126,15 @@ bedtools subtract -a HeLa-III-rep1-inside-unfiltered-2.bed -b HeLa-III-rep1-insi
 bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-outside-unfiltered-low.bed > HeLa-III-rep1-outside-unfiltered-3.bed
 ```
 
-### 3. filter sites that have stop ratio >=0.1 in the pull-down library and select for sites covered by at least 1 uniquely mapped reads
+### 3. Filter sites based on stop ratios, stopped reads
+
+#### 1) select for sites that have stop ratio >=0.1 in the pull-down library, stop ratio (pull-down) -stop ratio (input) >= 0.05,  and are covered by at least 1 uniquely mapped reads
 use script filter.sh 
 ```bash
 bash filter.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unique.bed && sort -k1,1 -k2,2n HeLa-III-rep1-unique.bed > HeLa-III-rep1-unique-1.bed
 bash filter.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside-unfiltered-3.bed HeLa-III-IV-rep1-outside-unfiltered-3.bed HeLa-III-IV-rep1-unique.bed && sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
 ```
-### 4. remove stutter sites
+#### 2). remove stutter sites
 remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site.
 ```bash
 python3 Stutter1.py HeLa-III-rep1-unique-1.bed | tr ' ' '\t' >  HeLa-III-rep1-stutter-filter.bed
@@ -146,30 +148,33 @@ python3 Stutter2.py HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III
 bedtools subtract -a HeLa-III-rep1-stutter-filter.bed -b HeLa-III-rep1-remove.bed > HeLa-III-rep1-stutter-filter-2.bed
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-remove.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
 ```
-### 5. If using superscript III data alone:
-
-#### 1) Filter based on the number of stopped reads
+#### 3). select for sites who have at least 3 stopped reads
 ```bash
 awk '{ if($10 >2) print $0;}' HeLa-III-rep1-stutter-filter-2.bed > HeLa-III-rep1-filter1.bed
 awk '{ if($10 >2) print $0;}' HeLa-III-rep2-stutter-filter-2.bed > HeLa-III-rep2-filter1.bed
-```
-#### 2) Remove sites whose stop ratio of input >= 0.1 
-#### 3) Intersect two biological replicates
-#### 4) Filter sites whose average stopped reads x stop ratio >=2 in the pull-down library.
-
-### 6. If using both superscript III and superscript IV data:
-#### 1) filter sites based on number of stop reads
-```bash
 awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep1-stutter-filter-2.bed > HeLa-III-IV-rep1-filter1.bed
 awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep2-stutter-filter-2.bed > HeLa-III-IV-rep2-filter1.bed
 ```
-#### 2) remove sites based on their input stop ratio
-#### 3) combine sites identified from III and new sites identified from III+IV
+
+#### 4). Remove sites whose stop ratios are >= 0.1 in the input and whose stop ratio (pull-down)/stop ratio (input) are < 3
+
+
+### 7 Intersect two biological replicates and further filter
+
+If using superscript III data alone:
+
+
+#### 1) Intersect two biological replicates
+#### 2) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
+
+If using both superscript III and superscript IV data:
+
+#### 1) combine sites identified from III and new sites identified from III+IV
 ```bash
 bedtools subtract -a HeLa-III-IV-rep1-filter2.bed -b HeLa-III-rep1-filter2.bed > new.bed
 cat HeLa-III-rep1-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
-#### 4) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
+#### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
 ```bash
 # prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
 cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
@@ -183,13 +188,13 @@ bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-com
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-filtered.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
 
-#### 5) Intersect two biological replicates
+#### 3) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
-#### 6) Further filtering based on average stop ratios x stopped reads
+#### 4) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
 
 
 ## 4. post-processing : determing confidence levels and modification levels
