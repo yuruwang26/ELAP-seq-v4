@@ -85,10 +85,9 @@ Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
 ## 3. Downstream analysis to detect pseudouridine (ELAP-seq.sh)
-This command include the following six steps:
+This command include the following four steps:
 
 ### 1. Call arrested sites inside and outside of the IP peaks. 
-This process includes two steps:
 
 #### 1) Call all stop sites inside and outside of IP peaks
 This step uses the script arrest.sh
@@ -159,10 +158,9 @@ awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep2-stutter-filter-2.bed > HeLa-III-I
 #### 4). Remove sites whose stop ratios are >= 0.1 in the input and whose stop ratio (pull-down)/stop ratio (input) are < 3
 
 
-### 7 Intersect two biological replicates and further filter
+### 4 Intersect two biological replicates and further filter
 
 If using superscript III data alone:
-
 
 #### 1) Intersect two biological replicates
 #### 2) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
