@@ -165,6 +165,9 @@ If using superscript III data alone:
 #### 1) Intersect two biological replicates
 #### 2) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
 
+
+
+
 If using both superscript III and superscript IV data:
 
 #### 1) combine sites identified from III and new sites identified from III+IV
