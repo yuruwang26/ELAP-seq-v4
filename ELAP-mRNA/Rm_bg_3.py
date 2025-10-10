@@ -10,8 +10,8 @@ for df in reader:
     #print (r + len(df))
     df["position"] = pd.to_numeric(df["position"])
     for i in range(len(df)):
-        dis1 = df["position"].iloc[i] - 35
-        dis2 = df["position"].iloc[i] + 35
+        dis1 = df["position"].iloc[i] - 50
+        dis2 = df["position"].iloc[i] + 50
         for t in range(1,35):
             if i-t > 0 and df["position"].iloc[i-t] > dis1 and df["position"].iloc[i-t] < df["position"].iloc[i]:
                 read_difference_1 = (df["IP_sum"].iloc[i-t])/(df["IP_sum"].iloc[i])
