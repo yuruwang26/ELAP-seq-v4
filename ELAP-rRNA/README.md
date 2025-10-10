@@ -62,5 +62,5 @@ python3 Stutter_removal_rRNA.py rRNA-rep1.bed > rRNA-rep1-stutter.bed
 bash rRNA_filter_p2.sh rRNA-rep1-stutter.bed rRNA-rep1-filter.bed
 ```
 ```bash
-bedtools intersect -wa -wb -a rRNA-rep1-filter.bed rRNA-rep2-filter.bed > rRNA-out.bed
+bedtools intersect -wa -wb -a rRNA-rep1-filter.bed -b rRNA-rep2-filter.bed > rRNA-out.bed
 ```
