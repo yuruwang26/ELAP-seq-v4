@@ -10,8 +10,8 @@ for df in reader:
     #print (r + len(df))
     df["position"] = pd.to_numeric(df["position"])
     for i in range(len(df)):
-        dis1 = df["position"].iloc[i] - 35
-        dis2 = df["position"].iloc[i] + 35
+        dis1 = df["position"].iloc[i] - 50
+        dis2 = df["position"].iloc[i] + 50
         if df["IP_stop"].iloc[i] == 1 and df["strand"].iloc[i] == "+":
             if i+1 < len(df) and df["position"].iloc[i+1] > dis2:   
                 print(df["chr"].iloc[i],df["p"].iloc[i],df["position"].iloc[i],df["/"].iloc[i],df["strand"].iloc[i],df["/2"].iloc[i],df["base"].iloc[i],df["in_arrest"].iloc[i], df["in_rt"].iloc[i],df["IP_arrest"].iloc[i],df["IP_rt"].iloc[i], df["in_sum"].iloc[i], df["IP_sum"].iloc[i],df["In_stop"].iloc[i],df["IP_stop"].iloc[i],df["peak"].iloc[i],df["samp"].iloc[i])
