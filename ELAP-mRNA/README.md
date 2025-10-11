@@ -126,7 +126,7 @@ bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-out
 
 ### 3. Filter sites based on stop ratios, stopped reads
 
-#### 1) select for sites that have stop ratio >=0.1 in the pull-down library, stop ratio (pull-down) -stop ratio (input) >= 0.05,  and are covered by at least 1 uniquely mapped reads
+#### 1) select for sites that have stop ratio >=0.1 in the pull-down library, stop ratio (pull-down) -stop ratio (input) >= 0.05 or 0.1,  and are covered by at least 1 uniquely mapped reads
 use script filter.sh 
 ```bash
 bash filter.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unique.bed && sort -k1,1 -k2,2n HeLa-III-rep1-unique.bed > HeLa-III-rep1-unique-1.bed
@@ -146,7 +146,7 @@ python3 Stutter2.py HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III
 bedtools subtract -a HeLa-III-rep1-stutter-filter.bed -b HeLa-III-rep1-remove.bed > HeLa-III-rep1-stutter-filter-2.bed
 bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-remove.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
 ```
-#### 3). select for sites who have at least 3 stopped reads
+#### 3). select for sites with at least 3 stopped reads
 ```bash
 awk '{ if($10 >2) print $0;}' HeLa-III-rep1-stutter-filter-2.bed > HeLa-III-rep1-filter1.bed
 awk '{ if($10 >2) print $0;}' HeLa-III-rep2-stutter-filter-2.bed > HeLa-III-rep2-filter1.bed
@@ -154,7 +154,7 @@ awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep1-stutter-filter-2.bed > HeLa-III-I
 awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep2-stutter-filter-2.bed > HeLa-III-IV-rep2-filter1.bed
 ```
 
-#### 4). Remove sites whose stop ratios are >= 0.1 in the input and whose stop ratio (pull-down)/stop ratio (input) are < 3
+#### 4). Remove sites whose stop ratios are >= 0.1 in the input and whose stop ratio (pull-down)/stop ratio (input) are < 3 and save as filter2.bed
 
 
 ## 4 Intersect two biological replicates and further filter
@@ -163,7 +163,6 @@ If using superscript III data alone:
 
 ### 1) Intersect two biological replicates
 ### 2) Select for sites whose average stopped reads x stop ratio are >=2 in the pull-down library.
-
 
 
 
