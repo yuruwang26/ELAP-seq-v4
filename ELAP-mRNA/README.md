@@ -156,7 +156,7 @@ awk '{ if($10 >2) print $0;}' HeLa-III-IV-rep2-stutter-filter-2.bed > HeLa-III-I
 
 #### 4). Remove sites whose stop ratios are >= 0.1 in the input, stopped reads are >=3 in the input, and whose stop ratio (pull-down)/stop ratio (input) are < 3
 ```bash
-awk '($14 <= 0.1) || ($15 / $14 >= 3)' HeLa-III-rep1-filter1.bed > HeLa-III-rep1-filter2.bed
+awk '($14 <= 0.1) || ($7 < 3) || ($15 / $14 >= 3)' HeLa-III-rep1-filter1.bed > HeLa-III-rep1-filter2.bed
 ```
 
 ## 4 Intersect two biological replicates and further filter
