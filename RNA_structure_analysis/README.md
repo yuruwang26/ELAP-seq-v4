@@ -22,6 +22,6 @@ RNAfold -p 5’UTR-sequence.fa > 5’UTR-sequence.res
 Use the 'replace' function in notepad++, and replace "\r?\n.*\r?\n.*\r?\n frequency.*\r?\n.*\r?\n.*" with ""
 ## 6. run python file match.py to obtain the matching status and the matching positions (if matched) for the sites in the middle of the sequence (modification site or a control site)
 ```bash
-python match.py 5'UTR-input.txt > 5'UTR-output.bed
+python match.py > 5'UTR-output.bed
 ```
 ## 7. in excel, paste the 100-nt sequences corresponding to each site. Use the MID function to get the base identity at the matched position. remember to add 1 to the numbering of each position, as python counts the first position as 0.
