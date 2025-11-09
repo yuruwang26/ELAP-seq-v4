@@ -163,7 +163,7 @@ awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' HeLa-III-rep1-filter1.bed > H
 
 
 ### 1) Intersect two biological replicates
-### 2) Select for sites whose average stopped reads x stop ratio are >=1.5 in the pull-down library.
+### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 
 
 ## 4 Intersect two biological replicates and further filter (if using superscript III and IV data)
@@ -193,7 +193,7 @@ bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.b
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
-### 4) Select for sites whose average stopped reads x stop ratio are >=1.5 in the pull-down library.
+### 4) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 
 
 ## 5. post-processing : determing confidence levels and modification levels
