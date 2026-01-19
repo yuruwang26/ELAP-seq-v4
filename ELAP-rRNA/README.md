@@ -64,3 +64,14 @@ bash rRNA_filter_p2.sh rRNA-rep1-stutter.bed rRNA-rep1-filter.bed
 ```bash
 bedtools intersect -wa -wb -a rRNA-rep1-filter.bed -b rRNA-rep2-filter.bed > rRNA-out.bed
 ```
+## 4. Applying cutoffs
+A candidate site in rRNA is defined when meeting the following criteria: 
+1) the stop ratio at the site in the pull-down library is > 0.05 in both replicates;
+2) stop ratio in the pull-down library – stop ratio in the input library is > 0.05 in both replicates;
+3) the number of stopped reads in the pull-down library is >=5 in both replicates;
+4) the average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5 (this imposes a more stringent requirement on the number of stopped reads when the stop ratio in the pull-down sample is lower than 30%); and
+5) the stop event occurs at uridine (U).
+            
+Finally, we further remove sites meeting the following criteria:
+1) the stop ratio in the input library is > 0.1 and > 1/3 of the stop ratio in the pull-down library, and
+2) 2) number of stopped reads in input is > =3 in any replicate. When using superscript III and IV data together, we follow the same criteria except for requiring that the stop ratio in the pull-down library- stop ratio in the input library is > 0.1.
