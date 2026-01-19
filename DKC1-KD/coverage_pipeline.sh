@@ -52,3 +52,4 @@ rm "$FORWARD_BAM" "$REVERSE_BAM" "$FORWARD_COV" "$REVERSE_COV" formatted_forward
 # Final message
 echo "Coverage pipeline complete!"
 echo "Combined and sorted coverage table saved to: $OUTPUT"
+
