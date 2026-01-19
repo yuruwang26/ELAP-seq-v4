@@ -27,7 +27,7 @@ seqkit grep -s -r -p "^CTG" YW_S5_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep1.
 seqkit grep -s -r -p "^GAC" YW_S5_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep2.fastq
 ```
 ## 3. De-duplication, trim adapters and mapping
-In DKC1-processing.sh, reads were first de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
+In DKC1-preprocessing.sh, reads were first de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
 
 ```bash
 bash DKC1-preprocessing.sh
