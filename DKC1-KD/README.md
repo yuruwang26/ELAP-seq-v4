@@ -34,7 +34,7 @@ bash DKC1-preprocessing.sh
 ```
 
 ## 4. Acquire information of read coverage for known candidate sites identified in HEK293T cells 
-Categorize candidate modification sites identified in HEK293T cells according to the mapped strands (strand reversal due to applying applying results from R2-only mapping to the analysis using merged-read mapping)
+Categorize candidate modification sites identified in HEK293T cells according to the mapped strands (strand reversal due to applying results from R2-only mapping to the analysis using merged-read mapping)
 
 ```bash
 bash DKC1-arrest.sh HEK-sictrl-input-IV-rep1.bam HEK-sictrl-IP-IV-rep1.bam ELAP-HEK-pos.bed sictrl-rep1-pos.out
