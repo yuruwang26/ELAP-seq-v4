@@ -34,10 +34,10 @@ bash DKC1-preprocessing.sh
 ```
 
 ## 4. Acquire information of read coverage for known candidate sites identified in HEK293T cells 
-### Categorize candidate modification sites identified in HEK293T cells according to the mapped strands 
+### 1) Categorize candidate modification sites identified in HEK293T cells according to the mapped strands 
 Reverse the strand identity due to applying results from R2-only reads to the analysis using merged-reads. Save resulting files as ELAP-HEK-pos.bed and ELAP-HEK-neg.bed, which contain the information of chromosome number, start position, end position and strand.
 
-### Acquire information of read coverage using DKC1-arrest.sh
+### 2) Acquire information of read coverage using DKC1-arrest.sh
 ```bash
 bash DKC1-arrest.sh HEK-sictrl-input-IV-rep1.bam HEK-sictrl-IP-IV-rep1.bam ELAP-HEK-pos.bed sictrl-rep1-pos.out
 bash DKC1-arrest.sh HEK-sictrl-input-IV-rep1.bam HEK-sictrl-IP-IV-rep1.bam ELAP-HEK-neg.bed sictrl-rep1-neg.out
@@ -57,8 +57,8 @@ bash DKC1-calculate.sh siDKC1-rep1 siDKC1-rep1-calculate.out
 bash DKC1-calculate.sh siDKC1-rep2 siDKC1-rep2-calculate.out
 ```
 ## Process data in exce files
-### 1. Calculate local RPM value by dividing read coverage at the modification site by the total number of mapped reads
-### 2. Calculate average RPM values for input samples under each condition
-### 3. Calculate enrichment level at each site by dividing the RPM value at the site in each IP sample by the average RPM value in input samples
-### 4. Calculate fold change of enrichment level between the siDKC1 and sictrl conditions and p-value using student's t-test.
+### 1) Calculate local RPM value by dividing read coverage at the modification site by the total number of mapped reads
+### 2) Calculate average RPM values for input samples under each condition
+### 3) Calculate enrichment level at each site by dividing the RPM value at the site in each IP sample by the average RPM value in input samples
+### 4) Calculate fold change of enrichment level between the siDKC1 and sictrl conditions and p-value using student's t-test.
 
