@@ -2,8 +2,8 @@
 
 # Input arguments
 BAM=$1            # e.g., IP.bam
-FORWARD_BED=$2    # e.g., forward.bed
-REVERSE_BED=$3    # e.g., reverse.bed
+FORWARD_BED=$2    # e.g., pos.bed
+REVERSE_BED=$3    # e.g., neg.bed
 OUTPUT=$4         # e.g., combined_sorted_coverage.txt
 
 # Temporary files
