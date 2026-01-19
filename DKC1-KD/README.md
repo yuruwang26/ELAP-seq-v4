@@ -33,7 +33,7 @@ In DKC1-preprocessing.sh, reads were first de-duplicated using clumpify.sh, and 
 bash DKC1-preprocessing.sh
 ```
 
-## 4. Acquire information of read coverage for known candidate sites identified in HEK293T cells 
+## 4. Acquire information of read coverage at known candidate sites identified in HEK293T cells 
 ### 1) Categorize candidate modification sites identified in HEK293T cells according to the mapped strands 
 Reverse the strand identity due to applying results from R2-only reads to the analysis using merged-reads. Save resulting files as ELAP-HEK-pos.bed and ELAP-HEK-neg.bed, which contain the information of chromosome number, start position, end position and strand (+/-).
 
