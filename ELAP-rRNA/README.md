@@ -64,7 +64,7 @@ bash rRNA_filter_p2.sh rRNA-rep1-stutter.bed rRNA-rep1-filter.bed
 ```bash
 bedtools intersect -wa -wb -a rRNA-rep1-filter.bed -b rRNA-rep2-filter.bed > rRNA-out.bed
 ```
-## 5. Applying cutoffs to define candidate modification sites
+## 5. Apply cutoffs to define candidate modification sites
 A candidate site in rRNA is defined when meeting the following criteria: 
 1) the stop ratio at the site in the pull-down library is > 0.05 in both replicates;
 2) stop ratio in the pull-down library – stop ratio in the input library is > 0.05 in both replicates;
