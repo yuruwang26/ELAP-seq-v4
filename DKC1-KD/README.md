@@ -48,7 +48,7 @@ bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK
 bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed siDKC1-IP-rep1.bed
 bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed siDKC1-IP-rep2.bed 
 ```
-## Process data in exce files
+## 5. Process data in exce files
 ### 1) Calculate local RPM value by dividing read coverage at the modification site by the total number of mapped reads
 ### 2) Calculate average RPM values for input samples under each condition
 ### 3) Calculate enrichment level at each site by dividing the RPM value at the site in each IP sample by the average RPM value in input samples
