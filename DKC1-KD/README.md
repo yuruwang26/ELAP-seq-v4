@@ -37,24 +37,16 @@ bash DKC1-preprocessing.sh
 ### 1) Categorize candidate modification sites identified in HEK293T cells according to the mapped strands 
 Reverse the strand identity due to applying results from R2-only reads to the analysis using merged-reads. Save resulting files as ELAP-HEK-pos.bed and ELAP-HEK-neg.bed, which contain the information of chromosome number, start position, end position and strand.
 
-### 2) Acquire information of read coverage using DKC1-arrest.sh
+### 2) Acquire information of read coverage using coverage_pipeline.sh
 ```bash
-bash DKC1-arrest.sh HEK-sictrl-input-IV-rep1.bam HEK-sictrl-IP-IV-rep1.bam ELAP-HEK-pos.bed sictrl-rep1-pos.out
-bash DKC1-arrest.sh HEK-sictrl-input-IV-rep1.bam HEK-sictrl-IP-IV-rep1.bam ELAP-HEK-neg.bed sictrl-rep1-neg.out
-cat sictrl-rep1-pos.out sictrl-rep1-neg.out > sictrl-rep1.out
-bash DKC1-arrest.sh HEK-sictrl-input-IV-rep2.bam HEK-sictrl-IP-IV-rep2.bam ELAP-HEK-pos.bed sictrl-rep2-pos.out
-bash DKC1-arrest.sh HEK-sictrl-input-IV-rep2.bam HEK-sictrl-IP-IV-rep2.bam ELAP-HEK-neg.bed sictrl-rep2-neg.out
-cat sictrl-rep2-pos.out sictrl-rep2-neg.out > sictrl-rep2.out
-bash DKC1-arrest.sh HEK-siDKC1-input-IV-rep1.bam HEK-siDKC1-IP-IV-rep1.bam ELAP-HEK-pos.bed siDKC1-rep1-pos.out
-bash DKC1-arrest.sh HEK-siDKC1-input-IV-rep1.bam HEK-siDKC1-IP-IV-rep1.bam ELAP-HEK-neg.bed siDKC1-rep1-neg.out
-cat siDKC1-rep1-pos.out siDKC1-rep1-neg.out > siDKC1-rep1.out
-bash DKC1-arrest.sh HEK-siDKC1-input-IV-rep2.bam HEK-siDKC1-IP-IV-rep2.bam ELAP-HEK-pos.bed siDKC1-rep2-pos.out
-bash DKC1-arrest.sh HEK-siDKC1-input-IV-rep2.bam HEK-siDKC1-IP-IV-rep2.bam ELAP-HEK-neg.bed siDKC1-rep2-neg.out
-cat siDKC1-rep2-pos.out siDKC1-rep2-neg.out > siDKC1-rep2.out
-bash DKC1-calculate.sh sictrl-rep1 sictrl-rep1-calculate.out
-bash DKC1-calculate.sh sictrl-rep2 sictrl-rep2-calculate.out
-bash DKC1-calculate.sh siDKC1-rep1 siDKC1-rep1-calculate.out
-bash DKC1-calculate.sh siDKC1-rep2 siDKC1-rep2-calculate.out
+bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed sictrl-input-rep1.bed
+bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed sictrl-input-rep2.bed
+bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed siDKC1-input-rep1.bed
+bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed siDKC1-input-rep2.bed
+bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed sictrl-IP-rep1.bed
+bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed sictrl-IP-rep2.bed
+bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed siDKC1-IP-rep1.bed
+bash coverage_pipeline.sh HEK-sictrl-input-IV-rep1.bam ELAP-HEK-pos.bed ELAP-HEK-neg.bed siDKC1-IP-rep2.bed 
 ```
 ## Process data in exce files
 ### 1) Calculate local RPM value by dividing read coverage at the modification site by the total number of mapped reads
