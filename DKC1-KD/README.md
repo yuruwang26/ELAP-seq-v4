@@ -1,5 +1,5 @@
 # DKC1-Knockdown-analysis-workflow
-## Merge paired end reads 
+## 1. Merge paired end reads 
 Paired end sequencing were used. Reads R1 and R2 were first merged, then decomplexed based on the internal barcodes. 
 ```bash
 /home/yuruwang/Tools/anaconda3/bin/bbmerge.sh in1=YW-S1_R1.fastq.gz in2=YW-S1_R2.fastq.gz out=YW_S1_merge.fastq.gz
@@ -12,24 +12,25 @@ gunzip YW_S1_merge.fastq.gz
 gunzip YW_S2_merge.fastq.gz
 
 
-## sort based on internal barcodes.
-seqkit grep -s -r -p "^TCT" YW_S1_merge.fastq -o ./sorted/Input-sictrlD-rep1.fastq
-seqkit grep -s -r -p "^ACA" YW_S1_merge.fastq -o ./sorted/Input-sictrlD-rep2.fastq
-seqkit grep -s -r -p "^CTG" YW_S1_merge.fastq -o ./sorted/Input-siDKC1-rep1.fastq
-seqkit grep -s -r -p "^GAC" YW_S1_merge.fastq -o ./sorted/Input-siDKC1-rep2.fastq
-seqkit grep -s -r -p "^TCT" YW_S5_merge.fastq -o ./sorted/IP-sictrlD-rep1.fastq
-seqkit grep -s -r -p "^ACA" YW_S5_merge.fastq -o ./sorted/IP-sictrlD-rep2.fastq
-seqkit grep -s -r -p "^CTG" YW_S5_merge.fastq -o ./sorted/IP-siDKC1-rep1.fastq
-seqkit grep -s -r -p "^GAC" YW_S5_merge.fastq -o ./sorted/IP-siDKC1-rep2.fastq
-
-## De-duplication, trim adapters and mapping
+## 2. Sort samples based on internal barcodes.
+```bash
+seqkit grep -s -r -p "^TCT" YW_S1_merge.fastq -o ./sorted/HEK-sictrl-input-IV-rep1.fastq       
+seqkit grep -s -r -p "^ACA" YW_S1_merge.fastq -o ./sorted/HEK-sictrl-input-IV-rep2.fastq
+seqkit grep -s -r -p "^CTG" YW_S1_merge.fastq -o ./sorted/HEK-siDKC1-input-IV-rep1.fastq
+seqkit grep -s -r -p "^GAC" YW_S1_merge.fastq -o ./sorted/HEK-siDKC1-input-IV-rep2.fastq
+seqkit grep -s -r -p "^TCT" YW_S5_merge.fastq -o ./sorted/HEK-sictrl-IP-IV-rep1.fastq
+seqkit grep -s -r -p "^ACA" YW_S5_merge.fastq -o ./sorted/HEK-sictrl-IP-IV-rep2.fastq
+seqkit grep -s -r -p "^CTG" YW_S5_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep1.fastq
+seqkit grep -s -r -p "^GAC" YW_S5_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep2.fastq
+```
+## 3. De-duplication, trim adapters and mapping
 In DKC1-processing.sh, reads were first de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
 
 ```bash
 bash DKC1-preprocessing.sh
 ```
 
-## Acquire information of read coverage for known candidate sites identified in HEK293T cells 
+## 4. Acquire information of read coverage for known candidate sites identified in HEK293T cells 
 Categorize candidate modification sites identified in HEK293T cells according to the mapped strands (strand reversal due to applying applying results from R2-only mapping to the analysis using merged-read mapping)
 
 ```bash
