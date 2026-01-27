@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ###
-### filter1.sh 
+### filter_III.sh 
 ###    -  filter sites based on stop ratio, and select for sites covered by at least 1 uniquely mapped reads
 ### 
 ###  
 ### Usage:
-###   filter1.sh <IP.bam>  <inside-unfiltered.out> <outside-unfiltered.out> <unique.bed>
+###   filter_III.sh <IP.bam>  <inside-unfiltered.out> <outside-unfiltered.out> <unique.bed>
 ###
 ### Options:
 ###   
