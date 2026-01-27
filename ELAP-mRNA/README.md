@@ -10,19 +10,19 @@ This process includes five steps:
 ### 1) trim adapter
 
 ```bash
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-III-rep1-cutadapt.fq.gz HeLa-input-III-rep1_R2.fq.gz >> adaptorTrim.log
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-IV-rep1-cutadapt.fq.gz HeLa-input-IV-rep1_R2.fq.gz >> adaptorTrim.log
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-III-rep1-cutadapt.fq.gz HeLa-IP-III-rep1_R2.fq.gz >> adaptorTrim.log
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-IV-rep1-cutadapt.fq.gz HeLa-IP-IV-rep1_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-rep1-III-cutadapt.fq.gz HeLa-input-rep1-III_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-rep1-IV-cutadapt.fq.gz HeLa-input-rep1-IV_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-rep1-III-cutadapt.fq.gz HeLa-IP-rep1-III_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-rep1-IV-cutadapt.fq.gz HeLa-IP-rep1-IV_R2.fq.gz >> adaptorTrim.log
 ```
 
 ### 2) remove duplicates
 
 ```bash
-~/Tools/bbmap/clumpify.sh in=HeLa-input-III-rep1-cutadapt.fq.gz out=HeLa-input-III-rep1-dedupe.fq.gz dedupe >> duplicates_removal_1.log
-~/Tools/bbmap/clumpify.sh in=HeLa-input-IV-rep1-cutadapt.fq.gz out=HeLa-input-IV-rep1-dedupe.fq.gz dedupe >> duplicates_removal_1.log
-~/Tools/bbmap/clumpify.sh in=HeLa-IP-III-rep1-cutadapt.fq.gz out=HeLa-IP-III-rep1-dedupe.fq.gz dedupe >> duplicates_removal_1.log
-~/Tools/bbmap/clumpify.sh in=HeLa-IP-IV-rep1-cutadapt.fq.gz out=HeLa-IP-IV-rep1-dedupe.fq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-input-rep1-III-cutadapt.fq.gz out=HeLa-input-rep1-III-dedupe.fq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-input-rep1-IV-cutadapt.fq.gz out=HeLa-input-rep1-IV-dedupe.fq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-IP-rep1-III-cutadapt.fq.gz out=HeLa-IP-rep1-III-dedupe.fq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-IP-rep1-IV-cutadapt.fq.gz out=HeLa-IP-rep1-IV-dedupe.fq.gz dedupe >> duplicates_removal_1.log
 ```
 
 ### 3) trim UMI
@@ -32,22 +32,22 @@ conda activate cutadaptenv
 ```
 
 ```bash
-cutadapt -u 6 -o tmp.trimmed.fastq HeLa-input-III-rep1-dedupe.fq.gz
-cutadapt -u -5 -q 10,10 -m 19 -o HeLa-input-III-rep1-trim.fq.gz tmp.trimmed.fastq
+cutadapt -u 6 -o tmp.trimmed.fastq HeLa-input-rep1-III-dedupe.fq.gz
+cutadapt -u -5 -q 10,10 -m 19 -o HeLa-input-rep1-III-trim.fq.gz tmp.trimmed.fastq
 ```
 
 ```bash
-cutadapt -u 7 -o tmp.trimmed.fastq HeLa-input-IV-rep1-dedupe.fq.gz
-cutadapt -u -5 -q 10,10 -m 19 -o HeLa-input-IV-rep1-trim.fq.gz tmp.trimmed.fastq
+cutadapt -u 7 -o tmp.trimmed.fastq HeLa-input-rep1-IV-dedupe.fq.gz
+cutadapt -u -5 -q 10,10 -m 19 -o HeLa-input-rep1-IV-trim.fq.gz tmp.trimmed.fastq
 ```
 ```bash
-cutadapt -u 6 -o tmp.trimmed.fastq HeLa-IP-III-rep1-dedupe.fq.gz
-cutadapt -u -5 -q 10,10 -m 19 -o HeLa-IP-III-rep1-trim.fq.gz tmp.trimmed.fastq
+cutadapt -u 6 -o tmp.trimmed.fastq HeLa-IP-rep1-III-dedupe.fq.gz
+cutadapt -u -5 -q 10,10 -m 19 -o HeLa-IP-rep1-III-trim.fq.gz tmp.trimmed.fastq
 ```
 
 ```bash
-cutadapt -u 7 -o tmp.trimmed.fastq HeLa-IP-IV-rep1-dedupe.fq.gz
-cutadapt -u -5 -q 10,10 -m 19 -o HeLa-IP-IV-rep1-trim.fq.gz tmp.trimmed.fastq
+cutadapt -u 7 -o tmp.trimmed.fastq HeLa-IP-rep1-IV-dedupe.fq.gz
+cutadapt -u -5 -q 10,10 -m 19 -o HeLa-IP-rep1-IV-trim.fq.gz tmp.trimmed.fastq
 ```
 ```bash
 conda deactivate
@@ -55,22 +55,22 @@ conda deactivate
 ### 4) map reads to the genome
 
 ```bash
-hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-input-III-rep1-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-input-III-rep1.bam
-samtools index HeLa-input-III-rep1.bam HeLa-input-III-rep1.bai
-hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-input-IV-rep1-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-input-IV-rep1.bam
-samtools index HeLa-input-IV-rep1.bam HeLa-input-IV-rep1.bai
-hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-IP-III-rep1-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-IP-III-rep1.bam
-samtools index HeLa-IP-III-rep1.bam HeLa-IP-III-rep1.bai
-hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-IP-IV-rep1-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-IP-IV-rep1.bam
-samtools index HeLa-IP-IV-rep1.bam HeLa-IP-IV-rep1.bai
+hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-input-rep1-III-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-input-rep1-III.bam
+samtools index HeLa-input-rep1-III.bam HeLa-input-rep1-III.bai
+hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-input-rep1-IV-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-input-rep1-IV.bam
+samtools index HeLa-input-rep1-IV.bam HeLa-input-rep1-IV.bai
+hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-IP-rep1-III-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-IP-rep1-III.bam
+samtools index HeLa-IP-rep1-III.bam HeLa-IP-rep1-III.bai
+hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-IP-rep1-IV-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-IP-rep1-IV.bam
+samtools index HeLa-IP-rep1-IV.bam HeLa-IP-rep1-IV.bai
 ```
 
 ### 5) combine .bam files from III and IV
 ```bash
-samtools merge HeLa-input-III-IV-rep1.bam HeLa-input-III-rep1.bam HeLa-input-IV-rep1.bam
-samtools merge HeLa-IP-III-IV-rep1.bam HeLa-IP-III-rep1.bam HeLa-IP-IV-rep1.bam
-samtools index HeLa-input-III-IV-rep1.bam HeLa-input-III-IV-rep1.bai
-samtools index HeLa-IP-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bai
+samtools merge HeLa-input-rep1-III-IV.bam HeLa-input-rep1-III.bam HeLa-input-rep1-IV.bam
+samtools merge HeLa-IP-rep1-III-IV.bam HeLa-IP-rep1-III.bam HeLa-IP-rep1-IV.bam
+samtools index HeLa-input-rep1-III-IV.bam HeLa-input-rep1-III-IV.bai
+samtools index HeLa-IP-rep1-III-IV.bam HeLa-IP-rep1-III-IV.bai
 ```
 
 
@@ -81,8 +81,8 @@ samtools index HeLa-IP-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bai
 ### 1) MACS2 is used to call IP peaks.
 
 ```bash
-macs2 callpeak -t HeLa-IP-III-rep1.bam -c HeLa-input-III-rep1.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-peadDir
-macs2 callpeak -t HeLa-IP-III-IV-rep1.bam -c HeLa-input-III-IV-rep1.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-IV-peadDir
+macs2 callpeak -t HeLa-IP-rep1-III.bam -c HeLa-input-rep1-III.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-peadDir
+macs2 callpeak -t HeLa-IP-rep1-III-IV.bam -c HeLa-input-rep1-III-IV.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-IV-peadDir
 ```
 ### 2) obtain regions covered by IP peaks 
 Remove unknown chromosomes or random chromosomes manually
@@ -99,36 +99,36 @@ This step can use the command ELAP-seq.sh. This command include the following st
 #### 1) Call all stop sites inside and outside of IP peaks
 This step uses the script arrest.sh
 ```bash
-bash arrest.sh HeLa-input-III-rep1.bam HeLa-IP-III-rep1.bam HeLa-peaks.bed HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out
-bash arrest.sh HeLa-input-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bam HeLa-peaks.bed HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out
+bash arrest.sh HeLa-input-rep1-III.bam HeLa-IP-rep1-III.bam HeLa-peaks.bed HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out
+bash arrest.sh HeLa-input-rep1-III-IV.bam HeLa-IP-rep1-III-IV.bam HeLa-peaks.bed HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out
 ```
 #### 2) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is from the library built with superscript III or combined libraries built with superscript III and IV, and whether it is inside or outside of the IP peak)
 This step uses scripts calculate_III.sh for the III librairy and calculate_III_IV.sh for the III+IV library
 ```bash
-bash calculate_III.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside.out HeLa-III-rep1-outside.out HeLa-III-rep1-inside-unfiltered.bed HeLa-III-rep1-outside-unfiltered.bed HeLa-III-in HeLa-III-out HeLa-III-rep1-unfiltered.bed
-bash calculate_III_IV.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside.out HeLa-III-IV-rep1-outside.out HeLa-III-IV-rep1-inside-unfiltered.bed HeLa-III-IV-rep1-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-III-rep1-unfiltered.bed
+bash calculate_III.sh HeLa-IP-rep1-III.bam HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out HeLa-rep1-III-inside-unfiltered.bed HeLa-rep1-III-outside-unfiltered.bed HeLa-III-in HeLa-III-out HeLa-rep1-III-unfiltered.bed
+bash calculate_III_IV.sh HeLa-IP-rep1-III-IV.bam HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out HeLa-rep1-III-IV-inside-unfiltered.bed HeLa-rep1-III-IV-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-rep1-III-unfiltered.bed
 ```
 
 ### 2. Remove backgrounds 
 This process removes background originated from multiple mapping and diminished processivity of the RT enzyme past a major modification site
 #### 1) determine the main nucleoside for sites mapped with multiple identities
 ```bash
-python3 Rm_bg_1.py HeLa-III-rep1-inside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-ab.bed
-python3 Rm_bg_1.py HeLa-III-rep1-outside-unfiltered.bed | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-ab.bed
+python3 Rm_bg_1.py HeLa-rep1-III-inside-unfiltered.bed | tr ' ' '\t' > HeLa-rep1-III-inside-unfiltered-ab.bed
+python3 Rm_bg_1.py HeLa-rep1-III-outside-unfiltered.bed | tr ' ' '\t' > HeLa-rep1-III-outside-unfiltered-ab.bed
 ```
 #### 2) remove regions that are covered by reads that all share the same start and end mapping position
 ```bash
-python3 Rm_bg_2.py HeLa-III-rep1-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-inside-block.bed
-python3 Rm_bg_2.py HeLa-III-rep1-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-III-rep1-outside-block.bed
-bedtools subtract -a HeLa-III-rep1-inside-unfiltered-ab.bed -b HeLa-III-rep1-inside-block.bed > HeLa-III-rep1-inside-unfiltered-2.bed
-bedtools subtract -a HeLa-III-rep1-outside-unfiltered-ab.bed -b HeLa-III-rep1-outside-block.bed > HeLa-III-rep1-outside-unfiltered-2.bed
+python3 Rm_bg_2.py HeLa-rep1-III-inside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-rep1-III-inside-block.bed
+python3 Rm_bg_2.py HeLa-rep1-III-outside-unfiltered-ab.bed | tr ' ' '\t' > HeLa-rep1-III-outside-block.bed
+bedtools subtract -a HeLa-rep1-III-inside-unfiltered-ab.bed -b HeLa-rep1-III-inside-block.bed > HeLa-rep1-III-inside-unfiltered-2.bed
+bedtools subtract -a HeLa-rep1-III-outside-unfiltered-ab.bed -b HeLa-rep1-III-outside-block.bed > HeLa-rep1-III-outside-unfiltered-2.bed
 ```
 #### 3) Filter away low-coverage stop sites within 50 nt downstream a major stop site
 ```bash
-python3 Rm_bg_3.py HeLa-III-rep1-inside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-inside-unfiltered-low.bed
-python3 Rm_bg_3.py HeLa-III-rep1-outside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-III-rep1-outside-unfiltered-low.bed
-bedtools subtract -a HeLa-III-rep1-inside-unfiltered-2.bed -b HeLa-III-rep1-inside-unfiltered-low.bed > HeLa-III-rep1-inside-unfiltered-3.bed
-bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-outside-unfiltered-low.bed > HeLa-III-rep1-outside-unfiltered-3.bed
+python3 Rm_bg_3.py HeLa-rep1-III-inside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-rep1-III-inside-unfiltered-low.bed
+python3 Rm_bg_3.py HeLa-rep1-III-outside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-rep1-III-outside-unfiltered-low.bed
+bedtools subtract -a HeLa-rep1-III-inside-unfiltered-2.bed -b HeLa-rep1-III-inside-unfiltered-low.bed > HeLa-rep1-III-inside-unfiltered-3.bed
+bedtools subtract -a HeLa-rep1-III-outside-unfiltered-2.bed -b HeLa-rep1-III-outside-unfiltered-low.bed > HeLa-rep1-III-outside-unfiltered-3.bed
 ```
 
 ### 3. Filter sites based on stop ratios, stopped reads
@@ -136,22 +136,22 @@ bedtools subtract -a HeLa-III-rep1-outside-unfiltered-2.bed -b HeLa-III-rep1-out
 #### 1) select for sites that have stop ratio >=0.1 in the pull-down library, stop ratio (pull-down) -stop ratio (input) >= 0.05 (for data from SSIII alone) or 0.1 (for combined data of SSIII and SSIV),  and are covered by at least 1 uniquely mapped reads
 use script filter.sh 
 ```bash
-bash filter_III.sh HeLa-IP-III-rep1.bam HeLa-III-rep1-inside-unfiltered-3.bed HeLa-III-rep1-outside-unfiltered-3.bed HeLa-III-rep1-unique.bed && sort -k1,1 -k2,2n HeLa-III-rep1-unique.bed > HeLa-III-rep1-unique-1.bed
-bash filter_III_IV.sh HeLa-IP-III-IV-rep1.bam HeLa-III-IV-rep1-inside-unfiltered-3.bed HeLa-III-IV-rep1-outside-unfiltered-3.bed HeLa-III-IV-rep1-unique.bed && sort -k1,1 -k2,2n HeLa-III-IV-rep1-unique.bed > HeLa-III-IV-rep1-unique-1.bed
+bash filter_III.sh HeLa-IP-rep1-III.bam HeLa-rep1-III-inside-unfiltered-3.bed HeLa-rep1-III-outside-unfiltered-3.bed HeLa-rep1-III-unique.bed && sort -k1,1 -k2,2n HeLa-rep1-III-unique.bed > HeLa-rep1-III-unique-1.bed
+bash filter_III_IV.sh HeLa-IP-rep1-III-IV.bam HeLa-rep1-III-IV-inside-unfiltered-3.bed HeLa-rep1-III-IV-outside-unfiltered-3.bed HeLa-rep1-III-IV-unique.bed && sort -k1,1 -k2,2n HeLa-rep1-III-IV-unique.bed > HeLa-rep1-III-IV-unique-1.bed
 ```
 #### 2). remove stutter sites
 remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site.
 ```bash
-python3 Stutter1.py HeLa-III-rep1-unique-1.bed | tr ' ' '\t' >  HeLa-III-rep1-stutter-filter.bed
-python3 Stutter1.py HeLa-III-IV-rep1-unique-1.bed | tr ' ' '\t' > HeLa-III-IV-rep1-stutter-filter.bed
+python3 Stutter1.py HeLa-rep1-III-unique-1.bed | tr ' ' '\t' >  HeLa-rep1-III-stutter-filter.bed
+python3 Stutter1.py HeLa-rep1-III-IV-unique-1.bed | tr ' ' '\t' > HeLa-rep1-III-IV-stutter-filter.bed
 ```
 
 remove sites within 6 nt downstream of the current site whose stop ratios are lower than the current site.
 ```bash
-python3 Stutter2.py HeLa-III-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-rep1-remove.bed
-python3 Stutter2.py HeLa-III-IV-rep1-stutter-filter.bed | tr ' ' '\t' > HeLa-III-IV-rep1-remove.bed
-bedtools subtract -a HeLa-III-rep1-stutter-filter.bed -b HeLa-III-rep1-remove.bed > HeLa-III-rep1-stutter-filter-2.bed
-bedtools subtract -a HeLa-III-IV-rep1-stutter-filter.bed -b HeLa-III-IV-rep1-remove.bed > HeLa-III-IV-rep1-stutter-filter-2.bed
+python3 Stutter2.py HeLa-rep1-III-stutter-filter.bed | tr ' ' '\t' > HeLa-rep1-III-remove.bed
+python3 Stutter2.py HeLa-rep1-III-IV-stutter-filter.bed | tr ' ' '\t' > HeLa-rep1-III-IV-remove.bed
+bedtools subtract -a HeLa-rep1-III-stutter-filter.bed -b HeLa-rep1-III-remove.bed > HeLa-rep1-III-stutter-filter-2.bed
+bedtools subtract -a HeLa-rep1-III-IV-stutter-filter.bed -b HeLa-rep1-III-IV-remove.bed > HeLa-rep1-III-IV-stutter-filter-2.bed
 ```
 #### 3). select for sites with at least 5 stopped reads
 ```bash
