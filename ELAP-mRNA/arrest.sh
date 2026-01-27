@@ -35,6 +35,7 @@ bedtools subtract -a 5.bed -b 6.bed > 7.bed
 rm 1.bed 2.bed 3.bed 4.bed 5.bed
  
 
-java -jar /home/yuruwang/Pseudouridine/4-21-22-HeLa-HEK-mRNA/cutadapt/dedupe/trim/sam_files/JACUSA_v2.0.1.jar rt-arrest -m 0 -p 2 -c 1 -P FR_SECONDSTRAND -R /home/yuruwang/Database/genome/hg38/hg38_UCSC.fa -b 6.bed -r $4 $1 $2
-java -jar /home/yuruwang/Pseudouridine/4-21-22-HeLa-HEK-mRNA/cutadapt/dedupe/trim/sam_files/JACUSA_v2.0.1.jar rt-arrest -m 0 -p 2 -c 1 -P FR_SECONDSTRAND -R /home/yuruwang/Database/genome/hg38/hg38_UCSC.fa -b 7.bed -r $5 $1 $2
+java -jar JACUSA_v2.0.1.jar rt-arrest -m 0 -p 2 -c 1 -P FR_SECONDSTRAND -R /home/yuruwang/Database/genome/hg38/hg38_UCSC.fa -b 6.bed -r $4 $1 $2
+java -jar JACUSA_v2.0.1.jar rt-arrest -m 0 -p 2 -c 1 -P FR_SECONDSTRAND -R /home/yuruwang/Database/genome/hg38/hg38_UCSC.fa -b 7.bed -r $5 $1 $2
+
 
