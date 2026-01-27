@@ -72,9 +72,9 @@ samtools merge HeLa-IP-III-IV-rep1.bam HeLa-IP-III-rep1.bam HeLa-IP-IV-rep1.bam
 samtools index HeLa-input-III-IV-rep1.bam HeLa-input-III-IV-rep1.bai
 samtools index HeLa-IP-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bai
 ```
-#
-#
-#
+
+
+
 
 
 ## 2. Call IP peaks
