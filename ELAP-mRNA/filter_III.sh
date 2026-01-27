@@ -22,9 +22,9 @@
 ###  Yuru Wang (yuruwang26@hotmail.com)
 ###
 
-awk '{ if($15 >= 0.1 ) print $0;}' $2 > 6-18.out
+awk '{ if($15 >= 0.1 && ($15 - $14) >=0.05) print $0;}' $2 > 6-18.out
 
-awk '{ if($15 >= 0.1 ) print $0;}' $3 > 7-18.out
+awk '{ if($15 >= 0.1 && ($15 - $14) >= 0.05) print $0;}' $3 > 7-18.out
 
 awk -v OFS="\t" '$1=$1' 6-18.out > 6-19.bed
 awk -v OFS="\t" '$1=$1' 7-18.out > 7-19.bed
