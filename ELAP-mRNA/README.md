@@ -10,7 +10,7 @@ This process includes five steps:
 ### 1) trim adapter
 
 ```bash
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-rep1-III-cutadapt.fq.gz HeLa-input-rep1-III_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-III-input-cutadapt.fq.gz HeLa-rep1-III-input_R2.fq.gz >> adaptorTrim.log
 cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-rep1-IV-cutadapt.fq.gz HeLa-input-rep1-IV_R2.fq.gz >> adaptorTrim.log
 cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-rep1-III-cutadapt.fq.gz HeLa-IP-rep1-III_R2.fq.gz >> adaptorTrim.log
 cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-rep1-IV-cutadapt.fq.gz HeLa-IP-rep1-IV_R2.fq.gz >> adaptorTrim.log
