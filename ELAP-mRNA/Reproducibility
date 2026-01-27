@@ -2,4 +2,4 @@ For evaluating reproducibility, we start from files ending in unfiltered-3.bed.
 We filter for sites that are covered by at least 5 reads in each file. 
 Then we further filter for sites that have overlap with at least one other replicate
 We also require stopped reads * stopped ratio >= 1.5 in each replicate.
-Finally we overlap these sites with the filter-2.bed file to obtain stopped sites in each replicate.
+Finally we overlap these sites with the files ending with filter-2.bed to obtain stopped sites in each replicate.
