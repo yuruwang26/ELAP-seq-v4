@@ -73,6 +73,8 @@ samtools index HeLa-input-III-IV-rep1.bam HeLa-input-III-IV-rep1.bai
 samtools index HeLa-IP-III-IV-rep1.bam HeLa-IP-III-IV-rep1.bai
 ```
 
+
+
 ## 2. Call IP peaks
 ### 1) MACS2 is used to call IP peaks.
 
@@ -83,6 +85,9 @@ macs2 callpeak -t HeLa-IP-III-IV-rep1.bam -c HeLa-input-III-IV-rep1.bam -n test_
 ### 2) obtain regions covered by IP peaks 
 Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
+
+
+
 
 ## 3. Downstream analysis to detect pseudouridine (ELAP-seq.sh)
 This step can use the command ELAP-seq.sh. This command include the following steps:
@@ -201,6 +206,8 @@ awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$
 ```
 
 #### 4) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
+
+
 
 
 ## 4. post-processing : determing confidence levels and modification levels
