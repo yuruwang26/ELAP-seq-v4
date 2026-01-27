@@ -85,7 +85,7 @@ Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
 ## 3. Downstream analysis to detect pseudouridine (ELAP-seq.sh)
-This command include the following three steps:
+From step 3 to step 4, can use the command ELAP-seq.sh. This command include the following steps:
 
 ### 1. Call arrested sites inside and outside of the IP peaks. 
 
