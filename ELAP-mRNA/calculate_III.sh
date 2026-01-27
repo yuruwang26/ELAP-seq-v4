@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ###
-### calculate1.sh 
+### calculate_III.sh 
 ###    - calculate sum total reads for input and IP, calculate stop ratios in input and IP, and assign the originality of the site
 ### 
 ###  
 ### Usage:
-###   calculate1.sh <IP.bam>  <inside.out> <outside.out> <inside-unfiltered.bed> <outside-unfiltered.bed> <name-in> <name-out> <unfiltered>
+###   calculate_III.sh <IP.bam>  <inside.out> <outside.out> <inside-unfiltered.bed> <outside-unfiltered.bed> <name-in> <name-out> <unfiltered>
 ###
 ### Options:
 ###   <IP.bam>         IP bam file to read
