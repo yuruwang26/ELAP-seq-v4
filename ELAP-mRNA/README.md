@@ -155,23 +155,23 @@ bedtools subtract -a HeLa-rep1-III-IV-stutter-filter.bed -b HeLa-rep1-III-IV-rem
 ```
 #### 3). select for sites with at least 5 stopped reads
 ```bash
-awk '{ if($10 >4) print $0;}' HeLa-III-rep1-stutter-filter-2.bed > HeLa-III-rep1-filter1.bed
-awk '{ if($10 >4) print $0;}' HeLa-III-rep2-stutter-filter-2.bed > HeLa-III-rep2-filter1.bed
-awk '{ if($10 >4) print $0;}' HeLa-III-IV-rep1-stutter-filter-2.bed > HeLa-III-IV-rep1-filter1.bed
-awk '{ if($10 >4) print $0;}' HeLa-III-IV-rep2-stutter-filter-2.bed > HeLa-III-IV-rep2-filter1.bed
+awk '{ if($10 >4) print $0;}' HeLa-rep1-III-stutter-filter-2.bed > HeLa-rep1-III-filter1.bed
+awk '{ if($10 >4) print $0;}' HeLa-rep2-III-stutter-filter-2.bed > HeLa-rep2-III-filter1.bed
+awk '{ if($10 >4) print $0;}' HeLa-rep1-III-IV-stutter-filter-2.bed > HeLa-rep1-III-IV-filter1.bed
+awk '{ if($10 >4) print $0;}' HeLa-rep2-III-IV-stutter-filter-2.bed > HeLa-rep2-III-IV-filter1.bed
 ```
 
 #### 4). Remove sites whose stop ratios are >= 0.1 in the input, (stop ratio in pull-down)/(stop ratio in input) are < 3, and stopped reads in the input are >=3 
 ```bash
-awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' HeLa-III-rep1-filter1.bed > HeLa-III-rep1-filter2.bed
+awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' HeLa-rep1-III-filter1.bed > HeLa-rep1-III-filter2.bed
 ```
 #### 5). Optional: for evaluainge reproducibility, focus on sites that are covered by at least five reads in one other replicate and require that stop ratio * stopped reads is >=1.5 before intersecting replicates
 ```bash
-awk '($13 >=5 && $10*$15 > = 1.5)' HeLa-III-rep1-filter2.bed > HeLa-III-rep1-filter3.bed
-bedtools intersect -a HeLa-III-rep1-filter3.bed HeLa-III-rep2-filter3.bed > HeLa-III-rep1-rep2.bed
-bedtools intersect -a HeLa-III-rep1-filter3.bed HeLa-III-rep3-filter3.bed > HeLa-III-rep1-rep3.bed
-bedtools subtract -a HeLa-III-rep1-rep2.bed -b HeLa-III-rep1-rep3.bed > tmp.bed
-cat HeLa-III-rep1-rep3.bed tmp.bed > HeLa-III-rep1-filter4.bed
+awk '($13 >=5 && $10*$15 > = 1.5)' HeLa-rep1-III-filter2.bed > HeLa-rep1-III-filter3.bed
+bedtools intersect -a HeLa-rep1-III-filter3.bed HeLa-rep2-III-filter3.bed > HeLa-rep1-rep2-III.bed
+bedtools intersect -a HeLa-rep1-III-filter3.bed HeLa-rep3-III-filter3.bed > HeLa-rep1-rep3-III.bed
+bedtools subtract -a HeLa-rep1-rep2-III.bed -b HeLa-rep1-rep3-III.bed > tmp.bed
+cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 ```
 ### 4 Intersect two biological replicates and further filter (if using superscript III data alone)
 
@@ -184,13 +184,13 @@ cat HeLa-III-rep1-rep3.bed tmp.bed > HeLa-III-rep1-filter4.bed
 
 #### 1) combine sites identified from III and new sites identified from III+IV
 ```bash
-bedtools subtract -a HeLa-III-IV-rep1-filter2.bed -b HeLa-III-rep1-filter2.bed > new.bed
-cat HeLa-III-rep1-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
+bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
+cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
 #### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
 ```bash
 # prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
-cat HeLa-III-IV-rep1-inside-unfiltered-2.bed HeLa-III-IV-rep1-outside-unfiltered-2.bed > HeLa-III-IV-rep1-unfiltered-2.bed
+cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
 ```
 ```bash
 #intersect with the file containing sites passing all filter steps so far. 
