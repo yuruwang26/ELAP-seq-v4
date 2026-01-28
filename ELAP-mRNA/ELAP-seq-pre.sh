@@ -94,7 +94,6 @@ awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$6/$6-III-IV-filter1.bed > 
 
 
 bedtools subtract -a ./$6/$6-III-IV-stutter-filter-2.bed -b ./$6/$6-III-stutter-filter-2.bed > ./$6/$6-new.bed
-
 cat ./$6/$6-III-stutter-filter-2.bed ./$6/$6-new.bed | sort -k1,1 > ./$6/$6-combined.bed
 
 bedtools intersect -wa -wb -a ./$6/$6-III-IV-unfiltered-2.bed -b ./$6/$6-combined.bed > ./$6/$6-combined-1.bed
