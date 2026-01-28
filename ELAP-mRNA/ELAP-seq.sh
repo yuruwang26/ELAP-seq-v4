@@ -26,9 +26,4 @@ bash ELAP-seq-pre.sh $1 $2 $3 $4 $5 $6
 bedtools intersect -wa -wb -a ./$6/$6-III-IV-unfiltered-2.bed -b ./$6/$6-combined.bed > ./$6/$6-combined-1.bed
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$29,$30,$31,$32,$33,$34}' ./$6/$6-combined-1.bed | awk -v OFS="\t" '$1=$1' > ./$6/$6-combined-2.bed
 
-bedtools intersect -wa -wb -a ./$6/$6-combined-2.bed -b ./$12/$12-combined-2.bed > HeLa.bed
-awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
-awk '{print $0"\t"($9+$18)/2}' HeLa-sort.bed > HeLa-input-avg.bed
-awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
-python3 In_stop.py HeLa-IP-avg.bed > HeLa-filter-2.bed
 
