@@ -198,30 +198,32 @@ bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-com
 ```
 
 ```bash
+# tidy up the table
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-filtered.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
 ## 4 Intersect two biological replicates and further filter (if using superscript III data alone)
 
-### 1) Intersect two biological replicates
+### 1. If using superscript III data alone
+#### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-III-filter2.bed -b HeLa-rep2-III-filter2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
-### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
-### 3) Select for sites whose stop locate at T
+#### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
+#### 3) Select for sites whose stop locate at T
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
 ```
-## 4 Intersect two biological replicates and further filter (if using superscript III and IV data)
+### 2. If using superscript III and IV data
 
-### 1) Intersect two biological replicates
+#### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
-### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
-### 3) Select for sites whose stop locate at T
+#### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
+#### 3) Select for sites whose stop locate at T
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
 ```
