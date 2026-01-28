@@ -182,12 +182,12 @@ bedtools subtract -a HeLa-rep1-rep2-III.bed -b HeLa-rep1-rep3-III.bed > tmp.bed
 cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 ```
 
-#### 6) combine sites identified from III and new sites identified from III+IV
+### 4. combine sites identified from III and new sites identified from III+IV
 ```bash
 bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
 cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
-#### 7) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
+### 5. for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
 ```bash
 # prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
