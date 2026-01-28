@@ -201,7 +201,9 @@ awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$
 ```
 ### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 ### 3) Select for sites whose stop locate at T
-
+```bash
+awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
+```
 ## 4 Intersect two biological replicates and further filter (if using superscript III and IV data)
 
 ### 1) Intersect two biological replicates
@@ -212,7 +214,9 @@ awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$
 
 ### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 ### 3) Select for sites whose stop locate at T
-
+```bash
+awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
+```
 ## 5. post-processing : determing confidence levels and modification levels
 ### 1) calculate RPM
 ```bash
