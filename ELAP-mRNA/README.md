@@ -173,21 +173,13 @@ bedtools intersect -a HeLa-rep1-III-filter3.bed HeLa-rep3-III-filter3.bed > HeLa
 bedtools subtract -a HeLa-rep1-rep2-III.bed -b HeLa-rep1-rep3-III.bed > tmp.bed
 cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 ```
-### 4 Intersect two biological replicates and further filter (if using superscript III data alone)
 
-
-#### 1) Intersect two biological replicates
-#### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
-
-
-### 4 Intersect two biological replicates and further filter (if using superscript III and IV data)
-
-#### 1) combine sites identified from III and new sites identified from III+IV
+#### 6) combine sites identified from III and new sites identified from III+IV
 ```bash
 bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
 cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
-#### 2) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
+#### 7) for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
 ```bash
 # prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
@@ -200,19 +192,28 @@ bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-com
 ```bash
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-filtered.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
+## 4 Intersect two biological replicates and further filter (if using superscript III data alone)
 
-#### 3) Intersect two biological replicates
+### 1) Intersect two biological replicates
+```bash
+bedtools intersect -wa -wb -a HeLa-rep1-III-filter2.bed -b HeLa-rep2-III-filter2.bed > HeLa.bed
+awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
+```
+### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
+### 3) Select for sites whose stop locate at T
+
+## 4 Intersect two biological replicates and further filter (if using superscript III and IV data)
+
+### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$10,$13,$14,$22,$20,$21,$25,$26,$23,$24,$27,$28}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
 
-#### 4) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
+### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
+### 3) Select for sites whose stop locate at T
 
-
-
-
-## 4. post-processing : determing confidence levels and modification levels
+## 5. post-processing : determing confidence levels and modification levels
 ### 1) calculate RPM
 ```bash
 awk '{OFS=" "; print $1,$2,$3,$4,$5,$6,($7/10.3128),($8/4.9938),$9,$10,$11,$12,$13,$14,$15,($16/11.3053),($17/5.67979),$18,$19,$20,$21,$22,$23,$24,$25}' OFS="\t" HeLa-filter-T.bed > HeLa-RPM.bed
