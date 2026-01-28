@@ -96,5 +96,7 @@ awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$6/$6-III-IV-filter1.bed > 
 bedtools subtract -a ./$6/$6-III-IV-stutter-filter-2.bed -b ./$6/$6-III-stutter-filter-2.bed > ./$6/$6-new.bed
 cat ./$6/$6-III-stutter-filter-2.bed ./$6/$6-new.bed | sort -k1,1 > ./$6/$6-combined.bed
 
+### prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
+cat ./$6/$6-III-IV-inside-unfiltered-2.bed ./$6/$6-III-IV-outside-unfiltered-2.bed > ./$6/$6-III-IV-unfiltered-2.bed
 bedtools intersect -wa -wb -a ./$6/$6-III-IV-unfiltered-2.bed -b ./$6/$6-combined.bed > ./$6/$6-combined-1.bed
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$29,$30,$31,$32,$33,$34}' ./$6/$6-combined-1.bed | awk -v OFS="\t" '$1=$1' > ./$6/$6-combined-2.bed
