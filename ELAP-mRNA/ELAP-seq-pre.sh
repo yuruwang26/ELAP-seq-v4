@@ -85,6 +85,10 @@ python3 Stutter2.py ./$6/$6-III-IV-stutter-filter.bed | tr ' ' '\t' > ./$6/$6-II
 
 bedtools subtract -a ./$6/$6-III-stutter-filter.bed -b ./$6/$6-III-remove.bed > ./$6/$6-III-stutter-filter-2.bed
 bedtools subtract -a ./$6/$6-III-IV-stutter-filter.bed -b ./$6/$6-III-IV-remove.bed > ./$6/$6-III-IV-stutter-filter-2.bed
+
+awk '{ if($10 >4) print $0;}' ./$6/$6-III-stutter-filter-2.bed > ./$6/$6-III-filter1.bed
+awk '{ if($10 >4) print $0;}' ./$6/$6-III-IV-stutter-filter-2.bed > ./$6/$6-III-IV-filter1.bed
+
 bedtools subtract -a ./$6/$6-III-IV-stutter-filter-2.bed -b ./$6/$6-III-stutter-filter-2.bed > ./$6/$6-new.bed
 
 cat ./$6/$6-III-stutter-filter-2.bed ./$6/$6-new.bed | sort -k1,1 > ./$6/$6-combined.bed
