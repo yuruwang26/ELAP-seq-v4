@@ -10,19 +10,19 @@ This process includes five steps:
 ### 1) trim adapter
 
 ```bash
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-III-input-cutadapt.fq.gz HeLa-rep1-III-input_R2.fq.gz >> adaptorTrim.log
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-rep1-IV-cutadapt.fq.gz HeLa-input-rep1-IV_R2.fq.gz >> adaptorTrim.log
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-rep1-III-cutadapt.fq.gz HeLa-IP-rep1-III_R2.fq.gz >> adaptorTrim.log
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-rep1-IV-cutadapt.fq.gz HeLa-IP-rep1-IV_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-III-input-cutadapt.fq.gz HeLa-input-III-rep1_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-IV-input-cutadapt.fq.gz HeLa-input-IV-rep1_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-III-IP-cutadapt.fq.gz HeLa-IP-III-rep1_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-IV-IP-cutadapt.fq.gz HeLa-IP-IV-rep1_R2.fq.gz >> adaptorTrim.log
 ```
 
 ### 2) remove duplicates
 
 ```bash
-~/Tools/bbmap/clumpify.sh in=HeLa-input-rep1-III-cutadapt.fq.gz out=HeLa-input-rep1-III-dedupe.fq.gz dedupe >> duplicates_removal_1.log
-~/Tools/bbmap/clumpify.sh in=HeLa-input-rep1-IV-cutadapt.fq.gz out=HeLa-input-rep1-IV-dedupe.fq.gz dedupe >> duplicates_removal_1.log
-~/Tools/bbmap/clumpify.sh in=HeLa-IP-rep1-III-cutadapt.fq.gz out=HeLa-IP-rep1-III-dedupe.fq.gz dedupe >> duplicates_removal_1.log
-~/Tools/bbmap/clumpify.sh in=HeLa-IP-rep1-IV-cutadapt.fq.gz out=HeLa-IP-rep1-IV-dedupe.fq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-rep1-III-input-cutadapt.fq.gz out=HeLa-rep1-III-input-dedupe.fq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-rep1-IV-input-cutadapt.fq.gz out=HeLa-rep1-IV-input-dedupe.fq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-rep1-III-IP-cutadapt.fq.gz out=HeLa-rep1-III-IP-dedupe.fq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HeLa-rep1-IV-IP-cutadapt.fq.gz out=HeLa-rep1-IV-IP-dedupe.fq.gz dedupe >> duplicates_removal_1.log
 ```
 
 ### 3) trim UMI
