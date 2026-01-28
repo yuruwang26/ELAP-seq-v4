@@ -31,4 +31,4 @@ awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$8,$6,$7,$11,$12,$9,$
 awk '{print $0"\t"($9+$18)/2}' HeLa-sort.bed > HeLa-input-avg.bed
 awk '{print $0"\t"($10+$19)/2}' HeLa-input-avg.bed > HeLa-IP-avg.bed
 python3 In_stop.py HeLa-IP-avg.bed > HeLa-filter-2.bed
-awk '{ if($5 == "T") print $0;}' HeLa-filter-2.bed > HeLa-filter-T.bed
+
