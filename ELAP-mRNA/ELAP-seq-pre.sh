@@ -68,8 +68,8 @@ bedtools subtract -a ./$6/$6-III-IV-outside-unfiltered-2.bed -b ./$6/$6-III-IV-o
 
 cat ./$6/$6-III-IV-inside-unfiltered-2.bed ./$6/$6-III-IV-outside-unfiltered-2.bed > ./$6/$6-III-IV-unfiltered-2.bed
 
-bash filter.sh $1 ./$6/$6-III-inside-unfiltered-3.bed ./$6/$6-III-outside-unfiltered-3.bed ./$6/$6-III-unique.bed
-bash filter.sh $2 ./$6/$6-III-IV-inside-unfiltered-3.bed ./$6/$6-III-IV-outside-unfiltered-3.bed ./$6/$6-III-IV-unique.bed
+bash filter_III.sh $1 ./$6/$6-III-inside-unfiltered-3.bed ./$6/$6-III-outside-unfiltered-3.bed ./$6/$6-III-unique.bed
+bash filter_III_IV.sh $2 ./$6/$6-III-IV-inside-unfiltered-3.bed ./$6/$6-III-IV-outside-unfiltered-3.bed ./$6/$6-III-IV-unique.bed
 
 sort -k1,1 -k2,2n ./$6/$6-III-unique.bed > ./$6/$6-III-unique-1.bed
 sort -k1,1 -k2,2n ./$6/$6-III-IV-unique.bed > ./$6/$6-III-IV-unique-1.bed
