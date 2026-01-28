@@ -6,8 +6,8 @@
 ### 
 ###  
 ### Usage:
-###   ELAP-seq.sh <III-IP.bam> <III-IV-IP.bam> <III-input.bam> <III-IV-input.bam> <peaks.bed> <name> 
-###
+###   ELAP-seq.sh <rep1-III-IP.bam> <rep1-III-IV-IP.bam> <rep1-III-input.bam> <rep1-III-IV-input.bam> <rep1-peaks.bed> <rep1-name> 
+###   ELAP-seq.sh <rep2-III-IP.bam> <rep2-III-IV-IP.bam> <rep2-III-input.bam> <rep2-III-IV-input.bam> <rep2-peaks.bed> <rep2-name> 
 ### Options:
 ###   <input.bam>         Input bam file to read. 
 ###   <IP.bam>         IP bam file to read
