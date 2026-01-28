@@ -96,6 +96,4 @@ awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$6/$6-III-IV-filter1.bed > 
 bedtools subtract -a ./$6/$6-III-IV-stutter-filter-2.bed -b ./$6/$6-III-stutter-filter-2.bed > ./$6/$6-new.bed
 cat ./$6/$6-III-stutter-filter-2.bed ./$6/$6-new.bed | sort -k1,1 > ./$6/$6-combined.bed
 
-bedtools intersect -wa -wb -a ./$6/$6-III-IV-unfiltered-2.bed -b ./$6/$6-combined.bed > ./$6/$6-combined-1.bed
-awk '{ if($10 >2 && $13 > 9) print $0;}' HeLa-rep1-combined-1.bed > HeLa-rep1-combined-filtered.bed
-awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$29,$30,$31,$32,$33,$34}' ./$6/$6-combined-filtered.bed | awk -v OFS="\t" '$1=$1' > ./$6/$6-combined-2.bed
+
