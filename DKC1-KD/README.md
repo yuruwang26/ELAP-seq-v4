@@ -9,7 +9,7 @@ seqkit grep -s -r -p "^ACA" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-siDKC1-inp
 ```
 ### 2. Trim adapters on the 3' end
 
-### 3.De-duplication, trim UMIs and mapping
+### 3. De-duplication, trim UMIs and mapping
 In DKC1-preprocessing.sh, reads are de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
 
 ```bash
