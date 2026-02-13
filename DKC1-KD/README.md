@@ -1,39 +1,47 @@
 # DKC1-Knockdown-analysis-workflow
-## 1. Merge paired end reads 
+## 1. Processing input data (single end reads)
+### 1 Sort samples based on internal barcodes
+```bash
+seqkit grep -s -r -p "^TCT" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-sictrl-input-IV-rep1.fastq       
+seqkit grep -s -r -p "^GAC" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-sictrl-input-IV-rep2.fastq
+seqkit grep -s -r -p "^CTG" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-siDKC1-input-IV-rep1.fastq
+seqkit grep -s -r -p "^ACA" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-siDKC1-input-IV-rep2.fastq
+```
+### 2 Trim adapters, de-duplication, trim UMIs and mapping
+In DKC1-preprocessing-input.sh, adapter on the 3' end is first trimmed, then reads are de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
+
+```bash
+bash DKC1-preprocessing-input.sh
+```
+## 2. Processing IP data (paired end reads)
+### 1. Merge paired end reads
 Paired end sequencing were used. Reads R1 and R2 were first merged, then decomplexed based on the internal barcodes. 
 ```bash
 /home/yuruwang/Tools/anaconda3/bin/bbmerge.sh in1=YW-S1_R1.fastq.gz in2=YW-S1_R2.fastq.gz out=YW_S1_merge.fastq.gz
 
-/home/yuruwang/Tools/anaconda3/bin/bbmerge.sh in1=YW-S2_R1.fastq.gz in2=YW-S2_R2.fastq.gz out=YW_S2_merge.fastq.gz
-
 ```
 
-
-## 2. Sort samples based on internal barcodes.
+### 2. Sort samples based on internal barcodes.
 Need to convert .gz to .fastq
 ```bash
 gunzip YW_S1_merge.fastq.gz
-gunzip YW_S2_merge.fastq.gz
 ```
 
 ```bash
-seqkit grep -s -r -p "^TCT" YW_S1_merge.fastq -o ./sorted/HEK-sictrl-input-IV-rep1.fastq       
-seqkit grep -s -r -p "^ACA" YW_S1_merge.fastq -o ./sorted/HEK-sictrl-input-IV-rep2.fastq
-seqkit grep -s -r -p "^CTG" YW_S1_merge.fastq -o ./sorted/HEK-siDKC1-input-IV-rep1.fastq
-seqkit grep -s -r -p "^GAC" YW_S1_merge.fastq -o ./sorted/HEK-siDKC1-input-IV-rep2.fastq
-seqkit grep -s -r -p "^TCT" YW_S5_merge.fastq -o ./sorted/HEK-sictrl-IP-IV-rep1.fastq
-seqkit grep -s -r -p "^ACA" YW_S5_merge.fastq -o ./sorted/HEK-sictrl-IP-IV-rep2.fastq
-seqkit grep -s -r -p "^CTG" YW_S5_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep1.fastq
-seqkit grep -s -r -p "^GAC" YW_S5_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep2.fastq
+
+seqkit grep -s -r -p "^TCT" YW_S1_merge.fastq -o ./sorted/HEK-sictrl-IP-IV-rep1.fastq
+seqkit grep -s -r -p "^GAC" YW_S1_merge.fastq -o ./sorted/HEK-sictrl-IP-IV-rep2.fastq
+seqkit grep -s -r -p "^CTG" YW_S1_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep1.fastq
+seqkit grep -s -r -p "^ACA" YW_S1_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep2.fastq
 ```
-## 3. De-duplication, trim adapters and mapping
-In DKC1-preprocessing.sh, reads were first de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
+### 3. De-duplication, trim UMIs and mapping
+In DKC1-preprocessing-IP.sh, reads are first de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
 
 ```bash
-bash DKC1-preprocessing.sh
+bash DKC1-preprocessing-IP.sh
 ```
 
-## 4. Acquire information of read coverage at known candidate sites identified in HEK293T cells 
+## 3. Acquire information of read coverage at known candidate sites identified in HEK293T cells 
 ### 1) Categorize candidate modification sites identified in HEK293T cells according to the mapped strands 
 Reverse the strand identity due to applying results from R2-only reads to the analysis using merged-reads. Save resulting files as ELAP-HEK-pos.bed and ELAP-HEK-neg.bed, which contain the information of chromosome number, start position, end position and strand (+/-).
 
