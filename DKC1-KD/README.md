@@ -1,17 +1,19 @@
 # DKC1-Knockdown-analysis-workflow
 ## 1. Processing input data (single end reads)
-### 1 Sort samples based on internal barcodes
+### 1. Sort samples based on internal barcodes
 ```bash
 seqkit grep -s -r -p "^TCT" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-sictrl-input-IV-rep1.fastq       
 seqkit grep -s -r -p "^GAC" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-sictrl-input-IV-rep2.fastq
 seqkit grep -s -r -p "^CTG" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-siDKC1-input-IV-rep1.fastq
 seqkit grep -s -r -p "^ACA" DKC1-input.fastq.gz -o ./sorted/Reseq-HEK-siDKC1-input-IV-rep2.fastq
 ```
-### 2 Trim adapters, de-duplication, trim UMIs and mapping
-In DKC1-preprocessing-input.sh, adapter on the 3' end is first trimmed, then reads are de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
+### 2. Trim adapters on the 3' end
+
+### 3.De-duplication, trim UMIs and mapping
+In DKC1-preprocessing.sh, reads are de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
 
 ```bash
-bash DKC1-preprocessing-input.sh
+bash DKC1-preprocessing.sh
 ```
 ## 2. Processing IP data (paired end reads)
 ### 1. Merge paired end reads
@@ -35,10 +37,10 @@ seqkit grep -s -r -p "^CTG" YW_S1_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep1.
 seqkit grep -s -r -p "^ACA" YW_S1_merge.fastq -o ./sorted/HEK-siDKC1-IP-IV-rep2.fastq
 ```
 ### 3. De-duplication, trim UMIs and mapping
-In DKC1-preprocessing-IP.sh, reads are first de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
+In DKC1-preprocessing.sh, reads are first de-duplicated using clumpify.sh, and then the internal barcodes and UMI (8 nt in total on the 5' end and 5 nt in total on the 3' end) are further trimmed. The resulting reads are mapped onto human genome hg38 using hisat2.
 
 ```bash
-bash DKC1-preprocessing-IP.sh
+bash DKC1-preprocessing.sh
 ```
 
 ## 3. Acquire information of read coverage at known candidate sites identified in HEK293T cells 
