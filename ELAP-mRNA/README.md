@@ -56,7 +56,7 @@ conda deactivate
 
 ```bash
 hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-rep1-III-input-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-rep1-III-input.bam
-samtools index HeLa-input-rep1-III.bam HeLa-input-rep1-III.bai
+samtools index HeLa-rep1-III-input.bam HeLa-rep1-III-input.bai
 hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-rep1-IV-input-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-rep1-IV-input.bam
 samtools index HeLa-rep1-IV-input.bam HeLa-rep1-IV-input.bai
 hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-rep1-III-IP-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-rep1-III-IP.bam
