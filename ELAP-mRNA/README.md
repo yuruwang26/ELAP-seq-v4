@@ -135,11 +135,15 @@ bedtools subtract -a HeLa-rep1-III-outside-unfiltered-ab.bed -b HeLa-rep1-III-ou
 ```bash
 python3 Rm_bg_3.py HeLa-rep1-III-inside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-rep1-III-inside-unfiltered-low.bed
 python3 Rm_bg_3.py HeLa-rep1-III-outside-unfiltered-2.bed | awk '!visited[$0]++' | tr ' ' '\t' > HeLa-rep1-III-outside-unfiltered-low.bed
-bedtools subtract -a HeLa-rep1-III-inside-unfiltered-2.bed -b HeLa-rep1-III-inside-unfiltered-low.bed > HeLa-rep1-III-inside-unfiltered-3.bed
-bedtools subtract -a HeLa-rep1-III-outside-unfiltered-2.bed -b HeLa-rep1-III-outside-unfiltered-low.bed > HeLa-rep1-III-outside-unfiltered-3.bed
+awk '!visited[$0]++' HeLa-rep1-III-inside-unfiltered-low.bed > HeLa-rep1-III-inside-unfiltered-low-1.bed
+awk '!visited[$0]++' HeLa-rep1-III-outside-unfiltered-low.bed > HeLa-rep1-III-outside-unfiltered-low-1.bed
+cat HeLa-rep1-III-inside-unfiltered-low-1.bed | tr ' ' '\t' > HeLa-rep1-III-inside-unfiltered-low-2.bed
+cat HeLa-rep1-III-outside-unfiltered-low-1.bed | tr ' ' '\t' > HeLa-rep1-III-outside-unfiltered-low-2.bed
+bedtools subtract -a HeLa-rep1-III-inside-unfiltered-2.bed -b HeLa-rep1-III-inside-unfiltered-low-2.bed > HeLa-rep1-III-inside-unfiltered-3.bed
+bedtools subtract -a HeLa-rep1-III-outside-unfiltered-2.bed -b HeLa-rep1-III-outside-unfiltered-low-2.bed > HeLa-rep1-III-outside-unfiltered-3.bed
 ```
 
-### 3. Filter sites based on stop ratios, stopped reads
+### 3. Filter sites based on stop ratios and stopped reads
 
 #### 1) select for sites that have stop ratio >=0.1 in the pull-down library, stop ratio (pull-down) -stop ratio (input) >= 0.05 (for data from SSIII alone) or 0.1 (for combined data of SSIII and SSIV),  and are covered by at least 1 uniquely mapped reads
 use script filter.sh 
