@@ -15,7 +15,7 @@
 ###   <name>            given to specifiy the replicate
 ###
 ### Output:
-###  chr start	end     strand    base	rep1_III/IV_In_stop	rep1_III/IV_In_sum  	rep1_III/IV_IP_sum	rep1_In_stop	rep1_IP_stop	rep1_In_sum rep1_IP_sum	peak	samp	rep2_III/IV_In_stop	rep2_III/IV_In_sum	rep2_III/IV_IP_sum	rep2_In_stop	rep2_IP_stop	rep2_In_sum	rep2_IP_sum	peak	samp
+###  chr start	end     strand    base	rep1_III/IV_In_stop	rep1_III/IV_In_sum  	rep1_III/IV_IP_sum	rep1_In_stop	rep1_IP_stop	rep1_In_sum rep1_IP_sum	peak	samp
 ###
 ### Contact:
 ###  Yuru Wang (yuruwang26@hotmail.com)
