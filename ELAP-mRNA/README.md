@@ -177,7 +177,7 @@ awk '{ if($10 >4) print $0;}' HeLa-rep2-III-IV-stutter-filter-2.bed > HeLa-rep2-
 ```bash
 awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' HeLa-rep1-III-filter1.bed > HeLa-rep1-III-filter2.bed
 ```
-#### 5). Optional: for evaluainge reproducibility, focus on sites that are covered by at least five reads in one other replicate and require that stop ratio * stopped reads is >=1.5 before intersecting replicates
+#### 5). *Optional: for evaluainge reproducibility, focus on sites that are covered by at least five reads in one other replicate and require that stop ratio * stopped reads is >=1.5 before intersecting replicates
 ```bash
 awk '($13 >=5 && $10*$15 > = 1.5)' HeLa-rep1-III-filter2.bed > HeLa-rep1-III-filter3.bed
 bedtools intersect -a HeLa-rep1-III-filter3.bed HeLa-rep2-III-filter3.bed > HeLa-rep1-rep2-III.bed
