@@ -173,7 +173,7 @@ awk '{ if($10 >4) print $0;}' HeLa-rep1-III-IV-stutter-filter-2.bed > HeLa-rep1-
 awk '{ if($10 >4) print $0;}' HeLa-rep2-III-IV-stutter-filter-2.bed > HeLa-rep2-III-IV-filter1.bed
 ```
 
-#### 4). Remove sites whose stop ratios are >= 0.1 in the input, (stop ratio in pull-down)/(stop ratio in input) are < 3, and stopped reads in the input are >=3 
+#### 4). Remove sites whose stop ratios are > 0.1 in the input, stopped reads in the input are >=3, and (stop ratio in pull-down)/(stop ratio in input) are < 3  
 ```bash
 awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' HeLa-rep1-III-filter1.bed > HeLa-rep1-III-filter2.bed
 ```
