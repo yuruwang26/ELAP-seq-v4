@@ -66,8 +66,6 @@ bedtools subtract -a ./$6/$6-III-outside-unfiltered-2.bed -b ./$6/$6-III-outside
 bedtools subtract -a ./$6/$6-III-IV-inside-unfiltered-2.bed -b ./$6/$6-III-IV-inside-unfiltered-low-2.bed > ./$6/$6-III-IV-inside-unfiltered-3.bed
 bedtools subtract -a ./$6/$6-III-IV-outside-unfiltered-2.bed -b ./$6/$6-III-IV-outside-unfiltered-low-2.bed > ./$6/$6-III-IV-outside-unfiltered-3.bed
 
-cat ./$6/$6-III-IV-inside-unfiltered-2.bed ./$6/$6-III-IV-outside-unfiltered-2.bed > ./$6/$6-III-IV-unfiltered-2.bed
-
 bash filter_III.sh $1 ./$6/$6-III-inside-unfiltered-3.bed ./$6/$6-III-outside-unfiltered-3.bed ./$6/$6-III-unique.bed
 bash filter_III_IV.sh $2 ./$6/$6-III-IV-inside-unfiltered-3.bed ./$6/$6-III-IV-outside-unfiltered-3.bed ./$6/$6-III-IV-unique.bed
 
@@ -93,8 +91,8 @@ awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$6/$6-III-filter1.bed > ./$
 awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$6/$6-III-IV-filter1.bed > ./$6/$6-III-IV-filter2.bed
 
 
-bedtools subtract -a ./$6/$6-III-IV-stutter-filter-2.bed -b ./$6/$6-III-stutter-filter-2.bed > ./$6/$6-new.bed
-cat ./$6/$6-III-stutter-filter-2.bed ./$6/$6-new.bed | sort -k1,1 > ./$6/$6-combined.bed
+bedtools subtract -a ./$6/$6-III-IV-stutter-filter-2.bed -b ./$6/$6-III-stutter-filter-2.bed > ./$6/new.bed
+cat ./$6/$6-III-stutter-filter-2.bed ./$6/new.bed | sort -k1,1 > ./$6/$6-combined.bed
 
 ### prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
 cat ./$6/$6-III-IV-inside-unfiltered-2.bed ./$6/$6-III-IV-outside-unfiltered-2.bed > ./$6/$6-III-IV-unfiltered-2.bed
