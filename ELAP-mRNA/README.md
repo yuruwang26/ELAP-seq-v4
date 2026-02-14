@@ -203,8 +203,9 @@ bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-com
 
 ```bash
 # tidy up the table
-awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-filtered.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
+awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-1.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
+The resulting file contains: chr start end strand ref Sum_in_III_IV_rep1 sum_IP_III_IV_rep1 stop_in_III_IV_rep1 stop_IP_III_IV_rep1 sum_in_rep1 sum_IP_rep1 stop_ratio_in_rep1 stop_ratio_IP_rep1 peak_rep1 sample_rep1
 ## 4 Intersect two biological replicates and further filter
 
 ### 1. If using superscript III data alone
@@ -213,6 +214,7 @@ awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$29,$30,$31,$32,$33,$34}' HeLa-rep1-c
 bedtools intersect -wa -wb -a HeLa-rep1-III-filter2.bed -b HeLa-rep2-III-filter2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$16,$17,$29,$30,$31,$32,$33,$34}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
+The resulting file contains: chr start end strand ref Sum_in_rep1 Sum_IP_rep1 stop_ratio_in_rep1 stop_ratio_IP_rep1 peak_rep1 sample_rep1 Sum_in_rep2 Sum_IP_rep2 stop_ratio_in_rep2 stop_ratio_IP_rep2 peak_rep2 sample_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 #### 3) Select for sites whose stop locate at T
 ```bash
@@ -223,33 +225,21 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
 #### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.bed > HeLa.bed
-awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$16,$17,$29,$30,$31,$32,$33,$34}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
+awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$6,$7,$8,$10,$11,$12,$13,$14,$15,$21,$22,$23,$25,$26,$27,$28,$29,$30}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
-
+The resulting file contains: chr start end strand ref sum_in_III_IV_rep1 Sum_IP_III_IV_rep1 stop_raio_in_III-IV_rep1 Sum_in_rep1 Sum_IP_rep1 stop_ratio_in_rep1 stop_ratio_IP_rep1 peak_rep1 sample_rep1 sum_in_III_IV_rep2 Sum_IP_III_IV_rep2 stop_raio_in_III-IV_rep2 Sum_in_rep2 Sum_IP_rep2 stop_ratio_in_rep2 stop_ratio_IP_rep2 peak_rep2 sample_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 #### 3) Select for sites whose stop locate at T
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
 ```
-## 5. post-processing : determing confidence levels and modification levels
-### 1) calculate RPM
-```bash
-awk '{OFS=" "; print $1,$2,$3,$4,$5,($6/10.3128),($7/4.9938),$8,$9,$10,$11,($12/11.3053),($13/5.67979),$14,$15,$16,$17}' OFS="\t" HeLa-filter-T.bed > HeLa-RPM.bed
-```
+## 5. post-processing: determing confidence levels and modification levels
+### 1) using data from III+IV data, calculate RPM by dividing the sum total reads at the site in the sample by the total number of mapped reads of the entire sample and calculate enrichment levels by dividing RPM in IP by RPM in input.
 ### 2) combine with sequence context preference determined by synthetic oligos
-Obtain sequence context surrounding the modification site and make all upper case
-```bash
-awk '{OFS=" "; print $1,($2-2),($3+2),$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17}' OFS="\t" HeLa-RPM.bed | tr ' ' '\t' > HeLa-extend.bed
-bedtools getfasta -fi /home/Wang_yuru/Database/genome/hg38/hg38_UCSC.fa -bed HeLa-extend.bed -s -tab > HeLa-seq.bed
-sed 's/^[a-z]*/\U&/' HeLa-seq.bed > HeLa-upper.bed
-
-```
-Join HeLa-upper.bed and HeLa-RPM.bed manually to make HeLa-seq-full.bed and sort
-```bash
-sort -k1,1 HeLa-seq-full.bed > HeLa-sort.bed
-sort -k1,1 oligo.bed > oligo-sort.bed
-```
-merge with synthetic oligo data using using VLOOK function in excel
+#### 1) Obtain 5-nt sequence context surrounding the modification site 
+#### 2) merge with synthetic oligo data with the corresponding sequence context using using VLOOK function in excel
+#### 3) calculate adjusted enrichment levels by dividing enrichment levels at the site by the enrichment level of the corresponding sequence context 
+#### 4) Calculate relative modification levels using Ln(adjusted enrichment levels)
 
 Confidence level:
 The highest-confidence sites are defined as sites having IP stop ratio >= 0.3 in at least replicates and also identified in all three replicates.
