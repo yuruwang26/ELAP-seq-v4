@@ -177,7 +177,7 @@ awk '{ if($10 >4) print $0;}' HeLa-rep2-III-IV-stutter-filter-2.bed > HeLa-rep2-
 #### 4). Remove sites whose stop ratios are > 0.1 in the input, stopped reads in the input are >=3, and (stop ratio in pull-down)/(stop ratio in input) are < 3  
 Sites fulfiling these three cutoffs tend to be false positives since the stop signature is apparently presenting in the input samples.
 ```bash
-awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' HeLa-rep1-III-filter1.bed > HeLa-rep1-III-filter2.bed
+awk '{ if(($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)) print $0;}' HeLa-rep1-III-filter1.bed > HeLa-rep1-III-filter2.bed
 ```
 #### 5). *Optional: for evaluainge reproducibility, focus on sites that are covered by at least five reads in one other replicate and require that stop ratio * stopped reads is >=1.5 before intersecting replicates
 ```bash
@@ -188,7 +188,7 @@ bedtools subtract -a HeLa-rep1-rep2-III.bed -b HeLa-rep1-rep3-III.bed > tmp.bed
 cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 ```
 
-### 4. Combine sites identified from superscript III alone and the new sites identified using the combined data oflibraries built with Superscript III and Superscript IV 
+### 4. Combine sites identified from superscript III alone and the new sites identified using the combined data of libraries built with Superscript III and Superscript IV 
 ```bash
 bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
 cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
@@ -202,9 +202,12 @@ cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 bedtools intersect -wa -wb -a HeLa-rep1-III-filter2.bed -b HeLa-rep2-III-filter2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$16,$17,$29,$30,$31,$32,$33,$34}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
-The resulting file contains: chr start end strand ref Input_count_rep1 IP_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_type_rep1 Input_count_rep2 IP_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_type_rep2
+The resulting file contains: chr start end strand ref Input_count_rep1 IP_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 Input_count_rep2 IP_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 This imposes a more stringent requirement on the number of stopped reads when the stop ratio in the pull-down sample is lower than 30%
+```bash
+awk '($9*$7*$9 + $13*$15*$15)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
+```
 #### 3) Select for sites whose stop locate at T
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
@@ -218,6 +221,9 @@ awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$6,$7,$8,$10,$11,$12,
 ```
 The resulting file contains: chr start end strand ref Input_count_III_IV_rep1 IP_count_III_IV_rep1 Input_stop_ratio_input_III-IV_rep1 Input_count_rep1 IP_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 Input_count_III_IV_rep2 IP_count_III_IV_rep2 Input_stop_raio_III-IV_rep2 Input_count_rep2 IP_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
+```bash
+awk '($9*$7*$9 + $13*$15*$15)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
+```
 #### 3) Select for sites whose stop locate at T
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
