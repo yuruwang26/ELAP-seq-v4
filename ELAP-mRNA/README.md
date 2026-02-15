@@ -110,7 +110,7 @@ bash arrest.sh HeLa-rep1-III-input.bam HeLa-rep1-III-IP.bam HeLa-peaks.bed HeLa-
 bash arrest.sh HeLa-rep1-III-IV-input.bam HeLa-rep1-III-IV-IP.bam HeLa-peaks.bed HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out
 ```
 #### 2) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is inside or outside of an IP peak, and whether it is identified from the library built with superscript III or combined data of libraries built with superscript III and IV)
-This step uses scripts calculate_III.sh for the III librairy and calculate_III_IV.sh for the III+IV library. In the output, "in" means inside the IP peak, "out" means outside the IP peak. "III" means the site was called in the library built with superscript III, and "III_IV" means the site was called using combined libraries built with superscript III and IV.
+This step uses scripts calculate_III.sh for the III librairy and calculate_III_IV.sh for the III+IV library. In the output, "in" means inside an IP peak, "out" means outside an IP peak. "III" means the site was called from the library built with superscript III, and "III_IV" means the site was called from combined libraries built with superscript III and IV.
 ```bash
 bash calculate_III.sh HeLa-rep1-III-IP.bam HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out HeLa-rep1-III-inside-unfiltered.bed HeLa-rep1-III-outside-unfiltered.bed HeLa-III-in HeLa-III-out HeLa-rep1-III-unfiltered.bed
 bash calculate_III_IV.sh HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out HeLa-rep1-III-IV-inside-unfiltered.bed HeLa-rep1-III-IV-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-rep1-III-unfiltered.bed
