@@ -2,7 +2,7 @@
 
 Each replicate should contain two input libraries and an two IP libraries. The libraries are built with superscript III or IV.
 
-## 1. Processing of FASTQ data 
+## I. Processing of FASTQ data 
 
 Only reads R2 is used. After trimming UMI, the begnning of R2 is the RT stop site, which indicates modification. Can otherwise construct the libraries in a way that single end sequencing is sufficient.
 This process includes five steps:
@@ -75,7 +75,7 @@ samtools index HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-IP.bai
 
 
 
-## 2. Call IP peaks
+## II. Call IP peaks
 ### 1) MACS2 is used to call IP peaks. 
 In the final list, we want to report whether a site is inside an enriched IP peak or not
 
@@ -90,7 +90,7 @@ Save the resulting .bed file as HeLa-peaks.bed
 
 
 
-## 3. Downstream analysis to detect pseudouridine (ELAP-seq.sh)
+## III. Downstream analysis to detect pseudouridine (ELAP-seq.sh)
 This step can use the command ELAP-seq.sh. 
 
 Usage: 
@@ -195,7 +195,7 @@ cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
 The resulting file contains: chr start end pvalue strand arrest_score ref Input_arrest_rep1 Input_readthrough_rep1 IP_arrest_rep1 IP_readthrough_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 
 
-## 4 Intersect two biological replicates and further filter
+## IV. Intersect two biological replicates and further filter
 
 ### 1. If looking at sites identified by superscript III data alone
 #### 1) Intersect two biological replicates
@@ -231,8 +231,7 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 ```
 
 
-
-## 5. post-processing: determing confidence levels and modification levels
+## V. post-processing: determing confidence levels and modification levels
 ### 1) Determine confidence level for each site:
 1) highest-confidence: stop ratios > 0.3 and detected in all three replicates;
 2) higher-confidence: stop ratios > 0.3 or detected in all three replicates;
