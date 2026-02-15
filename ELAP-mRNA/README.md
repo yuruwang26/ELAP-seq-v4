@@ -197,7 +197,7 @@ The resulting file contains: chr start end pvalue strand arrest_score ref Input_
 
 ## IV. Intersect two biological replicates and further filter
 
-### 1. If looking at sites identified by superscript III data alone
+### 1. If focus on sites identified by superscript III data alone
 #### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-III-filter2.bed -b HeLa-rep2-III-filter2.bed > HeLa.bed
@@ -213,7 +213,7 @@ awk '($6*$10 + $13*$7)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 ```
-### 2. If looking at combined sites identified by superscript III-alone data and combined data of superscript III and IV
+### 2. If focus on combined sites identified by superscript III-alone data and combined data of superscript III and IV
 
 #### 1) Intersect two biological replicates
 ```bash
