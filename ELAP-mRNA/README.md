@@ -193,20 +193,21 @@ cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
 cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
-The resulting file contains: chr start end strand ref Input_count_rep1 IP_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 Input_count_rep2 IP_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
+The resulting file contains: chr start end pvalue strand arrest_score ref Input_arrest_rep1 Input_readthrough_rep1 IP_arrest_rep1 IP_readthrough_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 
+
 ## 4 Intersect two biological replicates and further filter
 
 ### 1. If looking at sites identified by superscript III data alone
 #### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-III-filter2.bed -b HeLa-rep2-III-filter2.bed > HeLa.bed
-awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$16,$17,$29,$30,$31,$32,$33,$34}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
+awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$5,$7,$10,$12,$13,$14,$15,$16,$17,$27,$29,$30,$31,$32,$33,$34}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
-The resulting file contains: chr start end strand ref Input_count_rep1 IP_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 Input_count_rep2 IP_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
+The resulting file contains: chr start end strand ref IP_arrest_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 IP_arrest_rep2 Input_total_count_rep2 IP_total_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 This imposes a more stringent requirement on the number of stopped reads when the stop ratio in the pull-down sample is lower than 30%
 ```bash
-awk '($9*$7*$9 + $13*$15*$15)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
+awk '($6*$10 + $13*$7)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```
 #### 3) Select for sites whose stop locate at T
 ```bash
@@ -217,12 +218,12 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 #### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-combined.bed -b HeLa-rep2-combined.bed > HeLa.bed
-awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$6,$7,$8,$10,$11,$12,$13,$14,$15,$21,$22,$23,$25,$26,$27,$28,$29,$30}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
+awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$5,$7,$10,$12,$13,$14,$15,$16,$17,$27,$29,$30,$31,$32,$33,$34}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
-The resulting file contains: chr start end strand ref Input_count_III_IV_rep1 IP_count_III_IV_rep1 Input_stop_ratio_input_III-IV_rep1 Input_count_rep1 IP_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 Input_count_III_IV_rep2 IP_count_III_IV_rep2 Input_stop_raio_III-IV_rep2 Input_count_rep2 IP_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
+The resulting file contains: chr start end strand ref IP_arrest_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 IP_arrest_rep2 Input_total_count_rep2 IP_total_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 ```bash
-awk '($9*$7*$9 + $13*$15*$15)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
+awk '($6*$10 + $13*$7)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```
 #### 3) Select for sites whose stop locate at T
 ```bash
