@@ -116,8 +116,8 @@ bash calculate_III.sh HeLa-rep1-III-IP.bam HeLa-rep1-III-inside.out HeLa-rep1-II
 bash calculate_III_IV.sh HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out HeLa-rep1-III-IV-inside-unfiltered.bed HeLa-rep1-III-IV-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-rep1-III-unfiltered.bed
 ```
 
-### 2. Remove backgrounds 
-This process removes background originated from multiple mapping and diminished processivity of the RT enzyme past a major modification site
+### 2. Remove false positives
+This process removes noises originated from multiple mapping and diminished processivity of the RT enzyme past a major modification site
 #### 1) determine the main nucleoside for sites mapped with multiple identities
 ```bash
 python3 Rm_bg_1.py HeLa-rep1-III-inside-unfiltered.bed | tr ' ' '\t' > HeLa-rep1-III-inside-unfiltered-ab.bed
@@ -159,7 +159,7 @@ python3 Stutter1.py HeLa-rep1-III-unique-1.bed | tr ' ' '\t' >  HeLa-rep1-III-st
 python3 Stutter1.py HeLa-rep1-III-IV-unique-1.bed | tr ' ' '\t' > HeLa-rep1-III-IV-stutter-filter.bed
 ```
 
-Remove sites within 6 nt downstream of the current site whose stop ratios are lower than the current site.This way, we further remove false positives nearby the major arrest sites.
+Remove sites within 6 nt downstream of the current site whose stop ratios are lower than the current site.This continues to remove noises nearby the major arrest sites.
 ```bash
 python3 Stutter2.py HeLa-rep1-III-stutter-filter.bed | tr ' ' '\t' > HeLa-rep1-III-remove.bed
 python3 Stutter2.py HeLa-rep1-III-IV-stutter-filter.bed | tr ' ' '\t' > HeLa-rep1-III-IV-remove.bed
@@ -175,7 +175,7 @@ awk '{ if($10 >4) print $0;}' HeLa-rep2-III-IV-stutter-filter-2.bed > HeLa-rep2-
 ```
 
 #### 4). Remove sites whose stop ratios are > 0.1 in the input, stopped reads in the input are >=3, and (stop ratio in pull-down)/(stop ratio in input) are < 3  
-Sites fulfiling these three cutoffs tend to be false positives since the stop signature is apparently presenting in the input samples.
+Sites fulfiling these three cutoffs tend to be false positives since the stop signature is apparently present in the input samples.
 ```bash
 awk '{ if(($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)) print $0;}' HeLa-rep1-III-filter1.bed > HeLa-rep1-III-filter2.bed
 ```
