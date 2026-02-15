@@ -207,7 +207,7 @@ The resulting file contains: chr start end strand ref IP_arrest_rep1 Input_total
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 This imposes a more stringent requirement on the number of stopped reads when the stop ratio in the pull-down sample is lower than 30%
 ```bash
-awk '($6*$10 + $13*$7)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
+awk '($6*$10 + $13*$17)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```
 #### 3) Select for sites whose stop locate at T
 ```bash
@@ -223,7 +223,7 @@ awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$5,$7,$10,$12,$13,$14,$15,$
 The resulting file contains: chr start end strand ref IP_arrest_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 IP_arrest_rep2 Input_total_count_rep2 IP_total_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 ```bash
-awk '($6*$10 + $13*$7)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
+awk '($6*$10 + $13*$17)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```
 #### 3) Select for sites whose stop locate at T
 ```bash
