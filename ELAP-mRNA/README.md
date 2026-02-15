@@ -110,8 +110,8 @@ This step uses the script arrest.sh
 bash arrest.sh HeLa-rep1-III-input.bam HeLa-rep1-III-IP.bam HeLa-peaks.bed HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out
 bash arrest.sh HeLa-rep1-III-IV-input.bam HeLa-rep1-III-IV-IP.bam HeLa-peaks.bed HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out
 ```
-#### 2) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is from the library built with superscript III or combined libraries built with superscript III and IV, and whether it is inside or outside of the IP peak)
-This step uses scripts calculate_III.sh for the III librairy and calculate_III_IV.sh for the III+IV library
+#### 2) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is inside or outside of the IP peak, and whether it is from the library built with superscript III or combined libraries built with superscript III and IV)
+This step uses scripts calculate_III.sh for the III librairy and calculate_III_IV.sh for the III+IV library. In the output, "in" means inside the IP peak, "out" means outside the IP peak. "III" means the site was called in the library built with superscript III, and "III+IV" means the site was called using combined libraries built with superscript III and IV.
 ```bash
 bash calculate_III.sh HeLa-rep1-III-IP.bam HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out HeLa-rep1-III-inside-unfiltered.bed HeLa-rep1-III-outside-unfiltered.bed HeLa-III-in HeLa-III-out HeLa-rep1-III-unfiltered.bed
 bash calculate_III_IV.sh HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out HeLa-rep1-III-IV-inside-unfiltered.bed HeLa-rep1-III-IV-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-rep1-III-unfiltered.bed
@@ -191,13 +191,13 @@ cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
 cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
 ```
-### 5. for quantification purpose later, obtain input reads and IP reads in libraries combining III and IV data & cleanup the table
+### 5. For quantification purposes later, obtain read coverage information for input and IP samples using the combined data from libraries built with SuperScript III and SuperScript IV to achieve the best read coverage
 ```bash
-# prepare the file containing the information of input reads and IP reads in libraries combining the III and IV data
+# Prepare the file containing the information of input reads and IP reads obtained from the combined data of libraries built with SuperScript III and SuperScript IV.
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
 ```
 ```bash
-#intersect with the file containing sites passing all filter steps so far. 
+#intersect with candidate modification sites passing all filter steps so far. 
 bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
 ```
 
@@ -205,7 +205,7 @@ bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-com
 # tidy up the table
 awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-1.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
 ```
-The resulting file contains: chr start end strand ref Sum_in_III_IV_rep1 sum_IP_III_IV_rep1 stop_in_III_IV_rep1 stop_IP_III_IV_rep1 sum_in_rep1 sum_IP_rep1 stop_ratio_in_rep1 stop_ratio_IP_rep1 peak_rep1 sample_rep1
+The resulting file format: chr start end strand ref reads_input_III_IV_rep1 reads_IP_III_IV_rep1 stop_ratio_input_III_IV_rep1 stop_ratio_IP_III_IV_rep1 reads_input_rep1 reads_IP_rep1 stop_ratio_input_rep1 stop_ratio_IP_rep1 peak_rep1 sample_rep1
 ## 4 Intersect two biological replicates and further filter
 
 ### 1. If using superscript III data alone
