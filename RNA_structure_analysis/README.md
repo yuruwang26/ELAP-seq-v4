@@ -19,7 +19,7 @@ bedtools getfasta -fi hg38_UCSC.fa -bed 5’UTR.bed -fo 5’UTR-sequence.fa -s -
 RNAfold -p 5’UTR-sequence.fa > 5’UTR-sequence.res
 ```
 ## 5. open the .res file in notepad++, keep the topmost prediction and save as 5'UTR-input.txt. 
-Use the 'replace' function in notepad++, and replace <pre> ```\r?\n.*\r?\n.*\r?\n.*\r?\n frequency.*\r?\n.*``` </pre> " with ""
+Use the 'replace' function in notepad++, and replace <pre> ```\r?\n.*\r?\n.*\r?\n.*\r?\n frequency.*\r?\n.*``` </pre> with ""
 ## 6. run python file match.py to obtain the matching status and the matching positions (if matched) for the sites in the middle of the sequence (modification site or a control site)
 ```bash
 python match.py > 5'UTR-output.bed
