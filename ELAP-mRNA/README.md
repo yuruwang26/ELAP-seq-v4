@@ -222,6 +222,9 @@ The resulting file contains: chr start end strand ref Input_count_III_IV_rep1 IP
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 ```
+
+
+
 ## 5. post-processing: determing confidence levels and modification levels
 ### 1) Determine confidence level for each site:
 The highest-confidence sites are defined as sites having IP stop ratio >= 0.3 in at least replicates and also identified in all three replicates.
@@ -232,6 +235,7 @@ The lower-confidence sites are defined as sites having IP stop ratio < 0.3 and i
 ```bash
 # Prepare the file containing the information of input reads and IP reads obtained from the combined data of libraries built with SuperScript III and SuperScript IV.
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
+cat HeLa-rep2-III-IV-inside-unfiltered-2.bed HeLa-rep2-III-IV-outside-unfiltered-2.bed > HeLa-rep2-III-IV-unfiltered-2.bed
 ```
 ```bash
 #intersect with candidate modification sites passing all filter steps so far. 
