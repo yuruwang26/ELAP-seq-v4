@@ -231,7 +231,7 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 ```
 
 
-## V. post-processing: determing confidence levels and modification levels
+## V. Post-processing: determing confidence levels and modification levels
 ### 1) Determine confidence level for each site:
 1) highest-confidence: stop ratios > 0.3 and detected in all three replicates;
 2) higher-confidence: stop ratios > 0.3 or detected in all three replicates;
