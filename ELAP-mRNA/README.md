@@ -7,7 +7,7 @@ Each replicate should contain two input libraries and an two IP libraries. The l
 Only reads R2 is used. After trimming UMI, the begnning of R2 is the RT stop site, which indicates modification. Can otherwise construct the libraries in a way that single end sequencing is sufficient.
 This process includes five steps:
 
-### 1) trim adapter
+### 1. trim adapter
 
 ```bash
 cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-III-input-cutadapt.fq.gz HeLa-input-III-rep1_R2.fq.gz >> adaptorTrim.log
@@ -16,7 +16,7 @@ cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-III-IP-cutadapt.fq
 cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-IV-IP-cutadapt.fq.gz HeLa-IP-IV-rep1_R2.fq.gz >> adaptorTrim.log
 ```
 
-### 2) remove duplicates
+### 2. remove duplicates
 
 ```bash
 ~/Tools/bbmap/clumpify.sh in=HeLa-rep1-III-input-cutadapt.fq.gz out=HeLa-rep1-III-input-dedupe.fq.gz dedupe >> duplicates_removal_1.log
@@ -25,7 +25,7 @@ cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-IV-IP-cutadapt.fq.
 ~/Tools/bbmap/clumpify.sh in=HeLa-rep1-IV-IP-cutadapt.fq.gz out=HeLa-rep1-IV-IP-dedupe.fq.gz dedupe >> duplicates_removal_1.log
 ```
 
-### 3) trim UMI
+### 3. trim UMI
 There is a 6-nt UMI sequence at the 5′ end and a 5-nt UMI sequence at the 3′ end. For Superscript IV data, trim one additional nucleotide from the 5′ end, as Superscript IV tends to elongate by one extra nucleotide past the modification.
 ```bash
 conda activate cutadaptenv
@@ -52,7 +52,7 @@ cutadapt -u -5 -q 10,10 -m 19 -o HeLa-rep1-IV-IP-trim.fq.gz tmp.trimmed.fastq
 ```bash
 conda deactivate
 ```
-### 4) map reads to the genome
+### 4. map reads to the genome
 
 ```bash
 hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infile /home/yuruwang/Database/genome/hg38/hisat2_splice_sites.txt --rna-strandness F --no-softclip --summary-file YW_align_summary -p 4 -U HeLa-rep1-III-input-trim.fq.gz |samtools view -bS |samtools sort -o HeLa-rep1-III-input.bam
@@ -65,7 +65,7 @@ hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infil
 samtools index HeLa-rep1-IV-IP.bam HeLa-rep1-IV-IP.bai
 ```
 
-### 5) combine .bam files from superscript III and superscript IV in order to rescue additional sites that are missed by the superscript III library due to low read coverage
+### 5. combine .bam files from superscript III and superscript IV in order to rescue additional sites that are missed by the superscript III library due to low read coverage
 ```bash
 samtools merge HeLa-rep1-III-IV-input.bam HeLa-rep1-III-input.bam HeLa-rep1-IV-input.bam
 samtools merge HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IP.bam HeLa-rep1-IV-IP.bam
@@ -76,14 +76,14 @@ samtools index HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-IP.bai
 
 
 ## II. Call IP peaks
-### 1) MACS2 is used to call IP peaks. 
+### 1. MACS2 is used to call IP peaks. 
 In the final list, we want to report whether a site is inside an enriched IP peak or not
 
 ```bash
 macs2 callpeak -t HeLa-rep1-III-IP.bam -c HeLa-rep1-III-input.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-peadDir
 macs2 callpeak -t HeLa-rep1-III-IV-IP.bam -c HeLa-rep1-III-IV-input.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-IV-peadDir
 ```
-### 2) obtain regions covered by IP peaks 
+### 2. obtain regions covered by IP peaks 
 Remove unknown chromosomes or random chromosomes manually
 Save the resulting .bed file as HeLa-peaks.bed
 
@@ -232,11 +232,11 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 
 
 ## V. Post-processing: determing confidence levels and modification levels
-### 1) Determine confidence level for each site:
+### 1. Determine confidence level for each site:
 1) highest-confidence: stop ratios > 0.3 and detected in all three replicates;
 2) higher-confidence: stop ratios > 0.3 or detected in all three replicates;
 3) lower-confidence: stop ratios < 0.3 and detected in only two replicates.
-### 2). For quantification, use the combined data of libraries built with Superscript III and Superscript IV to achieve the best read coverage for each site in both input and IP samples 
+### 2. For quantification, use the combined data of libraries built with Superscript III and Superscript IV to achieve the best read coverage for each site in both input and IP samples 
 #### 1) Prepare the file containing the information of input reads and IP reads obtained from the combined data of libraries built with SuperScript III and SuperScript IV.
 ```bash
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
