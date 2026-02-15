@@ -209,7 +209,7 @@ This imposes a more stringent requirement on the number of stopped reads when th
 ```bash
 awk '($6*$10 + $13*$17)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```
-#### 3) Select for sites whose stop locate at T
+#### 3) Select stop sites located at T
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 ```
@@ -225,7 +225,7 @@ The resulting file contains: chr start end strand ref IP_arrest_rep1 Input_total
 ```bash
 awk '($6*$10 + $13*$17)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```
-#### 3) Select for sites whose stop locate at T
+#### 3) Select stop sites located at T
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 ```
