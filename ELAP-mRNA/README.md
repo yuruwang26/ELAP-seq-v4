@@ -188,7 +188,7 @@ bedtools subtract -a HeLa-rep1-rep2-III.bed -b HeLa-rep1-rep3-III.bed > tmp.bed
 cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 ```
 
-### 4. Combine sites identified from superscript III alone and the new sites identified using the combined data oflibraries built with SuperScript III and SuperScript IV 
+### 4. Combine sites identified from superscript III alone and the new sites identified using the combined data oflibraries built with Superscript III and Superscript IV 
 ```bash
 bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
 cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
