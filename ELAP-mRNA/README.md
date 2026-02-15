@@ -234,26 +234,29 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 
 ## 5. post-processing: determing confidence levels and modification levels
 ### 1) Determine confidence level for each site:
-The highest-confidence sites are defined as sites having IP stop ratio >= 0.3 in at least replicates and also identified in all three replicates.
-The higher-confidence sites are defined as sites either having IP stop ratio >= 0.3 in two replicate or identified in all three replicates.
-The lower-confidence sites are defined as sites having IP stop ratio < 0.3 and identified in only two replicates.
+1) highest-confidence: stop ratios > 0.3 and detected in all three replicates;
+2) higher-confidence: stop ratios > 0.3 or detected in all three replicates;
+3) lower-confidence: stop ratios < 0.3 and detected in only two replicates.
 ### 2). For quantification, use the combined data of libraries built with SuperScript III and SuperScript IV to achieve the best read coverage for each site in both input and IP samples 
 ####1)
 ```bash
 # Prepare the file containing the information of input reads and IP reads obtained from the combined data of libraries built with SuperScript III and SuperScript IV.
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
 cat HeLa-rep2-III-IV-inside-unfiltered-2.bed HeLa-rep2-III-IV-outside-unfiltered-2.bed > HeLa-rep2-III-IV-unfiltered-2.bed
+bedtools intersect -wa -wb -a HeLa-rep1-III-IV-unfiltered-2.bed -b HeLa-rep2-III-IV-unfiltered-2.bed > HeLa-III-IV-unfiltered-2.bed
+awk '{print $1,$2,$3,$5,$7,$12,$13,$29,$30}' HeLa-III-IV-unfiltered-2.bed | awk -v OFS="\t" '$1=$1' > HeLa-III-IV.bed
 ```
+The resulting file contains: chr start end strand ref Input_total_count_III_IV_rep1 IP_total_count_III_IV_rep1 Input_total_count_III_IV_rep2 IP_total_count_III_IV_rep2 
 ```bash
-#intersect with candidate modification sites passing all filter steps so far. 
-bedtools intersect -wa -wb -a HeLa-III-IV-rep1-unfiltered-2.bed -b HeLa-rep1-combined.bed > HeLa-rep1-combined-1.bed
+#intersect with candidate modification sites. 
+bedtools intersect -loj -a HeLa-T.bed -b HeLa-III-IV.bed > HeLa-full.bed
 ```
 
 ```bash
 # tidy up the table
-awk '{print $1,$2,$3,$5,$7,$12,$13,$14,$15,$29,$30,$31,$32,$33,$34}' HeLa-rep1-combined-1.bed | awk -v OFS="\t" '$1=$1' > HeLa-rep1-combined-2.bed
+awk '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$25,$26,$27,$28}' HeLa-full.bed | awk -v OFS="\t" '$1=$1' > HeLa-full-final.bed
 ```
-The resulting file format: chr start end strand ref reads_input_III_IV_rep1 reads_IP_III_IV_rep1 stop_ratio_input_III_IV_rep1 stop_ratio_IP_III_IV_rep1 reads_input_rep1 reads_IP_rep1 stop_ratio_input_rep1 stop_ratio_IP_rep1 peak_rep1 sample_rep1
+The resulting file format: chr start end strand ref IP_arrest_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 IP_arrest_rep2 Input_total_count_rep2 IP_total_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2 Input_total_count_III_IV_rep1 IP_total_count_III_IV_rep1 Input_total_count_III_IV_rep2 IP_total_count_III_IV_rep2 
 #### 2) using data from III+IV data, calculate RPM by dividing the sum total reads at the site in the sample by the total number of mapped reads of the entire sample and calculate enrichment levels by dividing RPM in IP by RPM in input.
 #### 3) combine with sequence context preference determined by synthetic oligos
 #### 4) Obtain 5-nt sequence context surrounding the modification site 
