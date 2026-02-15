@@ -65,7 +65,7 @@ hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infil
 samtools index HeLa-rep1-IV-IP.bam HeLa-rep1-IV-IP.bai
 ```
 
-### 5) combine .bam files from III and IV
+### 5) combine .bam files from III and IV in order for rescuing additional sites missed by the superscript III library due to low read coverage
 ```bash
 samtools merge HeLa-rep1-III-IV-input.bam HeLa-rep1-III-input.bam HeLa-rep1-IV-input.bam
 samtools merge HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IP.bam HeLa-rep1-IV-IP.bam
@@ -186,7 +186,7 @@ bedtools subtract -a HeLa-rep1-rep2-III.bed -b HeLa-rep1-rep3-III.bed > tmp.bed
 cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 ```
 
-### 4. combine sites identified from III and new sites identified from III+IV
+### 4. Combine the additional sites identified using the combined reads from libraries built with SuperScript III and SuperScript IV with the sites identified from the library built with SuperScript III.
 ```bash
 bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
 cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
@@ -220,14 +220,14 @@ The resulting file contains: chr start end strand ref Sum_in_rep1 Sum_IP_rep1 st
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-filter-T.bed
 ```
-### 2. If using superscript III and IV data
+### 2. If rescuing additional sites using combined reads of libraries built from superscript III and IV data
 
 #### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-combined-2.bed -b HeLa-rep2-combined-2.bed > HeLa.bed
 awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$4,$5,$6,$7,$8,$10,$11,$12,$13,$14,$15,$21,$22,$23,$25,$26,$27,$28,$29,$30}' | awk -v OFS="\t" '{$1=$1; print}' | tr ' ' '\t' | sort -k1,1 -k2,2n > HeLa-sort.bed
 ```
-The resulting file contains: chr start end strand ref sum_in_III_IV_rep1 Sum_IP_III_IV_rep1 stop_raio_in_III-IV_rep1 Sum_in_rep1 Sum_IP_rep1 stop_ratio_in_rep1 stop_ratio_IP_rep1 peak_rep1 sample_rep1 sum_in_III_IV_rep2 Sum_IP_III_IV_rep2 stop_raio_in_III-IV_rep2 Sum_in_rep2 Sum_IP_rep2 stop_ratio_in_rep2 stop_ratio_IP_rep2 peak_rep2 sample_rep2
+The resulting file contains: chr start end strand ref reads_input_III_IV_rep1 reads_IP_III_IV_rep1 stop_raio_input_III-IV_rep1 reads_input_rep1 reads_IP_rep1 stop_ratio_input_rep1 stop_ratio_IP_rep1 peak_rep1 sample_rep1 reads_input_III_IV_rep2 reads_IP_III_IV_rep2 stop_raio_input_III-IV_rep2 reads_input_rep2 reads_IP_rep2 stop_ratio_input_rep2 stop_ratio_IP_rep2 peak_rep2 sample_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
 #### 3) Select for sites whose stop locate at T
 ```bash
