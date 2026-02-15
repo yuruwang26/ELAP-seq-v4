@@ -236,7 +236,7 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 1) highest-confidence: stop ratios > 0.3 and detected in all three replicates;
 2) higher-confidence: stop ratios > 0.3 or detected in all three replicates;
 3) lower-confidence: stop ratios < 0.3 and detected in only two replicates.
-### 2). For quantification, use the combined data of libraries built with SuperScript III and SuperScript IV to achieve the best read coverage for each site in both input and IP samples 
+### 2). For quantification, use the combined data of libraries built with Superscript III and Superscript IV to achieve the best read coverage for each site in both input and IP samples 
 #### 1) Prepare the file containing the information of input reads and IP reads obtained from the combined data of libraries built with SuperScript III and SuperScript IV.
 ```bash
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
