@@ -113,7 +113,7 @@ bash arrest.sh HeLa-rep1-III-IV-input.bam HeLa-rep1-III-IV-IP.bam HeLa-peaks.bed
 This step uses scripts calculate_III.sh for the III librairy and calculate_III_IV.sh for the III+IV library. In the output, "in" means inside an IP peak, "out" means outside an IP peak. "III" means the site was called from the library built with superscript III, and "III_IV" means the site was called from combined libraries built with superscript III and IV.
 ```bash
 bash calculate_III.sh HeLa-rep1-III-IP.bam HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out HeLa-rep1-III-inside-unfiltered.bed HeLa-rep1-III-outside-unfiltered.bed HeLa-III-in HeLa-III-out HeLa-rep1-III-unfiltered.bed
-bash calculate_III_IV.sh HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out HeLa-rep1-III-IV-inside-unfiltered.bed HeLa-rep1-III-IV-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-rep1-III-unfiltered.bed
+bash calculate_III_IV.sh HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out HeLa-rep1-III-IV-inside-unfiltered.bed HeLa-rep1-III-IV-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-rep1-III-IV-unfiltered.bed
 ```
 
 ### 2. Remove false positives
@@ -237,7 +237,7 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 2) higher-confidence: stop ratios > 0.3 or detected in all three replicates;
 3) lower-confidence: stop ratios < 0.3 and detected in only two replicates.
 ### 2. For quantification, use the combined data of libraries built with Superscript III and Superscript IV to achieve the best read coverage for each site in both input and IP samples 
-#### 1) Prepare the file containing the information of input reads and IP reads obtained from the combined data of libraries built with SuperScript III and SuperScript IV.
+#### 1) Prepare the file containing the information of input reads and IP reads obtained from the combined data of Superscript III and Superscript IV libraries.
 ```bash
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
 cat HeLa-rep2-III-IV-inside-unfiltered-2.bed HeLa-rep2-III-IV-outside-unfiltered-2.bed > HeLa-rep2-III-IV-unfiltered-2.bed
@@ -254,7 +254,7 @@ bedtools intersect -loj -a HeLa-T.bed -b HeLa-III-IV.bed > HeLa-full.bed
 awk '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$25,$26,$27,$28}' HeLa-full.bed | awk -v OFS="\t" '$1=$1' > HeLa-full-final.bed
 ```
 The resulting file format: chr start end strand ref IP_arrest_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 IP_arrest_rep2 Input_total_count_rep2 IP_total_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2 Input_total_count_III_IV_rep1 IP_total_count_III_IV_rep1 Input_total_count_III_IV_rep2 IP_total_count_III_IV_rep2 
-#### 3) using data from III+IV data, calculate RPM by dividing the sum total reads at the site in the sample by the total number of mapped reads of the entire sample and calculate enrichment levels by dividing RPM in IP by RPM in input.
+#### 3) using III+IV data, calculate RPM by dividing the total read count at the site by the total number of mapped reads (in million) of the entire sample, and then calculate enrichment levels by dividing RPM in IP by RPM in input.
 #### 4) Obtain 5-nt sequence context surrounding the modification site 
 #### 5) merge with synthetic oligo data with the corresponding sequence context using using VLOOK function in excel
 #### 6) calculate adjusted enrichment levels by dividing enrichment levels at the site by the enrichment level of synthetic oligo with the same sequence context
