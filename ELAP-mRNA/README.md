@@ -26,7 +26,7 @@ cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-rep1-IV-IP-cutadapt.fq.
 ```
 
 ### 3) trim UMI
-There is a 6-nt UMI sequence at the 5′ end and a 5-nt UMI sequence at the 3′ end. For SuperScript IV data, trim one additional nucleotide from the 5′ end, as SuperScript IV tends to elongate by one extra nucleotide past the modification.
+There is a 6-nt UMI sequence at the 5′ end and a 5-nt UMI sequence at the 3′ end. For Superscript IV data, trim one additional nucleotide from the 5′ end, as SuperScript IV tends to elongate by one extra nucleotide past the modification.
 ```bash
 conda activate cutadaptenv
 ```
