@@ -115,6 +115,7 @@ This step uses scripts calculate_III.sh for the III librairy and calculate_III_I
 bash calculate_III.sh HeLa-rep1-III-IP.bam HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out HeLa-rep1-III-inside-unfiltered.bed HeLa-rep1-III-outside-unfiltered.bed HeLa-III-in HeLa-III-out HeLa-rep1-III-unfiltered.bed
 bash calculate_III_IV.sh HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out HeLa-rep1-III-IV-inside-unfiltered.bed HeLa-rep1-III-IV-outside-unfiltered.bed HeLa-III-IV-in HeLa-III-IV-out HeLa-rep1-III-IV-unfiltered.bed
 ```
+Resulting file contains: chr start end p-value strand arrest_score ref Input_arrest_rep1 Input_readthrough_rep1 IP_arrest_rep1 IP_readthrough_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1
 
 ### 2. Remove false positives
 This process removes noises originated from multiple mapping and diminished processivity of the RT enzyme past a major modification site
