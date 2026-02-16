@@ -6,8 +6,8 @@
 ### 
 ###  
 ### Usage:
-###   ELAP-seq.sh <rep1-III-IP.bam> <rep1-III-IV-IP.bam> <rep1-III-input.bam> <rep1-III-IV-input.bam> <rep1-peaks.bed> <rep1-name> 
-###   ELAP-seq.sh <rep2-III-IP.bam> <rep2-III-IV-IP.bam> <rep2-III-input.bam> <rep2-III-IV-input.bam> <rep2-peaks.bed> <rep2-name> 
+###   ELAP-seq.sh <rep1-III-IP.bam> <rep1-III-IV-IP.bam> <rep1-III-input.bam> <rep1-III-IV-input.bam> <rep1-III-peaks.bed> <rep1-III-IV-peaks.bed> <rep1-name> 
+###   ELAP-seq.sh <rep2-III-IP.bam> <rep2-III-IV-IP.bam> <rep2-III-input.bam> <rep2-III-IV-input.bam> <rep2-III-peaks.bed> <rep2-III-IV-peaks.bed> <rep2-name> 
 ### Options:
 ###   <input.bam>         Input bam file to read. 
 ###   <IP.bam>         IP bam file to read
@@ -20,76 +20,76 @@
 ### Contact:
 ###  Yuru Wang (yuruwang26@hotmail.com)
 ###
-mkdir $6
-bash arrest.sh $3 $1 $5 ./$6/$6-III-inside.out ./$6/$6-III-outside.out
-bash arrest.sh $4 $2 $5 ./$6/$6-III-IV-inside.out ./$6/$6-III-IV-outside.out
+mkdir $7
+bash arrest.sh $3 $1 $5 ./$7/$7-III-inside.out ./$7/$7-III-outside.out
+bash arrest.sh $4 $2 $6 ./$7/$7-III-IV-inside.out ./$7/$7-III-IV-outside.out
 
-bash calculate_III.sh $1 ./$6/$6-III-inside.out ./$6/$6-III-outside.out ./$6/$6-III-inside-unfiltered.bed ./$6/$6-III-outside-unfiltered.bed ./$6/$6-III-in ./$6/$6-III-out $6-III-unfiltered.bed
-bash calculate_III_IV.sh $2 ./$6/$6-III-IV-inside.out ./$6/$6-III-IV-outside.out ./$6/$6-III-IV-inside-unfiltered.bed ./$6/$6-III-IV-outside-unfiltered.bed ./$6/$6-III-IV-in $6-III-IV-out ./$6/$6-III-IV-unfiltered.bed
-python3 Rm_bg_1.py ./$6/$6-III-inside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-inside-unfiltered-ab.bed
-python3 Rm_bg_1.py ./$6/$6-III-outside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-outside-unfiltered-ab.bed
-python3 Rm_bg_1.py ./$6/$6-III-IV-inside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-IV-inside-unfiltered-ab.bed
-python3 Rm_bg_1.py ./$6/$6-III-IV-outside-unfiltered.bed | tr ' ' '\t' > ./$6/$6-III-IV-outside-unfiltered-ab.bed
-
-
-python3 Rm_bg_2.py ./$6/$6-III-inside-unfiltered-ab.bed | tr ' ' '\t' > ./$6/$6-III-inside-block.bed
-python3 Rm_bg_2.py ./$6/$6-III-outside-unfiltered-ab.bed | tr ' ' '\t' > ./$6/$6-III-outside-block.bed
-python3 Rm_bg_2.py ./$6/$6-III-IV-inside-unfiltered-ab.bed | tr ' ' '\t' > ./$6/$6-III-IV-inside-block.bed
-python3 Rm_bg_2.py ./$6/$6-III-IV-outside-unfiltered-ab.bed | tr ' ' '\t' > ./$6/$6-III-IV-outside-block.bed
+bash calculate_III.sh $1 ./$7/$7-III-inside.out ./$7/$7-III-outside.out ./$7/$7-III-inside-unfiltered.bed ./$7/$7-III-outside-unfiltered.bed ./$7/$7-III-in ./$7/$7-III-out $7-III-unfiltered.bed
+bash calculate_III_IV.sh $2 ./$7/$7-III-IV-inside.out ./$7/$7-III-IV-outside.out ./$7/$7-III-IV-inside-unfiltered.bed ./$7/$7-III-IV-outside-unfiltered.bed ./$7/$7-III-IV-in ./$7/$7-III-IV-out ./$7/$7-III-IV-unfiltered.bed
+python3 Rm_bg_1.py ./$7/$7-III-inside-unfiltered.bed | tr ' ' '\t' > ./$7/$7-III-inside-unfiltered-ab.bed
+python3 Rm_bg_1.py ./$7/$7-III-outside-unfiltered.bed | tr ' ' '\t' > ./$7/$7-III-outside-unfiltered-ab.bed
+python3 Rm_bg_1.py ./$7/$7-III-IV-inside-unfiltered.bed | tr ' ' '\t' > ./$7/$7-III-IV-inside-unfiltered-ab.bed
+python3 Rm_bg_1.py ./$7/$7-III-IV-outside-unfiltered.bed | tr ' ' '\t' > ./$7/$7-III-IV-outside-unfiltered-ab.bed
 
 
-bedtools subtract -a ./$6/$6-III-inside-unfiltered-ab.bed -b ./$6/$6-III-inside-block.bed > ./$6/$6-III-inside-unfiltered-2.bed
-bedtools subtract -a ./$6/$6-III-outside-unfiltered-ab.bed -b ./$6/$6-III-outside-block.bed > ./$6/$6-III-outside-unfiltered-2.bed
-bedtools subtract -a ./$6/$6-III-IV-inside-unfiltered-ab.bed -b ./$6/$6-III-IV-inside-block.bed > ./$6/$6-III-IV-inside-unfiltered-2.bed
-bedtools subtract -a ./$6/$6-III-IV-outside-unfiltered-ab.bed -b ./$6/$6-III-IV-outside-block.bed > ./$6/$6-III-IV-outside-unfiltered-2.bed
+python3 Rm_bg_2.py ./$7/$7-III-inside-unfiltered-ab.bed | tr ' ' '\t' > ./$7/$7-III-inside-block.bed
+python3 Rm_bg_2.py ./$7/$7-III-outside-unfiltered-ab.bed | tr ' ' '\t' > ./$7/$7-III-outside-block.bed
+python3 Rm_bg_2.py ./$7/$7-III-IV-inside-unfiltered-ab.bed | tr ' ' '\t' > ./$7/$7-III-IV-inside-block.bed
+python3 Rm_bg_2.py ./$7/$7-III-IV-outside-unfiltered-ab.bed | tr ' ' '\t' > ./$7/$7-III-IV-outside-block.bed
 
 
-python3 Rm_bg_3.py ./$6/$6-III-inside-unfiltered-2.bed > ./$6/$6-III-inside-unfiltered-low.bed
-python3 Rm_bg_3.py ./$6/$6-III-outside-unfiltered-2.bed > ./$6/$6-III-outside-unfiltered-low.bed
-python3 Rm_bg_3.py ./$6/$6-III-IV-inside-unfiltered-2.bed > ./$6/$6-III-IV-inside-unfiltered-low.bed
-python3 Rg_bg_3.py ./$6/$6-III-IV-outside-unfiltered-2.bed > ./$6/$6-III-IV-outside-unfiltered-low.bed
+bedtools subtract -a ./$7/$7-III-inside-unfiltered-ab.bed -b ./$7/$7-III-inside-block.bed > ./$7/$7-III-inside-unfiltered-2.bed
+bedtools subtract -a ./$7/$7-III-outside-unfiltered-ab.bed -b ./$7/$7-III-outside-block.bed > ./$7/$7-III-outside-unfiltered-2.bed
+bedtools subtract -a ./$7/$7-III-IV-inside-unfiltered-ab.bed -b ./$7/$7-III-IV-inside-block.bed > ./$7/$7-III-IV-inside-unfiltered-2.bed
+bedtools subtract -a ./$7/$7-III-IV-outside-unfiltered-ab.bed -b ./$7/$7-III-IV-outside-block.bed > ./$7/$7-III-IV-outside-unfiltered-2.bed
 
 
-awk '!visited[$0]++' ./$6/$6-III-inside-unfiltered-low.bed > ./$6/$6-III-inside-unfiltered-low-1.bed
-awk '!visited[$0]++' ./$6/$6-III-outside-unfiltered-low.bed > ./$6/$6-III-outside-unfiltered-low-1.bed
-awk '!visited[$0]++' ./$6/$6-III-IV-inside-unfiltered-low.bed > ./$6/$6-III-IV-inside-unfiltered-low-1.bed
-awk '!visited[$0]++' ./$6/$6-III-IV-outside-unfiltered-low.bed > ./$6/$6-III-IV-outside-unfiltered-low-1.bed
+python3 Rm_bg_3.py ./$7/$7-III-inside-unfiltered-2.bed > ./$7/$7-III-inside-unfiltered-low.bed
+python3 Rm_bg_3.py ./$7/$7-III-outside-unfiltered-2.bed > ./$7/$7-III-outside-unfiltered-low.bed
+python3 Rm_bg_3.py ./$7/$7-III-IV-inside-unfiltered-2.bed > ./$7/$7-III-IV-inside-unfiltered-low.bed
+python3 Rg_bg_3.py ./$7/$7-III-IV-outside-unfiltered-2.bed > ./$7/$7-III-IV-outside-unfiltered-low.bed
 
 
-cat ./$6/$6-III-inside-unfiltered-low-1.bed | tr ' ' '\t' > ./$6/$6-III-inside-unfiltered-low-2.bed
-cat ./$6/$6-III-outside-unfiltered-low-1.bed | tr ' ' '\t' > ./$6/$6-III-outside-unfiltered-low-2.bed
-cat ./$6/$6-III-IV-inside-unfiltered-low-1.bed | tr ' ' '\t' > ./$6/$6-III-IV-inside-unfiltered-low-2.bed
-cat ./$6/$6-III-IV-outside-unfiltered-low-1.bed | tr ' ' '\t' > ./$6/$6-III-IV-outside-unfiltered-low-2.bed
-
-bedtools subtract -a ./$6/$6-III-inside-unfiltered-2.bed -b ./$6/$6-III-inside-unfiltered-low-2.bed > ./$6/$6-III-inside-unfiltered-3.bed
-bedtools subtract -a ./$6/$6-III-outside-unfiltered-2.bed -b ./$6/$6-III-outside-unfiltered-low-2.bed > ./$6/$6-III-outside-unfiltered-3.bed
-bedtools subtract -a ./$6/$6-III-IV-inside-unfiltered-2.bed -b ./$6/$6-III-IV-inside-unfiltered-low-2.bed > ./$6/$6-III-IV-inside-unfiltered-3.bed
-bedtools subtract -a ./$6/$6-III-IV-outside-unfiltered-2.bed -b ./$6/$6-III-IV-outside-unfiltered-low-2.bed > ./$6/$6-III-IV-outside-unfiltered-3.bed
-
-bash filter_III.sh $1 ./$6/$6-III-inside-unfiltered-3.bed ./$6/$6-III-outside-unfiltered-3.bed ./$6/$6-III-unique.bed
-bash filter_III_IV.sh $2 ./$6/$6-III-IV-inside-unfiltered-3.bed ./$6/$6-III-IV-outside-unfiltered-3.bed ./$6/$6-III-IV-unique.bed
-
-sort -k1,1 -k2,2n ./$6/$6-III-unique.bed > ./$6/$6-III-unique-1.bed
-sort -k1,1 -k2,2n ./$6/$6-III-IV-unique.bed > ./$6/$6-III-IV-unique-1.bed
+awk '!visited[$0]++' ./$7/$7-III-inside-unfiltered-low.bed > ./$7/$7-III-inside-unfiltered-low-1.bed
+awk '!visited[$0]++' ./$7/$7-III-outside-unfiltered-low.bed > ./$7/$7-III-outside-unfiltered-low-1.bed
+awk '!visited[$0]++' ./$7/$7-III-IV-inside-unfiltered-low.bed > ./$7/$7-III-IV-inside-unfiltered-low-1.bed
+awk '!visited[$0]++' ./$7/$7-III-IV-outside-unfiltered-low.bed > ./$7/$7-III-IV-outside-unfiltered-low-1.bed
 
 
-python3 Stutter1.py ./$6/$6-III-unique-1.bed | tr ' ' '\t' > ./$6/$6-III-stutter-filter.bed
-python3 Stutter1.py ./$6/$6-III-IV-unique-1.bed | tr ' ' '\t' > ./$6/$6-III-IV-stutter-filter.bed
+cat ./$7/$7-III-inside-unfiltered-low-1.bed | tr ' ' '\t' > ./$7/$7-III-inside-unfiltered-low-2.bed
+cat ./$7/$7-III-outside-unfiltered-low-1.bed | tr ' ' '\t' > ./$7/$7-III-outside-unfiltered-low-2.bed
+cat ./$7/$7-III-IV-inside-unfiltered-low-1.bed | tr ' ' '\t' > ./$7/$7-III-IV-inside-unfiltered-low-2.bed
+cat ./$7/$7-III-IV-outside-unfiltered-low-1.bed | tr ' ' '\t' > ./$7/$7-III-IV-outside-unfiltered-low-2.bed
+
+bedtools subtract -a ./$7/$7-III-inside-unfiltered-2.bed -b ./$7/$7-III-inside-unfiltered-low-2.bed > ./$7/$7-III-inside-unfiltered-3.bed
+bedtools subtract -a ./$7/$7-III-outside-unfiltered-2.bed -b ./$7/$7-III-outside-unfiltered-low-2.bed > ./$7/$7-III-outside-unfiltered-3.bed
+bedtools subtract -a ./$7/$7-III-IV-inside-unfiltered-2.bed -b ./$7/$7-III-IV-inside-unfiltered-low-2.bed > ./$7/$7-III-IV-inside-unfiltered-3.bed
+bedtools subtract -a ./$7/$7-III-IV-outside-unfiltered-2.bed -b ./$7/$7-III-IV-outside-unfiltered-low-2.bed > ./$7/$7-III-IV-outside-unfiltered-3.bed
+
+bash filter_III.sh $1 ./$7/$7-III-inside-unfiltered-3.bed ./$7/$7-III-outside-unfiltered-3.bed ./$7/$7-III-unique.bed
+bash filter_III_IV.sh $2 ./$7/$7-III-IV-inside-unfiltered-3.bed ./$7/$7-III-IV-outside-unfiltered-3.bed ./$7/$7-III-IV-unique.bed
+
+sort -k1,1 -k2,2n ./$7/$7-III-unique.bed > ./$7/$7-III-unique-1.bed
+sort -k1,1 -k2,2n ./$7/$7-III-IV-unique.bed > ./$7/$7-III-IV-unique-1.bed
 
 
-python3 Stutter2.py ./$6/$6-III-stutter-filter.bed | tr ' ' '\t' > ./$6/$6-III-remove.bed
-python3 Stutter2.py ./$6/$6-III-IV-stutter-filter.bed | tr ' ' '\t' > ./$6/$6-III-IV-remove.bed
+python3 Stutter1.py ./$7/$7-III-unique-1.bed | tr ' ' '\t' > ./$7/$7-III-stutter-filter.bed
+python3 Stutter1.py ./$7/$7-III-IV-unique-1.bed | tr ' ' '\t' > ./$7/$7-III-IV-stutter-filter.bed
 
 
-bedtools subtract -a ./$6/$6-III-stutter-filter.bed -b ./$6/$6-III-remove.bed > ./$6/$6-III-stutter-filter-2.bed
-bedtools subtract -a ./$6/$6-III-IV-stutter-filter.bed -b ./$6/$6-III-IV-remove.bed > ./$6/$6-III-IV-stutter-filter-2.bed
-
-awk '{ if($10 >4) print $0;}' ./$6/$6-III-stutter-filter-2.bed > ./$6/$6-III-filter1.bed
-awk '{ if($10 >4) print $0;}' ./$6/$6-III-IV-stutter-filter-2.bed > ./$6/$6-III-IV-filter1.bed
-
-awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$6/$6-III-filter1.bed > ./$6/$6-III-filter2.bed
-awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$6/$6-III-IV-filter1.bed > ./$6/$6-III-IV-filter2.bed
+python3 Stutter2.py ./$7/$7-III-stutter-filter.bed | tr ' ' '\t' > ./$7/$7-III-remove.bed
+python3 Stutter2.py ./$7/$7-III-IV-stutter-filter.bed | tr ' ' '\t' > ./$7/$7-III-IV-remove.bed
 
 
-bedtools subtract -a ./$6/$6-III-IV-filter-2.bed -b ./$6/$6-III-filter-2.bed > ./$6/new.bed
-cat ./$6/$6-III-filter-2.bed ./$6/new.bed | sort -k1,1 > ./$6/$6-combined.bed
+bedtools subtract -a ./$7/$7-III-stutter-filter.bed -b ./$7/$7-III-remove.bed > ./$7/$7-III-stutter-filter-2.bed
+bedtools subtract -a ./$7/$7-III-IV-stutter-filter.bed -b ./$7/$7-III-IV-remove.bed > ./$7/$7-III-IV-stutter-filter-2.bed
+
+awk '{ if($10 >4) print $0;}' ./$7/$7-III-stutter-filter-2.bed > ./$7/$7-III-filter1.bed
+awk '{ if($10 >4) print $0;}' ./$7/$7-III-IV-stutter-filter-2.bed > ./$7/$7-III-IV-filter1.bed
+
+awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$7/$7-III-filter1.bed > ./$7/$7-III-filter2.bed
+awk '($14 <= 0.1) || ($8 < 3) || ($15 / $14 >= 3)' ./$7/$7-III-IV-filter1.bed > ./$7/$7-III-IV-filter2.bed
+
+
+bedtools subtract -a ./$7/$7-III-IV-filter-2.bed -b ./$7/$7-III-filter-2.bed > ./$7/new.bed
+cat ./$7/$7-III-filter-2.bed ./$7/new.bed | sort -k1,1 > ./$7/$7-combined.bed
