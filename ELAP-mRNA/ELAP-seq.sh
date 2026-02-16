@@ -26,10 +26,16 @@ bash arrest.sh $4 $2 $6 ./$7/$7-III-IV-inside.out ./$7/$7-III-IV-outside.out
 
 bash calculate_III.sh $1 ./$7/$7-III-inside.out ./$7/$7-III-outside.out ./$7/$7-III-inside-unfiltered.bed ./$7/$7-III-outside-unfiltered.bed ./$7/$7-III-in ./$7/$7-III-out $7-III-unfiltered.bed
 bash calculate_III_IV.sh $2 ./$7/$7-III-IV-inside.out ./$7/$7-III-IV-outside.out ./$7/$7-III-IV-inside-unfiltered.bed ./$7/$7-III-IV-outside-unfiltered.bed ./$7/$7-III-IV-in ./$7/$7-III-IV-out ./$7/$7-III-IV-unfiltered.bed
-python3 Rm_bg_1.py ./$7/$7-III-inside-unfiltered.bed | tr ' ' '\t' > ./$7/$7-III-inside-unfiltered-ab.bed
-python3 Rm_bg_1.py ./$7/$7-III-outside-unfiltered.bed | tr ' ' '\t' > ./$7/$7-III-outside-unfiltered-ab.bed
-python3 Rm_bg_1.py ./$7/$7-III-IV-inside-unfiltered.bed | tr ' ' '\t' > ./$7/$7-III-IV-inside-unfiltered-ab.bed
-python3 Rm_bg_1.py ./$7/$7-III-IV-outside-unfiltered.bed | tr ' ' '\t' > ./$7/$7-III-IV-outside-unfiltered-ab.bed
+
+sort -k1,1 -k2,2n -k13,13 ./$7/$7-III-inside-unfiltered.bed > ./$7/$7-III-inside-unfiltered-sort.bed
+sort -k1,1 -k2,2n -k13,13 ./$7/$7-III-outside-unfiltered.bed > ./$7/$7-III-outside-unfiltered-sort.bed
+sort -k1,1 -k2,2n -k13,13 ./$7/$7-III-IV-inside-unfiltered.bed > ./$7/$7-III-IV-inside-unfiltered-sort.bed
+sort -k1,1 -k2,2n -k13,13 ./$7/$7-III-IV-outside-unfiltered.bed > ./$7/$7-III-IV-outside-unfiltered-sort.bed
+
+python3 Rm_bg_1.py ./$7/$7-III-inside-unfiltered-sort.bed | tr ' ' '\t' > ./$7/$7-III-inside-unfiltered-ab.bed
+python3 Rm_bg_1.py ./$7/$7-III-outside-unfiltered-sort.bed | tr ' ' '\t' > ./$7/$7-III-outside-unfiltered-ab.bed
+python3 Rm_bg_1.py ./$7/$7-III-IV-inside-unfiltered-sort.bed | tr ' ' '\t' > ./$7/$7-III-IV-inside-unfiltered-ab.bed
+python3 Rm_bg_1.py ./$7/$7-III-IV-outside-unfiltered-sort.bed | tr ' ' '\t' > ./$7/$7-III-IV-outside-unfiltered-ab.bed
 
 
 python3 Rm_bg_2.py ./$7/$7-III-inside-unfiltered-ab.bed | tr ' ' '\t' > ./$7/$7-III-inside-block.bed
