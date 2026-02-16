@@ -1,11 +1,11 @@
 # ELAP-seq-poly-A-RNA-workflow
 
-Each replicate should contain two input libraries and an two IP libraries. The libraries are built with superscript III or IV.
+Each replicate should contain two sets of input and IP libraries, with each set built with superscript III or superscript IV.
 
 ## I. Processing of FASTQ data 
 
-Only reads R2 is used. After trimming UMI, the begnning of R2 is the RT stop site, which indicates modification. Can otherwise construct the libraries in a way that single end sequencing is sufficient.
-This process includes five steps:
+Only reads R2 is used. After trimming UMI, the 5' end of R2 is the RT stop site, which indicates modification. Can otherwise construct the libraries in a way that single end sequencing data R1 is sufficient.
+The FASTQ data processing includes five steps:
 
 ### 1. trim adapter
 
@@ -65,7 +65,7 @@ hisat2 -x /home/yuruwang/Database/genome/hg38/hg38_UCSC --known-splicesite-infil
 samtools index HeLa-rep1-IV-IP.bam HeLa-rep1-IV-IP.bai
 ```
 
-### 5. combine .bam files from superscript III and superscript IV in order to rescue additional sites that are missed by the superscript III library due to low read coverage
+### 5. combine .bam files of libraries built with superscript III and superscript IV in order to rescue sites that are missed by the library built with superscript III due to low read coverage
 ```bash
 samtools merge HeLa-rep1-III-IV-input.bam HeLa-rep1-III-input.bam HeLa-rep1-IV-input.bam
 samtools merge HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IP.bam HeLa-rep1-IV-IP.bam
@@ -77,15 +77,15 @@ samtools index HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-IP.bai
 
 ## II. Call IP peaks
 ### 1. MACS2 is used to call IP peaks. 
-In the final list, we want to report whether a site is inside an enriched IP peak or not
+We call IP peaks because we want to report whether a site is inside an enriched IP peak or not
 
 ```bash
 macs2 callpeak -t HeLa-rep1-III-IP.bam -c HeLa-rep1-III-input.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-peadDir
 macs2 callpeak -t HeLa-rep1-III-IV-IP.bam -c HeLa-rep1-III-IV-input.bam -n test_t2 -f BAM -g 994080837 -q 0.01 --slocal 1000 --extsize 150 --nomodel --keep-dup all --call-summits --outdir HeLa-III-IV-peadDir
 ```
 ### 2. obtain regions covered by IP peaks 
-Remove unknown chromosomes or random chromosomes manually
-Save the resulting .bed file as HeLa-peaks.bed
+Remove unknown chromosomes or random chromosomes manually. 
+Save the resulting .bed file as HeLa-rep1-III-peaks.bed and HeLa-rep1-III-IV-peaks.bed
 
 
 
@@ -95,8 +95,8 @@ This step can use the command ELAP-seq.sh.
 
 Usage: 
 ```bash
-ELAP-seq.sh <rep1-III-IP.bam> <rep1-III-IV-IP.bam> <rep1-III-input.bam> <rep1-III-IV-input.bam> <rep1-peaks.bed> <rep1-name> 
-ELAP-seq.sh <rep2-III-IP.bam> <rep2-III-IV-IP.bam> <rep2-III-input.bam> <rep2-III-IV-input.bam> <rep2-peaks.bed> <rep2-name>
+ELAP-seq.sh <rep1-III-IP.bam> <rep1-III-IV-IP.bam> <rep1-III-input.bam> <rep1-III-IV-input.bam> <rep1-III-peaks.bed> <rep1-III-IV-peaks.bed> <rep1-name> 
+ELAP-seq.sh <rep2-III-IP.bam> <rep2-III-IV-IP.bam> <rep2-III-input.bam> <rep2-III-IV-input.bam> <rep2-III-peaks.bed> <rep2-III-IV-peaks.bed> <rep2-name>
 ```
 
 This command include the following steps:
@@ -106,10 +106,10 @@ This command include the following steps:
 #### 1) Call all stop sites inside and outside of IP peaks
 This step uses the script arrest.sh
 ```bash
-bash arrest.sh HeLa-rep1-III-input.bam HeLa-rep1-III-IP.bam HeLa-peaks.bed HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out
-bash arrest.sh HeLa-rep1-III-IV-input.bam HeLa-rep1-III-IV-IP.bam HeLa-peaks.bed HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out
+bash arrest.sh HeLa-rep1-III-input.bam HeLa-rep1-III-IP.bam HeLa-rep1-III-peaks.bed HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out
+bash arrest.sh HeLa-rep1-III-IV-input.bam HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-peaks.bed HeLa-rep1-III-IV-inside.out HeLa-rep1-III-IV-outside.out
 ```
-#### 2) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is inside or outside of an IP peak, and whether it is identified from the library built with superscript III or combined data of libraries built with superscript III and IV)
+#### 2) Calculate arrest rate of each site and assign the originality of the site (i.e., whether it is inside or outside of an IP peak, and whether it is identified from the library built with superscript III or combined data of libraries built with superscript III and superscript IV)
 This step uses scripts calculate_III.sh for the III librairy and calculate_III_IV.sh for the III+IV library. In the output, "in" means inside an IP peak, "out" means outside an IP peak. "III" means the site was called from the library built with superscript III, and "III_IV" means the site was called from combined libraries built with superscript III and IV.
 ```bash
 bash calculate_III.sh HeLa-rep1-III-IP.bam HeLa-rep1-III-inside.out HeLa-rep1-III-outside.out HeLa-rep1-III-inside-unfiltered.bed HeLa-rep1-III-outside-unfiltered.bed HeLa-III-in HeLa-III-out HeLa-rep1-III-unfiltered.bed
@@ -124,7 +124,7 @@ First sort sites based on the chromosome locations (column 1 and 2) and the tota
 sort -k1,1 -k2,2n -k13,13 HeLa-rep1-III-inside-unfiltered.bed > HeLa-rep1-III-inside-unfiltered-sort.bed
 sort -k1,1 -k2,2n -k13,13 HeLa-rep1-III-outside-unfiltered.bed > HeLa-rep1-III-outside-unfiltered-sort.bed
 ```
-If a location is mapped with multiple identities, choose the one mapped with highest read counts in the IP sample
+For locations covered by reads mapped to both the positive and negative strands and/or reads containing mutations at the location, choose the base identity having the highest read counts in the IP sample
 ```bash
 python3 Rm_bg_1.py HeLa-rep1-III-inside-unfiltered-sort.bed | tr ' ' '\t' > HeLa-rep1-III-inside-unfiltered-ab.bed
 python3 Rm_bg_1.py HeLa-rep1-III-outside-unfiltered-sort.bed | tr ' ' '\t' > HeLa-rep1-III-outside-unfiltered-ab.bed
@@ -159,13 +159,13 @@ bash filter_III.sh HeLa-rep1-III-IP.bam HeLa-rep1-III-inside-unfiltered-3.bed He
 bash filter_III_IV.sh HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-inside-unfiltered-3.bed HeLa-rep1-III-IV-outside-unfiltered-3.bed HeLa-rep1-III-IV-unique.bed && sort -k1,1 -k2,2n HeLa-rep1-III-IV-unique.bed > HeLa-rep1-III-IV-unique-1.bed
 ```
 #### 2). remove stutter sites
-Remove  sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site. We select the major arrest sites this way.
+To select the major arrest sites, rmove sites within 1 nt upstream and downstream of the current site whose arrested reads are at least 15% lower than the current site. 
 ```bash
 python3 Stutter1.py HeLa-rep1-III-unique-1.bed | tr ' ' '\t' >  HeLa-rep1-III-stutter-filter.bed
 python3 Stutter1.py HeLa-rep1-III-IV-unique-1.bed | tr ' ' '\t' > HeLa-rep1-III-IV-stutter-filter.bed
 ```
 
-Remove sites within 6 nt downstream of the current site whose stop ratios are lower than the current site.This continues to remove noises nearby the major arrest sites.
+To continues to remove noises nearby the major arrest sites, remove sites within 6 nt downstream of the current site whose stop ratios are lower than the current site.
 ```bash
 python3 Stutter2.py HeLa-rep1-III-stutter-filter.bed | tr ' ' '\t' > HeLa-rep1-III-remove.bed
 python3 Stutter2.py HeLa-rep1-III-IV-stutter-filter.bed | tr ' ' '\t' > HeLa-rep1-III-IV-remove.bed
@@ -194,7 +194,7 @@ bedtools subtract -a HeLa-rep1-rep2-III.bed -b HeLa-rep1-rep3-III.bed > tmp.bed
 cat HeLa-rep1-rep3-III.bed tmp.bed > HeLa-rep1-III-filter4.bed
 ```
 
-### 4. Combine sites identified from superscript III alone and the new sites identified using the combined data of libraries built with Superscript III and Superscript IV 
+### 4. Combine sites identified from superscript III library alone and the new sites identified from the combined libraries built with Superscript III and Superscript IV 
 ```bash
 bedtools subtract -a HeLa-rep1-III-IV-filter2.bed -b HeLa-rep1-III-filter2.bed > new.bed
 cat HeLa-rep1-III-filter2.bed new.bed | sort -k1,1 > HeLa-rep1-combined.bed
@@ -203,7 +203,7 @@ The resulting file contains: chr start end pvalue strand arrest_score ref Input_
 
 ## IV. Intersect two biological replicates and further filter
 
-### 1. If focus on sites identified by superscript III data alone
+### 1. If focus on sites identified by superscript III library alone
 #### 1) Intersect two biological replicates
 ```bash
 bedtools intersect -wa -wb -a HeLa-rep1-III-filter2.bed -b HeLa-rep2-III-filter2.bed > HeLa.bed
@@ -228,6 +228,7 @@ awk '!visited[$0]++' HeLa.bed | awk '{print $1,$2,$3,$5,$7,$10,$12,$13,$14,$15,$
 ```
 The resulting file contains: chr start end strand ref IP_arrest_rep1 Input_total_count_rep1 IP_total_count_rep1 Input_stop_ratio_rep1 IP_stop_ratio_rep1 peak_rep1 sample_origin_rep1 IP_arrest_rep2 Input_total_count_rep2 IP_total_count_rep2 Input_stop_ratio_rep2 IP_stop_ratio_rep2 peak_rep2 sample_origin_rep2
 #### 2) Select for sites whose average value of stop ratio * stopped reads between the two pull-down replicates is >=1.5.
+This imposes a more stringent requirement on the number of stopped reads when the stop ratio in the pull-down sample is lower than 30%.
 ```bash
 awk '($6*$10 + $13*$17)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```
@@ -242,7 +243,7 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 1) highest-confidence: stop ratios > 0.3 and detected in all three replicates;
 2) higher-confidence: stop ratios > 0.3 or detected in all three replicates;
 3) lower-confidence: stop ratios < 0.3 and detected in only two replicates.
-### 2. For quantification, use the combined data of libraries built with Superscript III and Superscript IV to achieve the best read coverage for each site in both input and IP samples 
+### 2. For quantification, use combined data of libraries built with Superscript III and Superscript IV to achieve the best read coverage for each site in both input and IP samples 
 #### 1) Prepare the file containing the information of input reads and IP reads obtained from the combined data of Superscript III and Superscript IV libraries.
 ```bash
 cat HeLa-rep1-III-IV-inside-unfiltered-2.bed HeLa-rep1-III-IV-outside-unfiltered-2.bed > HeLa-rep1-III-IV-unfiltered-2.bed
