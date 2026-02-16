@@ -119,9 +119,15 @@ bash calculate_III_IV.sh HeLa-rep1-III-IV-IP.bam HeLa-rep1-III-IV-inside.out HeL
 ### 2. Remove false positives
 This process removes noises originated from multiple mapping and diminished processivity of the RT enzyme past a major modification site
 #### 1) determine the main nucleoside for sites mapped with multiple identities
+First sort entries based on the chromosome location (column 1 and 2) and the total read count in the IP sample (column 13)
 ```bash
-python3 Rm_bg_1.py HeLa-rep1-III-inside-unfiltered.bed | tr ' ' '\t' > HeLa-rep1-III-inside-unfiltered-ab.bed
-python3 Rm_bg_1.py HeLa-rep1-III-outside-unfiltered.bed | tr ' ' '\t' > HeLa-rep1-III-outside-unfiltered-ab.bed
+sort -k1,1 -k2,2n -k13,13 HeLa-rep1-III-inside-unfiltered.bed > HeLa-rep1-III-inside-unfiltered-sort.bed
+sort -k1,1 -k2,2n -k13,13 HeLa-rep1-III-outside-unfiltered.bed > HeLa-rep1-III-outside-unfiltered-sort.bed
+```
+If a location is mapped with multiple identities, choose the one mapped with highest reads in the IP sample
+```bash
+python3 Rm_bg_1.py HeLa-rep1-III-inside-unfiltered-sort.bed | tr ' ' '\t' > HeLa-rep1-III-inside-unfiltered-ab.bed
+python3 Rm_bg_1.py HeLa-rep1-III-outside-unfiltered-sort.bed | tr ' ' '\t' > HeLa-rep1-III-outside-unfiltered-ab.bed
 ```
 #### 2) remove regions that are covered by reads that all share the same start and end mapping position
 This is likely caused by off-target mapping of reads whose originality is another region in the genome containing a same sequence as the current region 
