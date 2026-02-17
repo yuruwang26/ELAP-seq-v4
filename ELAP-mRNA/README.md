@@ -220,7 +220,7 @@ awk '($6*$10 + $13*$17)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 ```
-We define sites that are identified by at least two replicates as candidate modification sites.
+We define sites that are identified by at least two biological replicates as candidate modification sites.
 ### 2. If focus on combined sites identified by superscript III-alone data and combined data of superscript III and IV
 
 #### 1) Intersect two biological replicates
@@ -238,7 +238,7 @@ awk '($6*$10 + $13*$17)/2 >=1.5 ' HeLa-sort.bed > HeLa-filter.bed
 ```bash
 awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 ```
-
+We define sites that are identified by at least two biological replicates as candidate modification sites.
 
 ## V. Post-processing: determing confidence levels and modification levels
 ### 1. Determine confidence level for each site:
