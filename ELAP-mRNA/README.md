@@ -241,9 +241,9 @@ awk '{ if($5 == "T") print $0;}' HeLa-filter.bed > HeLa-T.bed
 
 ## V. Post-processing: determing confidence levels and modification levels
 ### 1. Determine confidence level for each site:
-1) highest-confidence: stop ratios > 0.3 and detected in all three replicates;
-2) higher-confidence: stop ratios > 0.3 or detected in all three replicates;
-3) lower-confidence: stop ratios < 0.3 and detected in only two replicates.
+1. Highest confidence: stop ratio > 0.3 in every replicate in which it is detected, and detected in all three replicates.
+2. Higher confidence: stop ratio > 0.3 in every replicate in which it is detected, or detected in all three replicates.
+3. Lower confidence: stop ratio < 0.3 in at least one replicate in which it is detected, and detected in only two replicates.
 ### 2. For quantification, use combined data of libraries built with Superscript III and Superscript IV to achieve the best read coverage for each site in both input and IP samples 
 #### 1) Prepare the file containing the information of input reads and IP reads obtained from the combined data of Superscript III and Superscript IV libraries.
 ```bash
