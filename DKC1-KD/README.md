@@ -1,4 +1,5 @@
 # DKC1-Knockdown-analysis-workflow
+DKC1-knockdown related libraries were build with cDNA ligation adapter with 5N UMI. Therefore, 5 nt is trimmed on the 3' end of the single end reads or the merged paired end reads. 
 ## 1. Processing input data (single end reads)
 ### 1. Sort samples based on internal barcodes
 ```bash
