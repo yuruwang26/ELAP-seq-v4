@@ -9,15 +9,15 @@ Only R2 is used. After trimming UMI, the begnning of R2 will be the RT stop site
 ### 1) trim adapter
 
 ```bash
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-IP-III-rep1-cutadapt.fastq.gz HeLa-IP-III-rep1_R2.fq.gz >> adaptorTrim.log
-cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HeLa-input-III-rep1-cutadapt.fastq.gz HeLa-input-III-rep1_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HEK-IP-III-rep1-cutadapt.fastq.gz HEK-IP-III-rep1_R2.fq.gz >> adaptorTrim.log
+cutadapt -a "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"  -o HEK-input-III-rep1-cutadapt.fastq.gz HEK-input-III-rep1_R2.fq.gz >> adaptorTrim.log
 ```
 
 ### 2) remove duplicates
 
 ```bash
-~/Tools/bbmap/clumpify.sh in=HeLa-IP-III-rep1-cutadapt.fastq.gz out=HeLa-IP-III-rep1-dedupe.fastq.gz dedupe >> duplicates_removal_1.log
-~/Tools/bbmap/clumpify.sh in=HeLa-input-III-rep1-cutadapt.fastq.gz out=HeLa-input-III-rep1-dedupe.fastq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HEK-IP-III-rep1-cutadapt.fastq.gz out=HEK-IP-III-rep1-dedupe.fastq.gz dedupe >> duplicates_removal_1.log
+~/Tools/bbmap/clumpify.sh in=HEK-input-III-rep1-cutadapt.fastq.gz out=HEK-input-III-rep1-dedupe.fastq.gz dedupe >> duplicates_removal_1.log
 ```
 
 ### 3) trim UMI
@@ -27,26 +27,26 @@ conda activate cutadaptenv
 ```
 
 ```bash
-cutadapt -u 6 -o tmp.trimmed.fastq HeLa-IP-III-rep1-dedupe.fastq.gz
-cutadapt -u -5 -q 10,10 -m 19 -o HeLa-IP-III-rep1-trim.fastq.gz tmp.trimmed.fastq
+cutadapt -u 6 -o tmp.trimmed.fastq HEK-IP-III-rep1-dedupe.fastq.gz
+cutadapt -u -5 -q 10,10 -m 19 -o HEK-IP-III-rep1-trim.fastq.gz tmp.trimmed.fastq
 ```
 
 ```bash
-cutadapt -u 6 -o tmp.trimmed.fastq HeLa-input-III-rep1-dedupe.fastq.gz
-cutadapt -u -5 -q 10,10 -m 19 -o HeLa-input-III-rep1-trim.fastq.gz tmp.trimmed.fastq
+cutadapt -u 6 -o tmp.trimmed.fastq HEK-input-III-rep1-dedupe.fastq.gz
+cutadapt -u -5 -q 10,10 -m 19 -o HEK-input-III-rep1-trim.fastq.gz tmp.trimmed.fastq
 ```
 
 ## 2. map reads to the genome
 
 ```bash
-hisat2 -x /home/Wang_yuru/rRNA_genome/Human_rRNA_1 -k 1 --no-softclip --mp 1000,999 --summary-file align_summary -p 4 HeLa-IP-III-rep1-trim.fastq.gz |samtools view -bS |samtools sort -o HeLa-IP-III-rRNA-rep1.bam
-hisat2 -x /home/Wang_yuru/rRNA_genome/Human_rRNA_1 -k 1 --no-softclip --mp 1000,999 --summary-file align_summary -p 4 HeLa-input-III-rep1-trim.fastq.gz |samtools view -bS |samtools sort -o HeLa-input-III-rRNA-rep1.bam
+hisat2 -x /home/Wang_yuru/rRNA_genome/Human_rRNA_1 -k 1 --no-softclip --mp 1000,999 --summary-file align_summary -p 4 HEK-IP-III-rep1-trim.fastq.gz |samtools view -bS |samtools sort -o HEK-IP-III-rRNA-rep1.bam
+hisat2 -x /home/Wang_yuru/rRNA_genome/Human_rRNA_1 -k 1 --no-softclip --mp 1000,999 --summary-file align_summary -p 4 HEK-input-III-rep1-trim.fastq.gz |samtools view -bS |samtools sort -o HEK-input-III-rRNA-rep1.bam
 ```
 
 ## 3. call RT-arrest ratio for all sites 
 
 ```bash
-java -jar /home/Wang_yuru/Pseudouridine/4-21-22-HeLa-HEK-mRNA/cutadapt/dedupe/trim/sam_files/JACUSA_v2.0.1.jar rt-arrest -m 0 -p 2 -c 1 -P FR_SECONDSTRAND -R /home/Wang_yuru/rRNA_genome/Human_rRNA_1.fa -b rRNA.bed -r rRNA-rep1.out HeLa-input-III-rRNA-rep1.bam HeLa-IP-III-rRNA-rep1.bam
+java -jar /home/Wang_yuru/Pseudouridine/4-21-22-HeLa-HEK-mRNA/cutadapt/dedupe/trim/sam_files/JACUSA_v2.0.1.jar rt-arrest -m 0 -p 2 -c 1 -P FR_SECONDSTRAND -R /home/Wang_yuru/rRNA_genome/Human_rRNA_1.fa -b rRNA.bed -r rRNA-rep1.out HEK-input-III-rRNA-rep1.bam HEK-IP-III-rRNA-rep1.bam
 ```
 
 ## 4. filter sites
